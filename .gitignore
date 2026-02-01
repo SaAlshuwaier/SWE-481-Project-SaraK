@@ -3,3 +3,8 @@
 # ==================
 .DS_Store
 Thumbs.db
+# ==================
+# Angular / Node
+# =========================
+node_modules/
+dist/
