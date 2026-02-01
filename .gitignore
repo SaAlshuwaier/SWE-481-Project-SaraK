@@ -3,12 +3,11 @@
 # ==================
 .DS_Store
 Thumbs.db
-# ==================
+# =========================
 # Angular / Node
 # =========================
 node_modules/
 dist/
-# =========================
 .angular/
 npm-debug.log*
 yarn-error.log*
@@ -17,3 +16,10 @@ yarn-error.log*
 # =====================
 .env
 .env.local
+# =====================
+# PostgreSQL
+# =====================
+*.sql
+*.dump
+*.backup
+
