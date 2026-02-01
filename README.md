@@ -1,6 +1,6 @@
 ## SWE-481-Project
 
-This repository contains the implementation of the SWE-481 course project. The project is a full-stack web application developed by a team members as part of the Software Engineering course requirements. The web application allows users to browse, search, and rent movies from the IMDb dataset. The development of this project is divided into multiple phases. For each phase, specific instructions and guidelines will be added to this repository as the project progresses.
+This repository contains the implementation of the SWE-481 course project. The project is a full-stack web application developed by team members as part of the Software Engineering course requirements. The web application allows users to browse, search, and rent movies from the IMDb dataset. The development of this project is divided into multiple phases. For each phase, specific instructions and guidelines will be added to this repository as the project progresses.
 
 ## Phase 1 Status
 - Private GitHub repository created
@@ -20,5 +20,5 @@ The detailed architecture, setup instructions, and implementation details will b
 - Layan Alhugbani
 - Sara Alshuwaier
 - Jana Alshreef
-- Loba Alyahya
 - Reem Alharbi
+- Loba Alyahya
