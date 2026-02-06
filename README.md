@@ -14,7 +14,24 @@ Frontend: Angular
 Backend: Spring Boot
 Database: PostgreSQL
 
-The detailed architecture, setup instructions, and implementation details will be expanded in later phases of the project.
+## Phase 2 Status
+In this phase we focus on system architicture setup, communication between frontend and backend, and complete API and interface specification.
+
+### Comleted in Phase 2:
+- Full-stack architecture setup between frontend,and backend (database deferred to later phases)
+- Running Spring Boot backend with REST support.
+- Verified the connection between frontend and backend using a health-chack endpoint.
+- Complete API and Interface Specification  for all features that will be implemented in later phases.
+
+### API and Interface Specification Requirements:
+The following specifications are defind under the '/docs' directory:
+- REST API endpoints (URLs, HTTP methods).
+- Request parameters and payloads.
+- Response formats and HTTP status codes.
+- Authentication requirements (if applicable).
+- Frontend-to-backend interaction contracts.
+
+
 
 ## Team Members
 - Layan Alhugbani
