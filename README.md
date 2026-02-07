@@ -31,7 +31,7 @@ The following specifications are defind under the '/docs' directory:
 - Authentication requirements (if applicable).
 - Frontend-to-backend interaction contracts.
 
-- ## Environment Variables 
+- ### Environment Variables 
 
 A template file `.env.example` is provided in the `backend/` directory for
 documentation purposes only. It lists the required environment variables and
@@ -46,7 +46,7 @@ starting the application.
 #### Steps to Add Environment Variables on Windows
 1. Press **Windows + R**, type `sysdm.cpl`, and press **Enter**.
 2. Navigate to the **Advanced** tab and click **Environment Variables**.
-3. Under **User variables** (or **System variables**), click **New**.
+3. Under **User variables** , click **New**.
 4. Add the following variables:
 
    - **Name:** `DB_URL`  
@@ -66,9 +66,12 @@ and start the application:
 
 ```bash
 mvn spring-boot:run
+```
 
 #### Steps to Add Environment Variables on macOS
+
 1. Open the Terminal.
+
 2. Edit the shell configuration file:
    ```bash
    nano ~/.zshrc
@@ -83,7 +86,6 @@ export DB_PASS="YOUR_LOCAL_PASSWORD"
 Save the file and apply the changes: source ~/.zshrc
 
 Start the backend service: mvn spring-boot:run
-
 
 
 
