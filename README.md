@@ -51,6 +51,22 @@ Developers should create their own local `.env` file (not committed) or define t
 variables directly in their environment.
 
 
+### Running the Backend (Windows PowerShell)
+
+Before starting the Spring Boot application, the required configuration values
+must be provided as environment variables.
+Spring Boot does not read .env files automatically; instead, it resolves
+configuration values from the operating system environment at application startup.
+
+A .env.example file is provided as a reference template only. Developers may
+use it to define their local values and then export them to the environment
+manua
+
+$env:DB_URL="jdbc:postgresql://localhost:5432/moviedb"
+$env:DB_USER="postgres"
+$env:DB_PASS="YOUR_LOCAL_PASSWORD"
+mvn spring-boot:run
+
 
 
 
