@@ -31,6 +31,28 @@ The following specifications are defind under the '/docs' directory:
 - Authentication requirements (if applicable).
 - Frontend-to-backend interaction contracts.
 
+- ## Environment Variables (Backend Configuration)
+
+Sensitive configuration values such as database credentials are **not committed**
+to the repository. Each developer must define the required environment variables
+locally before running the backend service.
+
+### Required Environment Variables
+The backend requires the following variables:
+
+- `DB_URL` – PostgreSQL connection URL  
+  Example: `jdbc:postgresql://localhost:5432/moviedb`
+- `DB_USER` – PostgreSQL username  
+  Example: `postgres`
+- `DB_PASS` – PostgreSQL password (local only)
+
+A template file `.env.example` is provided in the `backend/` directory as a reference.
+Developers should create their own local `.env` file (not committed) or define the
+variables directly in their environment.
+
+
+
+
 
 
 ## Team Members
