@@ -74,7 +74,7 @@ mvn spring-boot:run
 
 2. Edit the shell configuration file:
    ```bash
-   nano ~/.zshrc
+   nano ~/.zshrc  ```
 
 then write :
 فاثى
