@@ -31,42 +31,58 @@ The following specifications are defind under the '/docs' directory:
 - Authentication requirements (if applicable).
 - Frontend-to-backend interaction contracts.
 
-- ## Environment Variables (Backend Configuration)
+- ## Environment Variables 
 
-Sensitive configuration values such as database credentials are **not committed**
-to the repository. Each developer must define the required environment variables
-locally before running the backend service.
+A template file `.env.example` is provided in the `backend/` directory for
+documentation purposes only. It lists the required environment variables and
+their expected format.
 
-### Required Environment Variables
-The backend requires the following variables:
-
-- `DB_URL` – PostgreSQL connection URL  
-  Example: `jdbc:postgresql://localhost:5432/moviedb`
-- `DB_USER` – PostgreSQL username  
-  Example: `postgres`
-- `DB_PASS` – PostgreSQL password (local only)
-
-A template file `.env.example` is provided in the `backend/` directory as a reference.
-Developers should create their own local `.env` file (not committed) or define the
-variables directly in their environment.
+Developers may optionally create a local `.env` file (not committed) to store
+their values for reference. However, Spring Boot reads configuration values
+exclusively from **system environment variables**, which must be defined before
+starting the application.
 
 
-### Running the Backend (Windows PowerShell)
+#### Steps to Add Environment Variables on Windows
+1. Press **Windows + R**, type `sysdm.cpl`, and press **Enter**.
+2. Navigate to the **Advanced** tab and click **Environment Variables**.
+3. Under **User variables** (or **System variables**), click **New**.
+4. Add the following variables:
 
-Before starting the Spring Boot application, the required configuration values
-must be provided as environment variables.
-Spring Boot does not read .env files automatically; instead, it resolves
-configuration values from the operating system environment at application startup.
+   - **Name:** `DB_URL`  
+     **Value:** `jdbc:postgresql://localhost:5432/moviedb`
 
-A .env.example file is provided as a reference template only. Developers may
-use it to define their local values and then export them to the environment
-manua
+   - **Name:** `DB_USER`  
+     **Value:** `postgres`
 
-$env:DB_URL="jdbc:postgresql://localhost:5432/moviedb"
-$env:DB_USER="postgres"
-$env:DB_PASS="YOUR_LOCAL_PASSWORD"
+   - **Name:** `DB_PASS`  
+     **Value:** *your local PostgreSQL password*
+
+5. Click **OK** to save the changes.
+6. Close all open terminal windows and open a new terminal session.
+
+After defining the environment variables, navigate to the backend directory
+and start the application:
+
+```bash
 mvn spring-boot:run
 
+#### Steps to Add Environment Variables on macOS
+1. Open the Terminal.
+2. Edit the shell configuration file:
+   ```bash
+   nano ~/.zshrc
+
+then write :
+فاثى
+export DB_URL="jdbc:postgresql://localhost:5432/moviedb"
+export DB_USER="postgres"
+export DB_PASS="YOUR_LOCAL_PASSWORD"
+
+
+Save the file and apply the changes: source ~/.zshrc
+
+Start the backend service: mvn spring-boot:run
 
 
 
