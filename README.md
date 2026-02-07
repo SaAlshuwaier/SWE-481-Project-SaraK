@@ -72,20 +72,16 @@ mvn spring-boot:run
 
 1. Open the Terminal.
 
-2. Edit the shell configuration file:
-   ```bash
-   nano ~/.zshrc  ```
-
-then write :
-فاثى
+2. Edit the shell configuration file:    nano ~/.zshrc
+   
+3.  write :
 export DB_URL="jdbc:postgresql://localhost:5432/moviedb"
 export DB_USER="postgres"
 export DB_PASS="YOUR_LOCAL_PASSWORD"
 
+4. Save the file and apply the changes: source ~/.zshrc
 
-Save the file and apply the changes: source ~/.zshrc
-
-Start the backend service: mvn spring-boot:run
+5. Start the backend service: mvn spring-boot:run
 
 
 
