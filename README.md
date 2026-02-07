@@ -31,6 +31,60 @@ The following specifications are defind under the '/docs' directory:
 - Authentication requirements (if applicable).
 - Frontend-to-backend interaction contracts.
 
+- ### Environment Variables 
+
+A template file `.env.example` is provided in the `backend/` directory for
+documentation purposes only. It lists the required environment variables and
+their expected format.
+
+Developers may optionally create a local `.env` file (not committed) to store
+their values for reference. However, Spring Boot reads configuration values
+exclusively from **system environment variables**, which must be defined before
+starting the application.
+
+
+#### Steps to Add Environment Variables on Windows
+1. Press **Windows + R**, type `sysdm.cpl`, and press **Enter**.
+2. Navigate to the **Advanced** tab and click **Environment Variables**.
+3. Under **User variables** , click **New**.
+4. Add the following variables:
+
+   - **Name:** `DB_URL`  
+     **Value:** `jdbc:postgresql://localhost:5432/moviedb`
+
+   - **Name:** `DB_USER`  
+     **Value:** `postgres`
+
+   - **Name:** `DB_PASS`  
+     **Value:** *your local PostgreSQL password*
+
+5. Click **OK** to save the changes.
+6. Close all open terminal windows and open a new terminal session.
+
+After defining the environment variables, navigate to the backend directory
+and start the application:
+
+```bash
+mvn spring-boot:run
+```
+
+#### Steps to Add Environment Variables on macOS
+
+1. Open the Terminal.
+
+2. Edit the shell configuration file:    nano ~/.zshrc
+   
+3. Add the following environment variables:
+   ```bash
+   export DB_URL="jdbc:postgresql://localhost:5432/moviedb"
+   export DB_USER="postgres"
+   export DB_PASS="YOUR_LOCAL_PASSWORD"
+
+
+4. Save the file and apply the changes: source ~/.zshrc
+
+5. Start the backend service: mvn spring-boot:run
+
 
 
 ## Team Members
