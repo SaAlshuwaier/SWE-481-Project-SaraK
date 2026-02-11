@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class StarModel {
+public class Star {
     private String id;
     private String name;
     private int birthYear;
