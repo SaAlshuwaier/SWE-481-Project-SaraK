@@ -1,5 +1,5 @@
 //to check if the server is running
-package com.swe481.backend;
+package com.swe481.backend.controller;
 
 import java.util.Map;
 
