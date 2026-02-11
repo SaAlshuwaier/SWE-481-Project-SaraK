@@ -37,7 +37,7 @@ Run the following commands **from the project root**:
 
 ```bash
 createdb moviedb
-psql -U <your_postgres_username> -d moviedb -f db/schema/createtable.sql
-psql -U <your_postgres_username> -d moviedb -f db/load/movie-data.sql
-After loading the database, run: psql -U <your_postgres_username> -d moviedb -f db/verify/verify.sql
+psql -U <your_postgres_username> -d moviedb -f script/schema/createtable.sql
+psql -U <your_postgres_username> -d moviedb -f script/load/movie-data.sql
+After loading the database, run: psql -U <your_postgres_username> -d moviedb -f script/verify/verify.sql
 
