@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {HealthResponse} from '../models/HealthDto';
 
-export interface HealthResponse {
-  service: string;
-  status: string;
-}
+
 
 @Injectable({
   providedIn: 'root'
