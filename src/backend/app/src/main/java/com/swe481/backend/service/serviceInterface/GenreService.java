@@ -5,6 +5,5 @@ import java.util.List;
 
 public interface GenreService {
     public List<Genre> getAllGenres();
-    public Genre getGenre(String genreId);
-    public List<Movie> getMoviesByGenre(Genre genre);
-}
+    public List<Movie> getMoviesByGenre(long genreId);
+}// or might be Genre object?

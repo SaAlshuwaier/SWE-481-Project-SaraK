@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { JsonPipe } from '@angular/common';
-import { HealthService, HealthResponse } from './services/health';
+import { HealthService, HealthResponse } from './core/services/health';
 
 @Component({
   selector: 'app-root',

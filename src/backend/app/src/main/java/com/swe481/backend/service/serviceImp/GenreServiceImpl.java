@@ -16,13 +16,7 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public Genre getGenre(String genreId) {
-        // todo : Logic of Service Added here
-        return null;
-    }
-
-    @Override
-   public List<Movie> getMoviesByGenre(Genre genre) {
+   public List<Movie> getMoviesByGenre(long genreId) {
    // todo : Logic of Service Added here
        return null;
     }
