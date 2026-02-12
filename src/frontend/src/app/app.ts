@@ -1,7 +1,8 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { JsonPipe } from '@angular/common';
-import { HealthService, HealthResponse } from './core/services/health';
+import { HealthService } from './core/services/health';
+import {HealthResponse} from './core/models/HealthDto';
 
 @Component({
   selector: 'app-root',
@@ -28,21 +29,9 @@ export class App {
       error: (err) => this.error.set(err?.message ?? 'Request failed'),
     });
   }
+
+
+
+
+
 }
-
-//
-/*
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-
-@Component({
-  selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.css'
-})
-export class App {
-  protected readonly title = signal('default-angular');
-}
-
-  --> */

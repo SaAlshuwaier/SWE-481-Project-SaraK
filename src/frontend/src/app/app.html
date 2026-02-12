@@ -4,6 +4,28 @@
 
 <button (click)="pingBackend()">Ping Backend Health API</button>
 
+  <div class="Health-card">
+    <h2>Ping Backend Health API</h2>
+    <button (click)="pingBackend()">
+      Activate
+    </button>
+  </div>
+
+  <div class="Star-card">
+    <h2>Star Service</h2>
+    <button (click)="pingBackend()">
+      Activate
+    </button>
+  </div>
+
+  <div class="Genre-card">
+    <h2>Genre Service</h2>
+    <button (click)="pingBackend()">
+      Activate
+    </button>
+  </div>
+
+
 @if (result()) {
   <pre>{{ result() | json }}</pre>
 }
@@ -15,7 +37,8 @@
 
 
 
-<!-- 
+
+<!--
 
 
 <!- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
@@ -350,7 +373,7 @@
   </div>
 </main>
 <router-outlet />
-!- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+!- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 <!- * * * * * * * * * * * The content above * * * * * * * * * * * * -->
 <!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * * -->
 <!-- * * * * * * * * * * and can be replaced.  * * * * * * * * * * * -->
