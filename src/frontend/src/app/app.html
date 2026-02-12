@@ -25,6 +25,18 @@
     </button>
   </div>
 
+<div class="Cart-card">
+  <h2>Cart Service</h2>
+
+  <div class="cart-buttons">
+    <button (click)="cartGet()">GET Cart</button>
+    <button (click)="cartAdd()">ADD Item</button>
+    <button (click)="cartUpdate()">UPDATE Quantity</button>
+    <button (click)="cartDelete()">DELETE Item</button>
+  </div>
+
+</div>
+
 
 @if (result()) {
   <pre>{{ result() | json }}</pre>
@@ -34,6 +46,15 @@
   <p style="color:red">{{ error() }}</p>
 }
 
+<!-- Cart output -->
+@if (cartResult()) {
+  <h3>Cart Result</h3>
+  <pre>{{ cartResult() | json }}</pre>
+}
+
+@if (cartError()) {
+  <p style="color:red">{{ cartError() }}</p>
+}
 
 
 
