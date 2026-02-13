@@ -4,26 +4,26 @@
 
 <button (click)="pingBackend()">Ping Backend Health API</button>
 
-  <div class="Health-card">
-    <h2>Ping Backend Health API</h2>
-    <button (click)="pingBackend()">
-      Activate
-    </button>
-  </div>
+<div class="Health-card">
+  <h2>Ping Backend Health API</h2>
+  <button (click)="pingBackend()">
+    Activate
+  </button>
+</div>
 
-  <div class="Star-card">
-    <h2>Star Service</h2>
-    <button (click)="pingBackend()">
-      Activate
-    </button>
-  </div>
+<div class="Star-card">
+  <h2>Star Service</h2>
+  <button (click)="pingBackend()">
+    Activate
+  </button>
+</div>
 
-  <div class="Genre-card">
-    <h2>Genre Service</h2>
-    <button (click)="pingBackend()">
-      Activate
-    </button>
-  </div>
+<div class="Genre-card">
+  <h2>Genre Service</h2>
+  <button (click)="pingBackend()">
+    Activate
+  </button>
+</div>
 
 <div class="Cart-card">
   <h2>Cart Service</h2>
@@ -37,23 +37,35 @@
 
 </div>
 
+<div class="Movie-card">
+  <h2>Movie Service</h2>
+
+  <div class="movie-buttons">
+    <button (click)="movieSearch()">SEARCH</button>
+    <button (click)="movieBrowseGenre()">BROWSE BY GENRE</button>
+    <button (click)="movieBrowseFirstLetter()">BROWSE BY FIRST LETTER</button>
+    <button (click)="movieGetById()">GET MOVIE BY ID</button>
+  </div>
+</div>
+
+
 
 @if (result()) {
-  <pre>{{ result() | json }}</pre>
+<pre>{{ result() | json }}</pre>
 }
 
 @if (error()) {
-  <p style="color:red">{{ error() }}</p>
+<p style="color:red">{{ error() }}</p>
 }
 
 <!-- Cart output -->
 @if (cartResult()) {
-  <h3>Cart Result</h3>
-  <pre>{{ cartResult() | json }}</pre>
+<h3>Cart Result</h3>
+<pre>{{ cartResult() | json }}</pre>
 }
 
 @if (cartError()) {
-  <p style="color:red">{{ cartError() }}</p>
+<p style="color:red">{{ cartError() }}</p>
 }
 
 
@@ -401,5 +413,3 @@
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 <!-- * * * * * * * * * * End of Placeholder  * * * * * * * * * * * * -->
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-
-

@@ -20,7 +20,8 @@ public class MovieController {
      * Pagination is handled in the service.
      * Sorting will be handled on the front-end.
      */
-    @GetMapping("/")
+    @GetMapping
+
     public ResponseEntity<MoviesPageState> searchMovies(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) Integer year,
