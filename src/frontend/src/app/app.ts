@@ -2,10 +2,14 @@ import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { JsonPipe } from '@angular/common';
 import { HealthService } from './core/services/health';
-import {HealthResponse} from './core/models/HealthDto';
+import { HealthResponse } from './core/models/HealthDto';
 
 import { CartService } from './core/services/CartService';
 import { CartDto } from './core/models/CartDto';
+
+import { MovieService } from './core/services/MovieService';
+import { MoviesPageStateDto } from './core/models/MoviesPageStateDto';
+import { MovieDto } from './core/models/MovieDto';
 
 @Component({
   selector: 'app-root',
@@ -25,11 +29,17 @@ export class App {
   cartResult = signal<CartDto | null>(null);
   cartError = signal<string | null>(null);
 
-  constructor(
-        private health: HealthService,
-        private cart: CartService
 
-  ) {}
+  movieResult = signal<MoviesPageStateDto | null>(null);
+  movieSingleResult = signal<MovieDto | null>(null);
+  movieError = signal<string | null>(null);
+
+  constructor(
+    private health: HealthService,
+    private cart: CartService,
+    private movie: MovieService
+
+  ) { }
 
   pingBackend() {
     this.result.set(null);
@@ -46,6 +56,14 @@ export class App {
   private readonly dummyTitle = 'Dummy Movie';
   private readonly dummyQuantity = 2;
 
+
+
+  // Movie dummy data 
+  private readonly dummySearchTitle = 'bat';
+  private readonly dummyGenreId = 1;
+  private readonly dummyFirstLetter = 'A';
+  private readonly dummyMovieForDetails = 'tt0000001';
+
   // GET /api/cart
   cartGet() {
     this.cartResult.set(null);
@@ -53,8 +71,10 @@ export class App {
 
     //here the getCart is the one inside the service
     this.cart.getCart().subscribe({ //since it returns Observable then we add subscribe 
-      next: (res) => {alert('Successfully reached GET /api/cart');
-                      this.cartResult.set(res);},
+      next: (res) => {
+        alert('Successfully reached GET /api/cart');
+        this.cartResult.set(res);
+      },
       error: (err) => this.cartError.set(err?.message ?? 'Cart GET failed'),
     });
   }
@@ -69,8 +89,10 @@ export class App {
       title: this.dummyTitle,
       quantity: this.dummyQuantity,
     }).subscribe({
-      next: (res) => {alert('Successfully reached POST /api/cart/addItem'); 
-                        this.cartResult.set(res);},
+      next: (res) => {
+        alert('Successfully reached POST /api/cart/addItem');
+        this.cartResult.set(res);
+      },
       error: (err) => this.cartError.set(err?.message ?? 'Cart ADD failed'),
     });
   }
@@ -82,8 +104,10 @@ export class App {
 
     // update the dummyMovieId to a new quantity (example: 5)
     this.cart.updateItem(this.dummyMovieId, 5).subscribe({
-      next: (res) => {alert('Successfully reached POST /api/cart/updateItem/{movieId}');
-                      this.cartResult.set(res);},
+      next: (res) => {
+        alert('Successfully reached POST /api/cart/updateItem/{movieId}');
+        this.cartResult.set(res);
+      },
       error: (err) => this.cartError.set(err?.message ?? 'Cart UPDATE failed'),
     });
   }
@@ -94,11 +118,90 @@ export class App {
     this.cartError.set(null);
 
     this.cart.deleteItem(this.dummyMovieId).subscribe({
-      next: (res) => {alert('Successfully reached DELETE /api/cart/deleteItem/{movieId}');
-                      this.cartResult.set(res)},
+      next: (res) => {
+        alert('Successfully reached DELETE /api/cart/deleteItem/{movieId}');
+        this.cartResult.set(res)
+      },
       error: (err) => this.cartError.set(err?.message ?? 'Cart DELETE failed'),
     });
   }
+
+
+  movieSearch() {
+    this.movieResult.set(null);
+    this.movieError.set(null);
+
+    this.movie.searchMovies(
+      this.dummySearchTitle,
+      undefined,
+      undefined,
+      undefined,
+      1,
+      10
+    )
+      .subscribe({
+        next: (res) => {
+          alert('Successfully reached SEARCH movies endpoint');
+          this.movieResult.set(res);
+        },
+        error: (err) => this.movieError.set(err?.message ?? 'Movie SEARCH failed'),
+      });
+
+  }
+
+  movieBrowseGenre() {
+    this.movieResult.set(null);
+    this.movieError.set(null);
+
+    this.movie.browseMoviesByGenre(
+      this.dummyGenreId,
+      1,
+      10
+    ).subscribe({
+      next: (res) => {
+        alert('Successfully reached BROWSE BY GENRE endpoint');
+        this.movieResult.set(res);
+      },
+      error: (err) =>
+        this.movieError.set(err?.message ?? 'Browse by genre failed'),
+    });
+  }
+
+
+  movieBrowseFirstLetter() {
+    this.movieResult.set(null);
+    this.movieError.set(null);
+
+    this.movie.browseMoviesByFirstLetter(
+      this.dummyFirstLetter,
+      1,
+      10
+    ).subscribe({
+      next: (res) => {
+        alert('Successfully reached BROWSE BY FIRST LETTER endpoint');
+        this.movieResult.set(res);
+      },
+      error: (err) =>
+        this.movieError.set(err?.message ?? 'Browse by first letter failed'),
+    });
+  }
+
+  movieGetById() {
+    this.movieSingleResult.set(null);
+    this.movieError.set(null);
+
+    this.movie.getMovieById(
+      this.dummyMovieForDetails
+    ).subscribe({
+      next: (res) => {
+        alert('Successfully reached GET MOVIE BY ID endpoint');
+        this.movieSingleResult.set(res);
+      },
+      error: (err) =>
+        this.movieError.set(err?.message ?? 'Get movie by ID failed'),
+    });
+  }
+
 
 
 
