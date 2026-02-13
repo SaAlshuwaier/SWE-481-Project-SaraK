@@ -11,13 +11,19 @@ import { MovieService } from './core/services/MovieService';
 import { MoviesPageStateDto } from './core/models/MoviesPageStateDto';
 import { MovieDto } from './core/models/MovieDto';
 
+import { AuthService } from './core/services/AuthService';
+import { AuthDto } from './core/models/AuthDto';
+
+import { CheckoutService } from './core/services/CheckoutService';
+import { CheckoutDto } from './core/models/CheckoutDto';
+
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet,
     JsonPipe
   ],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css']
 })
 export class App {
   protected readonly title = signal('frontend');
@@ -37,7 +43,9 @@ export class App {
   constructor(
     private health: HealthService,
     private cart: CartService,
-    private movie: MovieService
+    private movie: MovieService,
+    private auth: AuthService,
+    private checkout: CheckoutService
 
   ) { }
 
@@ -201,6 +209,73 @@ export class App {
         this.movieError.set(err?.message ?? 'Get movie by ID failed'),
     });
   }
+// ================= AUTH APIs =================
+
+authResult = signal<AuthDto | null>(null);
+authError = signal<string | null>(null);
+
+private readonly dummyEmail = 'test@uci.edu';
+private readonly dummyPassword = 'test123';
+
+authLogin() {
+  this.authResult.set(null);
+  this.authError.set(null);
+
+  this.auth.login({
+    email: this.dummyEmail,
+    password: this.dummyPassword
+  }).subscribe({
+    next: (res) => {
+      alert('Successfully reached POST /api/auth/login');
+      this.authResult.set(res);
+    },
+    error: (err) =>
+      this.authError.set(err?.message ?? 'Auth login failed'),
+  });
+}
+
+authLogout() {
+  this.authResult.set(null);
+  this.authError.set(null);
+
+  this.auth.logout().subscribe({
+    next: (res) => {
+      alert('Successfully reached POST /api/auth/logout');
+      this.authResult.set(res);
+    },
+    error: (err) =>
+      this.authError.set(err?.message ?? 'Auth logout failed'),
+  });
+}
+// ================= CHECKOUT APIs =================
+
+checkoutResult = signal<CheckoutDto | null>(null);
+checkoutError = signal<string | null>(null);
+
+// Dummy data (Phase 2)
+private readonly dummyFirstName = 'Jana';
+private readonly dummyLastName = 'Alshreef';
+private readonly dummyCardNumber = '1211111111111111';
+private readonly dummyExpiration = '2030-12-31';
+
+doCheckout() {
+  this.checkoutResult.set(null);
+  this.checkoutError.set(null);
+
+  this.checkout.checkout({
+    firstName: this.dummyFirstName,
+    lastName: this.dummyLastName,
+    cardNumber: this.dummyCardNumber,
+    expiration: this.dummyExpiration,
+  }).subscribe({
+    next: (res) => {
+      alert('Successfully reached POST /api/checkout');
+      this.checkoutResult.set(res);
+    },
+    error: (err) =>
+      this.checkoutError.set(err?.message ?? 'Checkout failed'),
+  });
+}
 
 
 

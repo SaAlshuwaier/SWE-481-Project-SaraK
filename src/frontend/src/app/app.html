@@ -68,6 +68,40 @@
 <p style="color:red">{{ cartError() }}</p>
 }
 
+<div class="Auth-card">
+  <h2>Auth Service</h2>
+
+  <div class="cart-buttons">
+    <button (click)="authLogin()">POST Login</button>
+    <button (click)="authLogout()">POST Logout</button>
+  </div>
+</div>
+
+@if (authResult()) {
+  <h3>Auth Result</h3>
+  <pre>{{ authResult() | json }}</pre>
+}
+
+@if (authError()) {
+  <p style="color:red">{{ authError() }}</p>
+}
+<div class="Checkout-card">
+  <h2>Checkout Service</h2>
+
+  <div class="cart-buttons">
+    <button (click)="doCheckout()">POST Checkout</button>
+  </div>
+</div>
+
+@if (checkoutResult()) {
+  <h3>Checkout Result</h3>
+  <pre>{{ checkoutResult() | json }}</pre>
+}
+
+@if (checkoutError()) {
+  <p style="color:red">{{ checkoutError() }}</p>
+}
+
 
 
 

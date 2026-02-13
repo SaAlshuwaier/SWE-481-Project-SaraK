@@ -5,11 +5,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthServiceImpl implements AuthService {
-    private static final String DUMMY_EMAIL = "test@uci.edu";
-    private static final String DUMMY_PASSWORD = "test123";
 
     @Override
     public boolean authenticate(String email, String password) {
-        return DUMMY_EMAIL.equals(email) && DUMMY_PASSWORD.equals(password);
+
+        // TODO (Phase 3):
+        // Connect to database (customers table)
+        // Validate email/password securely
+
+        return true; // temporary dummy response for Phase 2 testing
     }
 }

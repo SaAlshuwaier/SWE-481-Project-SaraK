@@ -6,17 +6,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class CheckoutServiceImpl implements CheckoutService {
 
-    // Phase 2: dummy card only (DB validation will be implemented later)
-    private static final String DUMMY_FIRST = "Jana";
-    private static final String DUMMY_LAST = "Alshreef";
-    private static final String DUMMY_CARD = "1211111111111111";
-    private static final String DUMMY_EXP = "2030-12-31";
-
     @Override
     public boolean validatePayment(String firstName, String lastName, String cardNumber, String expiration) {
-        return DUMMY_FIRST.equalsIgnoreCase(firstName)
-                && DUMMY_LAST.equalsIgnoreCase(lastName)
-                && DUMMY_CARD.equals(cardNumber)
-                && DUMMY_EXP.equals(expiration);
+
+        // TODO (Phase 3):
+        // 1) Validate payment info against creditcards table (NOT customers table)
+        // 2) If valid, insert into sales table and return success
+        // 3) Add proper error handling + security (never log card numbers)
+
+        return true; // temporary dummy response for Phase 2 testing
     }
 }
