@@ -36,37 +36,33 @@
   <div class="api-box">
     <h2>Movie Service</h2>
     <div class="btn-row">
-      <button class="btn" (click)="movieSearch()">SEARCH</button>
+      <button class="btn" (click)="movieSearch()">Search</button>
       <button class="btn" (click)="movieBrowseGenre()">BROWSE BY GENRE</button>
-      <button class="btn" (click)="movieBrowseFirstLetter()">BROWSE BY FIRST LETTER</button>
-      <button class="btn" (click)="movieGetById()">GET MOVIE BY ID</button>
+      <button class="btn" (click)="movieBrowseFirstLetter()">Browse by first letter</button>
+      <button class="btn" (click)="movieGetById()">Get movie by ID</button>
     </div>
   </div>
 
-  <!-- ===================== AUTH (COMMENTED) ===================== -->
-  <!--
+
   <div class="api-box">
     <h2>Auth Service</h2>
     <div class="btn-row">
-      <button class="btn" (click)="authLogin()">POST Login</button> ADD YOUR METHOD NAME
-      <button class="btn" (click)="authLogout()">POST Logout</button> ADD YOUR METHOD NAME
+      <button class="btn" (click)="authLogin()">Login</button> 
+      <button class="btn" (click)="authLogout()">Logout</button> 
     </div>
   </div>
-  -->
 
-  <!-- ===================== CHECKOUT (COMMENTED) ===================== -->
-  <!--
+
   <div class="api-box">
     <h2>Checkout Service</h2>
     <div class="btn-row">
-      <button class="btn" (click)="doCheckout()">POST Checkout</button> ADD YOUR METHOD NAME
+      <button class="btn" (click)="doCheckout()">Checkout</button> 
     </div>
   </div>
-  -->
 
 </section>
 
-<!-- Results (keep as you had, but styled) -->
+<!-- Results -->
 @if (result()) {
   <div class="output-box">
     <h3>Result</h3>
@@ -87,4 +83,22 @@
 
 @if (cartError()) {
   <p class="err">{{ cartError() }}</p>
+}
+
+@if (authResult()) {
+  <h3>Auth Result</h3>
+  <pre>{{ authResult() | json }}</pre>
+}
+
+@if (authError()) {
+  <p style="color:red">{{ authError() }}</p>
+}
+
+@if (checkoutResult()) {
+  <h3>Checkout Result</h3>
+  <pre>{{ checkoutResult() | json }}</pre>
+}
+
+@if (checkoutError()) {
+  <p style="color:red">{{ checkoutError() }}</p>
 }
