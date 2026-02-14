@@ -13,7 +13,15 @@ export class StarService {
   private baseUrl = environment.backendUrl;
 
   getStar(starId: String) : Observable<StarDto> {
-    return this.http.get(`${this.baseUrl}/stars/${starId}`);
+    return this.http.get(`${this.baseUrl}/api/stars/${starId}`);
+  }
+
+  getStarsOfMovie(movieId: String) : Observable<StarDto[]> {
+    return this.http.get(`${this.baseUrl}/api/movies/${movieId}/stars`);
+  }
+
+  getStarMovies(starId: String) : Observable<StarDto[]> {
+    return this.http.get(`${this.baseUrl}/api/stars/${starId}/movies`);
   }
 
 }
