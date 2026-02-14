@@ -18,18 +18,18 @@ public class StarController {
         this.starService = starService;
     }
 
-    @GetMapping("/movies/{movieId}/stars")
-    public List<Star> getStarsOfMovie(
-            @PathVariable String movieId
-    ) {
-        return starService.getStarsOfMovie(movieId);
-    }
-
     @GetMapping("/stars/{starId}")
     public Star getStar(
             @PathVariable String starId
     ) {
         return starService.getStar(starId);
+    }
+
+    @GetMapping("/movies/{movieId}/stars")
+    public List<Star> getStarsOfMovie(
+            @PathVariable String movieId
+    ) {
+        return starService.getStarsOfMovie(movieId);
     }
 
     @GetMapping("/stars/{starId}/movies")

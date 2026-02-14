@@ -23,12 +23,4 @@ public class GenreController {
         return genreService.getAllGenres();
     }
 
-    @GetMapping("/genres/{genreId}/movies")
-    public List<Movie> getMoviesByGenre(
-            @PathVariable long genreId)
-    {
-        return genreService.getMoviesByGenre(genreId);
-    }
-
-
 }
