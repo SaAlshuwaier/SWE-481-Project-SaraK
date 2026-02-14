@@ -11,11 +11,14 @@ import com.swe481.backend.service.serviceInterface.CartService;
  */
 @Service
 public class CartServiceImpl implements CartService {
+    
+    //dummy for phase 2
+    private final Cart cart = new Cart();
 
     @Override
     public Cart getCart() {
         // Will later return cart stored in session
-        return null;
+        return cart;
     }
 
     @Override
@@ -23,7 +26,7 @@ public class CartServiceImpl implements CartService {
         // Will later:
         // 1. Check if item exists
         // 2. Add or increase (update) quantity
-        return null;
+        return cart;
     }
 
     @Override
@@ -31,12 +34,12 @@ public class CartServiceImpl implements CartService {
         // Will later:
         // 1. If quantity == 0 then remove
         // 2. Otherwise update quantity
-        return null;
+        return cart;
     }
 
     @Override
     public Cart deleteItem(String movieId) {
         // Will later remove item completely
-        return null;
+        return cart;
     }
 }
