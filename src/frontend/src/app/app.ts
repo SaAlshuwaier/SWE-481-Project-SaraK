@@ -141,7 +141,7 @@ export class App {
     )
       .subscribe({
         next: (res) => {
-          alert('Successfully reached SEARCH movies endpoint');
+          alert('Successfully reached GET /api/movies');
           this.movieResult.set(res);
         },
         error: (err) => this.movieError.set(err?.message ?? 'Movie SEARCH failed'),
@@ -159,7 +159,7 @@ export class App {
       10
     ).subscribe({
       next: (res) => {
-        alert('Successfully reached BROWSE BY GENRE endpoint');
+        alert('Successfully reached GET /api/movies/browseByGenre');
         this.movieResult.set(res);
       },
       error: (err) =>
@@ -178,7 +178,7 @@ export class App {
       10
     ).subscribe({
       next: (res) => {
-        alert('Successfully reached BROWSE BY FIRST LETTER endpoint');
+        alert('Successfully reached GET /api/movies/browseByFirstLetter');
         this.movieResult.set(res);
       },
       error: (err) =>
@@ -194,7 +194,7 @@ export class App {
       this.dummyMovieForDetails
     ).subscribe({
       next: (res) => {
-        alert('Successfully reached GET MOVIE BY ID endpoint');
+        alert('Successfully reached GET /api/movies/{id}');
         this.movieSingleResult.set(res);
       },
       error: (err) =>
