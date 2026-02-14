@@ -17,6 +17,13 @@ import { AuthDto } from './core/models/AuthDto';
 import { CheckoutService } from './core/services/CheckoutService';
 import { CheckoutDto } from './core/models/CheckoutDto';
 
+import {StarService} from './core/services/StarService';
+import {StarDto} from './core/models/StarDto';
+
+import {GenreService} from './core/services/GenreService';
+import {GenreDto} from './core/models/GenreDto';
+import {Observable} from 'rxjs';
+
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet,
@@ -35,17 +42,27 @@ export class App {
   cartResult = signal<CartDto | null>(null);
   cartError = signal<string | null>(null);
 
-
   movieResult = signal<MoviesPageStateDto | null>(null);
   movieSingleResult = signal<MovieDto | null>(null);
+  movieListResult = signal<MovieDto[] | null>(null);
   movieError = signal<string | null>(null);
+
+  //for states of res
+  starResult = signal<StarDto | null>(null);
+  starListResult = signal<StarDto[] | null>(null);
+  starError = signal<string | null>(null);
+
+  genreResult = signal<GenreDto[] | null>(null);
+  genreError = signal<string | null>(null);
 
   constructor(
     private health: HealthService,
     private cart: CartService,
     private movie: MovieService,
     private auth: AuthService,
-    private checkout: CheckoutService
+    private checkout: CheckoutService,
+    private star: StarService,
+    private genre: GenreService
 
   ) { }
 
@@ -64,21 +81,21 @@ export class App {
   private readonly dummyTitle = 'Dummy Movie';
   private readonly dummyQuantity = 2;
 
-
-
-  // Movie dummy data 
+  // Movie dummy data
   private readonly dummySearchTitle = 'bat';
   private readonly dummyGenreId = 1;
   private readonly dummyFirstLetter = 'A';
   private readonly dummyMovieForDetails = 'tt0000001';
+  // Star dummy data
+  private readonly dummyStarId = "nm1636964";
 
-  // GET /api/cart
+// GET /api/cart
   cartGet() {
     this.cartResult.set(null);
     this.cartError.set(null);
 
     //here the getCart is the one inside the service
-    this.cart.getCart().subscribe({ //since it returns Observable then we add subscribe 
+    this.cart.getCart().subscribe({ //since it returns Observable then we add subscribe
       next: (res) => {
         alert('Successfully reached GET /api/cart');
         this.cartResult.set(res);
@@ -209,6 +226,63 @@ export class App {
         this.movieError.set(err?.message ?? 'Get movie by ID failed'),
     });
   }
+
+  // GET /api/stars/{starId}
+  starGet() {
+    //Reset States, for a new Req
+    this.starResult.set(null);
+    this.starError.set(null);
+
+    this.star.getStar(this.dummyStarId).subscribe({
+      next: (res) =>{
+        alert('Successfully reached Get Star Details endpoint');
+        this.starResult.set(res);
+      },
+      error: (err) => this.starError.set(err?.message ?? 'Get Star Details failed'),
+    });
+  }
+
+  // GET /api/movies/{movieId}/stars
+  starsOfMovieGet() {
+    //Reset States, for a new Req
+    this.starListResult.set(null);
+    this.starError.set(null);
+
+    this.star.getStarsOfMovie(this.dummyMovieId).subscribe({
+      next: (res) =>{
+        alert('Successfully reached Get Stars of movies endpoint');
+        this.starListResult.set(res);},
+      error: (err) => this.starError.set(err?.message ?? 'Get Stars of movies failed'),
+    });
+  }
+
+  // GET /api/stars/${starId}/movies
+  moviesOfStarGet() {
+    //Reset States, for a new Req
+    this.movieListResult.set(null);
+    this.movieError.set(null);
+
+    this.star.getMoviesOfStar(this.dummyStarId).subscribe({
+      next: (res) => {
+        alert('Successfully reached Get movies of stars endpoint');
+        this.movieListResult.set(res);},
+      error: (err) => this.movieError.set(err?.message ?? 'Get movies of stars failed'),
+    });
+  }
+
+  // GET /genres
+  allGenresGet(){
+    this.genreResult.set(null);
+    this.genreError.set(null);
+
+    this.genre.getAllGenres().subscribe({
+      next:(res)=> {
+        alert('Successfully reached Get All Genres endpoint');
+        this.genreResult.set(res);},
+      error:(err)=> this.genreError.set(err?.message ?? 'Get all Genres failed'),
+    });
+  }
+
 // ================= AUTH APIs =================
 
 authResult = signal<AuthDto | null>(null);

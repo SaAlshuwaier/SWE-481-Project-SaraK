@@ -11,20 +11,6 @@
   </button>
 </div>
 
-<div class="Star-card">
-  <h2>Star Service</h2>
-  <button (click)="pingBackend()">
-    Activate
-  </button>
-</div>
-
-<div class="Genre-card">
-  <h2>Genre Service</h2>
-  <button (click)="pingBackend()">
-    Activate
-  </button>
-</div>
-
 <div class="Cart-card">
   <h2>Cart Service</h2>
 
@@ -45,6 +31,24 @@
     <button (click)="movieBrowseGenre()">BROWSE BY GENRE</button>
     <button (click)="movieBrowseFirstLetter()">BROWSE BY FIRST LETTER</button>
     <button (click)="movieGetById()">GET MOVIE BY ID</button>
+  </div>
+</div>
+
+<div class="Star-card">
+  <h2>Star Service</h2>
+
+  <div class="Star-buttons">
+    <button (click)="starGet()">Star Details</button>
+    <button (click)="starsOfMovieGet()">Stars of a movie</button>
+    <button (click)="moviesOfStarGet()">movies of a star</button>
+  </div>
+</div>
+
+<div class="Genre-card">
+  <h2>Genre Service</h2>
+
+  <div class="Genre-buttons">
+    <button (click)="allGenresGet()">All Genres</button>
   </div>
 </div>
 
