@@ -1,42 +1,53 @@
+# Frontend-Backend Setup 
+This README explains how to:
+1. Run the Spring Boot backend.
+2. Run the Angular frontend.
+3. Verify successful communication between backend and frontend.
 
+## Run backend (Spring Boot)
+### 1. Start backend
+- `cd backend`
+- `./mvnw spring-boot:run`
 
-### Run backend (Spring-boot):
-#### 1- Start backend
-cd backend
-./mvnw spring-boot:run
+### 2. Verify Backend
+Open in browser: 
+- `http://localhost:8080/api/health`
+#### Expected JSON Response: 
+- `{`
+-  `"service": "backend",`
+-  `"status": "UP"`
+- `}`
 
-#### 2- Access backend through:
- http://localhost:8080/api/health
+---
 
-##### Expected JSON: 
-{
-  "service": "backend",
-  "status": "UP"
-}
+## 2. Run frontend (Angular)
+### 1. Install Dependencies
+- `cd frontend`
+- `npm install`
 
-### Run frontend (Angular):
-cd frontend
-npm install
-ng serve
+### 2. Start Angular Application
+- `ng serve`
 
-#### 2- Access frontend through:
-http://localhost:4200
-Angular default page should be shown to verify Angular is running.
+### 3. Verify Frontend
+Open in browser:
+- `http://localhost:4200`
+The Angular default page should be displayed to confirm the frontend is running.
 
-### Frontend-Backend communication
-After verifying that both the backend and the frontend run independently, we validate the successful frontend–backend communication by sending an HTTP request from Angular to Spring Boot and displaying the returned JSON response.
+## 3. Frontend-Backend Communication Test
+After confirming that both the backend and the frontend run independently, we verify the communication between them.
+Angular sends an HTTP request to the backend health endpoint and displays the returned JSON response.
+
 #### Steps:
-cd frontend
-ng generate service services/health
-ng serve
+- `cd frontend`
+- `ng serve`
+ Open in browser:
+- `http://localhost:4200/`
 
-#### Access frontend through:
-http://localhost:4200/
--click the button
--the button troggers an HTTP request to spring boot.
--the backend respons with the following JSON:
-Backend responds with:
-{
-  "service": "backend",
-  "status": "UP"
-}
+- Click the button
+ -The button triggers an HTTP request to Spring Boot backend.
+- The backend respons with the following JSON:
+- `{`
+- `  "service": "backend",`
+ - `"status": "UP"`
+- `}`
+This Confirms that the frontend and backend are successfully connected.

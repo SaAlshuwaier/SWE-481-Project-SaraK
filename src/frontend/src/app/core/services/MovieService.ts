@@ -29,7 +29,7 @@ export class MovieService {
         director?: string,
         starName?: string,
         page: number = 1,
-        pageSize: number = 10
+        pageSize: number = 20
     ): Observable<MoviesPageStateDto> {
 
         let params = new HttpParams()
@@ -42,7 +42,7 @@ export class MovieService {
         if (starName) params = params.set('starName', starName);
 
         return this.http.get<MoviesPageStateDto>(
-            `${environment.backendUrl}/api/v1/movies`,
+            `${environment.backendUrl}/api/movies/search`,
             { params }
         );
     }
@@ -57,7 +57,7 @@ export class MovieService {
     ): Observable<MoviesPageStateDto> {
 
         return this.http.get<MoviesPageStateDto>(
-            `${environment.backendUrl}/api/v1/movies/browseByGenre`,
+            `${environment.backendUrl}/api/movies/browseByGenre`,
             {
                 params: {
                     genreId,
@@ -79,7 +79,7 @@ export class MovieService {
     ): Observable<MoviesPageStateDto> {
 
         return this.http.get<MoviesPageStateDto>(
-            `${environment.backendUrl}/api/v1/movies/browseByFirstLetter`,
+            `${environment.backendUrl}/api/movies/browseByFirstLetter`,
             {
                 params: {
                     startsWith,
@@ -95,7 +95,7 @@ export class MovieService {
      */
     getMovieById(movieId: string): Observable<MovieDto> {
         return this.http.get<MovieDto>(
-            `${environment.backendUrl}/api/v1/movies/${movieId}`
+            `${environment.backendUrl}/api/movies/${movieId}`
         );
     }
 }

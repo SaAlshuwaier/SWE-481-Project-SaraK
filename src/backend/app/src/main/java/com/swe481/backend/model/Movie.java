@@ -10,7 +10,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class Movie {
 
     private String id; // Movie's ID
