@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/v1/movies")
+@RequestMapping("/api/movies")
 
 public class MovieController {
     @Autowired
@@ -20,7 +20,7 @@ public class MovieController {
      * Pagination is handled in the service.
      * Sorting will be handled on the front-end.
      */
-    @GetMapping
+    @GetMapping("/search")
 
     public ResponseEntity<MoviesPageState> searchMovies(
             @RequestParam(required = false) String title,
