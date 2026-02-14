@@ -1,81 +1,89 @@
-<h1>SWE-481 Project Ph2</h1>
+<header class="app-header">
+  <img class="app-logo" src="/favicon.ico" alt="PLOT BOX logo" />
 
-<p>Check the Frontend (Angular) communicating with Backend (Spring Boot)</p>
+  <div class="app-title">
+    <h1>SWE-481 Project Phase 2</h1>
+    <p>Check the Frontend (Angular) communicating with Backend (Spring Boot)</p>
+  </div>
+</header>
 
-<button (click)="pingBackend()">Ping Backend Health API</button>
+<section class="api-stack">
 
-<div class="Health-card">
-  <h2>Ping Backend Health API</h2>
-  <button (click)="pingBackend()">
-    Activate
-  </button>
-</div>
-
-<div class="Star-card">
-  <h2>Star Service</h2>
-  <button (click)="pingBackend()">
-    Activate
-  </button>
-</div>
-
-<div class="Genre-card">
-  <h2>Genre Service</h2>
-  <button (click)="pingBackend()">
-    Activate
-  </button>
-</div>
-
-<div class="Cart-card">
-  <h2>Cart Service</h2>
-
-  <div class="cart-buttons">
-    <button (click)="cartGet()">GET Cart</button>
-    <button (click)="cartAdd()">ADD Item</button>
-    <button (click)="cartUpdate()">UPDATE Quantity</button>
-    <button (click)="cartDelete()">DELETE Item</button>
+  <div class="api-box">
+    <h2>Star Service</h2>
+    <div class="btn-row">
+      <button class="btn" (click)="pingBackend()">Activate</button>
+    </div>
   </div>
 
-</div>
-
-<div class="Movie-card">
-  <h2>Movie Service</h2>
-
-  <div class="movie-buttons">
-    <button (click)="movieSearch()">SEARCH</button>
-    <button (click)="movieBrowseGenre()">BROWSE BY GENRE</button>
-    <button (click)="movieBrowseFirstLetter()">BROWSE BY FIRST LETTER</button>
-    <button (click)="movieGetById()">GET MOVIE BY ID</button>
+  <div class="api-box">
+    <h2>Genre Service</h2>
+    <div class="btn-row">
+      <button class="btn" (click)="pingBackend()">Activate</button>
+    </div>
   </div>
-</div>
 
+  <div class="api-box">
+    <h2>Cart Service</h2>
+    <div class="btn-row">
+      <button class="btn" (click)="cartGet()">View Cart</button>
+      <button class="btn" (click)="cartAdd()">Add Item</button>
+      <button class="btn" (click)="cartUpdate()">Update Quantity</button>
+      <button class="btn" (click)="cartDelete()">Delete Item</button>
+    </div>
+  </div>
+
+  <div class="api-box">
+    <h2>Movie Service</h2>
+    <div class="btn-row">
+      <button class="btn" (click)="movieSearch()">Search</button>
+      <button class="btn" (click)="movieBrowseGenre()">BROWSE BY GENRE</button>
+      <button class="btn" (click)="movieBrowseFirstLetter()">Browse by first letter</button>
+      <button class="btn" (click)="movieGetById()">Get movie by ID</button>
+    </div>
+  </div>
+
+
+  <div class="api-box">
+    <h2>Auth Service</h2>
+    <div class="btn-row">
+      <button class="btn" (click)="authLogin()">Login</button> 
+      <button class="btn" (click)="authLogout()">Logout</button> 
+    </div>
+  </div>
+
+
+  <div class="api-box">
+    <h2>Checkout Service</h2>
+    <div class="btn-row">
+      <button class="btn" (click)="doCheckout()">Checkout</button> 
+    </div>
+  </div>
+
+</section>
 
 
 @if (result()) {
-<pre>{{ result() | json }}</pre>
+  <div class="output-box">
+    <h3>Result</h3>
+    <pre>{{ result() | json }}</pre>
+  </div>
 }
 
 @if (error()) {
-<p style="color:red">{{ error() }}</p>
+  <p class="err">{{ error() }}</p>
 }
 
-<!-- Cart output -->
 @if (cartResult()) {
-<h3>Cart Result</h3>
-<pre>{{ cartResult() | json }}</pre>
+  <div class="output-box">
+    <h3>Cart Result</h3>
+    <pre>{{ cartResult() | json }}</pre>
+  </div>
 }
 
 @if (cartError()) {
-<p style="color:red">{{ cartError() }}</p>
+  <p class="err">{{ cartError() }}</p>
 }
-
-<div class="Auth-card">
-  <h2>Auth Service</h2>
-
-  <div class="cart-buttons">
-    <button (click)="authLogin()">POST Login</button>
-    <button (click)="authLogout()">POST Logout</button>
-  </div>
-</div>
 
 @if (authResult()) {
   <h3>Auth Result</h3>
@@ -85,13 +93,6 @@
 @if (authError()) {
   <p style="color:red">{{ authError() }}</p>
 }
-<div class="Checkout-card">
-  <h2>Checkout Service</h2>
-
-  <div class="cart-buttons">
-    <button (click)="doCheckout()">POST Checkout</button>
-  </div>
-</div>
 
 @if (checkoutResult()) {
   <h3>Checkout Result</h3>
@@ -100,6 +101,22 @@
 
 @if (checkoutError()) {
   <p style="color:red">{{ checkoutError() }}</p>
+}
+
+
+<!-- Movie output -->
+@if (movieResult()) {
+<h3>Movie Result</h3>
+<pre>{{ movieResult() | json }}</pre>
+}
+
+@if (movieSingleResult()) {
+<h3>Movie Details Result</h3>
+<pre>{{ movieSingleResult() | json }}</pre>
+}
+
+@if (movieError()) {
+<p style="color:red">{{ movieError() }}</p>
 }
 
 
