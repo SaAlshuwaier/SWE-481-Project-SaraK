@@ -9,8 +9,24 @@ import com.swe481.backend.model.Cart.CartItem;
 import com.swe481.backend.service.serviceInterface.CartService;
 
 /**
- * CartController handles HTTP requests related to the shopping cart.
+ * CartController
+ *
+ * Handles all HTTP requests related to the Shopping Cart.
+ *
+ * Base URL:
+ *    /api/cart
+ *
+ * Responsibilities:
+ *    - Retrieve current cart
+ *    - Add items
+ *    - Update item quantity
+ *    - Remove items
+ *
+ * Notes:
+ *    - Cart is stored in user session 
+ *    - All responses are returned as JSON
  */
+
 
 @RestController //Tells Spring this class returns JSON (not HTML).
 
@@ -22,75 +38,98 @@ public class CartController {
     private CartService cartService; 
 
     
+
     /**
      * GET /api/cart
-     * 
-     * Purpose:
-     *   Retrieve the current user's cart.
+     *
+     * Description:
+     *    Retrieve the current cart for the user.
+     *
+     * Logic:
+     *    - Fetch cart from service layer
+     *    - If cart does not exist -> return empty cart
      *
      * Returns:
-     *   Cart:
-     *   {
-     *     "items": [ { "movieId": "...","title": "......", "quantity": 2 }, ... ],
-     *     "totalQuantity": 3
-     *   }
+     * {
+     *    "items": [
+     *       {
+     *          "movieId": "tt123",
+     *          "title": "Movie Title",
+     *          "quantity": 2
+     *       }
+     *    ],
+     *    "totalQuantity": 2
+     * }
      */
     @GetMapping
     public Cart getCart() {
         return cartService.getCart();
     }
 
-    /**
+  /**
      * POST /api/cart/addItem
-     * 
-     * Receives JSON:
-     *   {
-     *     "movieId": "tt123",
-     *      "title": "......."
-     *     "quantity": 1
-     *   }
      *
-     * Behavior:
-     *   - If item not in cart -> add it
-     *   - If item exists -> increase quantity
+     * Description:
+     *    Add a new movie to the cart.
+     *
+     * Request Body:
+     * {
+     *    "movieId": "tt123",
+     *    "title": "Movie Title",
+     *    "quantity": 1
+     * }
+     *
+     * Logic:
+     *    - If movie not already in cart -> add new item
+     *    - If movie exists -> increase quantity (update item)
      *
      * Returns:
-     *   Updated Cart
+     *    Updated Cart object
      */
     @PostMapping("/addItem")
     public Cart addItem(@RequestBody CartItem request) { //RequestBody: takes the JSON and converts it to java object
         return cartService.addItem(request);
     }
 
-    /**
-     * POST /api/cart/updateItem/{movieId}
-     * 
-     * Receives:
-     *   Path variable: movieId
-     *   JSON:
-     *     { "quantity": 3 }
-     *
-     * Behavior:
-     *   - Set item quantity
-     *   - If quantity == 0 -> remove item
-     *
-     * Returns:
-     *   Updated Cart
-     */
-    @PostMapping("/updateItem/{movieId}")
-    public Cart updateItem(@PathVariable("movieId") String movieId, //PathVariable: take the part inside the URL {movieId} and pass it to the method.
-                                @RequestBody CartItem request) {
-        return cartService.updateItem(movieId, request.getQuantity());
-    }
+        /**
+         * PATCH /api/cart/updateItem/{movieId}
+         *
+         * Purpose:
+         *   Update ONLY the quantity of an existing cart item.
+         *
+         * Why PATCH?
+         *   Because we are partially modifying the cart
+         *   (only quantity, not replacing the whole item).
+         *
+         * Request:
+         *   { "quantity": 3 }
+         *
+         * Returns:
+         *   Updated Cart
+         */
+        @PatchMapping("/updateItem/{movieId}")
+        public Cart updateItem(
+                @PathVariable("movieId") String movieId,
+                @RequestBody CartItem request) {
 
-    /**
+            return cartService.updateItem(movieId, request.getQuantity());
+        }
+
+      /**
      * DELETE /api/cart/deleteItem/{movieId}
-     * 
-     * Purpose:
-     *   Remove item completely from cart.
+     *
+     * Description:
+     *    Remove a movie completely from the cart.
+     *
+     * Path Variable:
+     *    movieId -> ID of movie to remove
+     *
+     * Logic:
+     *    - Locate item by movieId
+     *    - Remove from cart list
      *
      * Returns:
-     *   Updated Cart
+     *    Updated Cart object
      */
     @DeleteMapping("/deleteItem/{movieId}")
     public Cart deleteItem(@PathVariable("movieId") String movieId) {
