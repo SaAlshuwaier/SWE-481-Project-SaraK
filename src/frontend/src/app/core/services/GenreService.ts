@@ -19,7 +19,7 @@ export class GenreService {
    * -Retrieves: all genres information
    * -Returns: list of GenreDto
    *
-   * @request GET /api/genres`
+   * @request GET /api/genres
    * @return {
    *   "success": true,
    *   "data": [

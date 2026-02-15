@@ -23,24 +23,8 @@ import { RegisterResponseDto } from './core/models/Auth/RegisterResponseDto';
 
 import { StarService } from './core/services/StarService';
 import { StarDto } from './core/models/StarDto';
-
 import { GenreService } from './core/services/GenreService';
 import { GenreDto } from './core/models/GenreDto';
-import { Observable } from 'rxjs';
-
-import {StarService} from './core/services/StarService';
-import {StarDto} from './core/models/StarDto';
-
-import {GenreService} from './core/services/GenreService';
-import {GenreDto} from './core/models/GenreDto';
-import {Observable} from 'rxjs';
-
-import {StarService} from './core/services/StarService';
-import {StarDto} from './core/models/StarDto';
-
-import {GenreService} from './core/services/GenreService';
-import {GenreDto} from './core/models/GenreDto';
-import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -253,7 +237,7 @@ export class App {
 
     this.star.getStar(this.dummyStarId).subscribe({
       next: (res) => {
-        alert('Successfully reached Get Star Details endpoint');
+        alert('Successfully reached GET /api/stars/{starId}');
         this.starResult.set(res);
       },
       error: (err) => this.starError.set(err?.message ?? 'Get Star Details failed'),
@@ -268,7 +252,7 @@ export class App {
 
     this.star.getStarsOfMovie(this.dummyMovieId).subscribe({
       next: (res) => {
-        alert('Successfully reached Get Stars of movies endpoint');
+        alert('Successfully reached GET /api/movies/{movieId}/stars');
         this.starListResult.set(res);
       },
       error: (err) => this.starError.set(err?.message ?? 'Get Stars of movies failed'),
@@ -283,7 +267,7 @@ export class App {
 
     this.star.getMoviesOfStar(this.dummyStarId).subscribe({
       next: (res) => {
-        alert('Successfully reached Get movies of stars endpoint');
+        alert('Successfully reached GET /api/stars/{starId}/movies');
         this.movieListResult.set(res);
       },
       error: (err) => this.movieError.set(err?.message ?? 'Get movies of stars failed'),
@@ -297,7 +281,7 @@ export class App {
 
     this.genre.getAllGenres().subscribe({
       next: (res) => {
-        alert('Successfully reached Get All Genres endpoint');
+        alert('Successfully reached GET /api/genres');
         this.genreResult.set(res);
       },
       error: (err) => this.genreError.set(err?.message ?? 'Get all Genres failed'),
