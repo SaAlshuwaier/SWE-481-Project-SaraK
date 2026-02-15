@@ -26,6 +26,13 @@ import { StarDto } from './core/models/StarDto';
 import { GenreService } from './core/services/GenreService';
 import { GenreDto } from './core/models/GenreDto';
 
+import {StarService} from './core/services/StarService';
+import {StarDto} from './core/models/StarDto';
+
+import {GenreService} from './core/services/GenreService';
+import {GenreDto} from './core/models/GenreDto';
+import {Observable} from 'rxjs';
+
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet,
