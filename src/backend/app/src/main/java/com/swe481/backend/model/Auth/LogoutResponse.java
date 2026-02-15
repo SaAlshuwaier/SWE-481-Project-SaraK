@@ -1,5 +1,4 @@
-package com.swe481.backend.model;
-
+package com.swe481.backend.model.Auth;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,8 +8,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthModel {
-    private String email;
-    private String password;
+public class LogoutResponse {
     private String message;
+    private boolean success;
+
 }

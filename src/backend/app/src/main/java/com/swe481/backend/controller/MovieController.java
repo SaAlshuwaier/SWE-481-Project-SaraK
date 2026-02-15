@@ -15,11 +15,6 @@ public class MovieController {
     @Autowired
     private MovieService movieService;
 
-    /**
-     * Search movies based on title, year, director, or star name
-     * Pagination is handled in the service.
-     * Sorting will be handled on the front-end.
-     */
     @GetMapping("/search")
 
     public ResponseEntity<MoviesPageState> searchMovies(
@@ -28,7 +23,7 @@ public class MovieController {
             @RequestParam(required = false) String director,
             @RequestParam(required = false) String starName,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int pageSize) {
+            @RequestParam(defaultValue = "20") int pageSize) {
 
         // Call the service to get movies based on filters
         MoviesPageState result = movieService.searchMovies(title, year, director, starName, page, pageSize);
@@ -48,40 +43,23 @@ public class MovieController {
     public ResponseEntity<MoviesPageState> browseMoviesByGenre(
             @RequestParam Integer genreId,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int pageSize) {
+            @RequestParam(defaultValue = "20") int pageSize) {
 
         // Call the service to browse movies by genre
         MoviesPageState result = movieService.browseMoviesByGenre(genreId, page, pageSize);
         return ResponseEntity.ok(result);
     }
 
-    /**
-     * Browse movies by the first letter of their title (e.g., 'A', 'B', '2').
-     * 
-     * @param startsWith - The character or number that the movie titles should
-     *                   start with.
-     * @param page       - Page number (for pagination).
-     * @param pageSize   - Number of movies per page.
-     * @return MoviesPageState containing the list of movies starting with the
-     *         specified character.
-     */
     @GetMapping("/browseByFirstLetter")
     public ResponseEntity<MoviesPageState> browseMoviesByFirstLetter(
             @RequestParam String startsWith,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int pageSize) {
+            @RequestParam(defaultValue = "20") int pageSize) {
 
         // Call the service to browse movies by the first letter of title
         MoviesPageState result = movieService.browseMoviesByFirstLetter(startsWith, page, pageSize);
         return ResponseEntity.ok(result);
     }
-
-    /**
-     * Get a single movie by its ID
-     * 
-     * @param movieId - The unique ID of the movie.
-     * @return ResponseEntity with full movie details.
-     */
 
     @GetMapping("/{id}")
     public ResponseEntity<Movie> getMovieById(@PathVariable String id) {

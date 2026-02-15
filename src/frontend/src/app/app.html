@@ -23,23 +23,23 @@
     </div>
   </div>
 
-<div class="Star-card">
-  <h2>Star Service</h2>
+  <div class="Star-card">
+    <h2>Star Service</h2>
 
-  <div class="Star-buttons">
-    <button (click)="starGet()">Star Details</button>
-    <button (click)="starsOfMovieGet()">Stars of a movie</button>
-    <button (click)="moviesOfStarGet()">movies of a star</button>
+    <div class="Star-buttons">
+      <button (click)="starGet()">Star Details</button>
+      <button (click)="starsOfMovieGet()">Stars of a movie</button>
+      <button (click)="moviesOfStarGet()">movies of a star</button>
+    </div>
   </div>
-</div>
 
-<div class="Genre-card">
-  <h2>Genre Service</h2>
+  <div class="Genre-card">
+    <h2>Genre Service</h2>
 
-  <div class="Genre-buttons">
-    <button (click)="allGenresGet()">All Genres</button>
+    <div class="Genre-buttons">
+      <button (click)="allGenresGet()">All Genres</button>
+    </div>
   </div>
-</div>
 
   <div class="api-box">
     <h2>Cart Service</h2>
@@ -57,7 +57,7 @@
       <button class="btn" (click)="movieSearch()">Search</button>
       <button class="btn" (click)="movieBrowseGenre()">BROWSE BY GENRE</button>
       <button class="btn" (click)="movieBrowseFirstLetter()">Browse by first letter</button>
-      <button class="btn" (click)="movieGetById()">Get movie by ID</button>
+      <button class="btn" (click)="movieGetById()">Movie details</button>
     </div>
   </div>
 
@@ -65,8 +65,9 @@
   <div class="api-box">
     <h2>Auth Service</h2>
     <div class="btn-row">
-      <button class="btn" (click)="authLogin()">Login</button> 
-      <button class="btn" (click)="authLogout()">Logout</button> 
+      <button class="btn" (click)="authRegister()">Register</button>
+      <button class="btn" (click)="authLogin()">Login</button>
+      <button class="btn" (click)="authLogout()">Logout</button>
     </div>
   </div>
 
@@ -74,7 +75,7 @@
   <div class="api-box">
     <h2>Checkout Service</h2>
     <div class="btn-row">
-      <button class="btn" (click)="doCheckout()">Checkout</button> 
+      <button class="btn" (click)="doCheckout()">Checkout</button>
     </div>
   </div>
 
@@ -82,43 +83,43 @@
 
 
 @if (result()) {
-  <div class="output-box">
-    <h3>Result</h3>
-    <pre>{{ result() | json }}</pre>
-  </div>
+<div class="output-box">
+  <h3>Result</h3>
+  <pre>{{ result() | json }}</pre>
+</div>
 }
 
 @if (error()) {
-  <p class="err">{{ error() }}</p>
+<p class="err">{{ error() }}</p>
 }
 
 @if (cartResult()) {
-  <div class="output-box">
-    <h3>Cart Result</h3>
-    <pre>{{ cartResult() | json }}</pre>
-  </div>
+<div class="output-box">
+  <h3>Cart Result</h3>
+  <pre>{{ cartResult() | json }}</pre>
+</div>
 }
 
 @if (cartError()) {
-  <p class="err">{{ cartError() }}</p>
+<p class="err">{{ cartError() }}</p>
 }
 
 @if (authResult()) {
-  <h3>Auth Result</h3>
-  <pre>{{ authResult() | json }}</pre>
+<h3>Auth Result</h3>
+<pre>{{ authResult() | json }}</pre>
 }
 
 @if (authError()) {
-  <p style="color:red">{{ authError() }}</p>
+<p style="color:red">{{ authError() }}</p>
 }
 
 @if (checkoutResult()) {
-  <h3>Checkout Result</h3>
-  <pre>{{ checkoutResult() | json }}</pre>
+<h3>Checkout Result</h3>
+<pre>{{ checkoutResult() | json }}</pre>
 }
 
 @if (checkoutError()) {
-  <p style="color:red">{{ checkoutError() }}</p>
+<p style="color:red">{{ checkoutError() }}</p>
 }
 
 
