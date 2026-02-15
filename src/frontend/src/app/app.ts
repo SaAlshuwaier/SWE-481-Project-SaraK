@@ -12,10 +12,14 @@ import { MoviesPageStateDto } from './core/models/MoviesPageStateDto';
 import { MovieDto } from './core/models/MovieDto';
 
 import { AuthService } from './core/services/AuthService';
-import { AuthDto } from './core/models/AuthDto';
 
 import { CheckoutService } from './core/services/CheckoutService';
 import { CheckoutDto } from './core/models/CheckoutDto';
+import { LoginResponseDto } from './core/models/Auth/LoginResponseDto';
+import { LogoutResponseDto } from './core/models/Auth/LogoutResponseDto';
+import { LoginRequestDto } from './core/models/Auth/LoginRequestDto';
+import { RegisterRequestDto } from './core/models/Auth/RegisterRequestDto';
+import { RegisterResponseDto } from './core/models/Auth/RegisterResponseDto';
 
 import {StarService} from './core/services/StarService';
 import {StarDto} from './core/models/StarDto';
@@ -285,7 +289,7 @@ export class App {
 
 // ================= AUTH APIs =================
 
-authResult = signal<AuthDto | null>(null);
+authResult = signal<LoginResponseDto | LogoutResponseDto | RegisterResponseDto | null>(null);
 authError = signal<string | null>(null);
 
 private readonly dummyEmail = 'test@uci.edu';
@@ -295,10 +299,12 @@ authLogin() {
   this.authResult.set(null);
   this.authError.set(null);
 
-  this.auth.login({
+  const body: LoginRequestDto = {
     email: this.dummyEmail,
-    password: this.dummyPassword
-  }).subscribe({
+    password: this.dummyPassword,
+  };
+  
+  this.auth.login(body).subscribe({
     next: (res) => {
       alert('Successfully reached POST /api/auth/login');
       this.authResult.set(res);
@@ -313,7 +319,7 @@ authLogout() {
   this.authError.set(null);
 
   this.auth.logout().subscribe({
-    next: (res) => {
+    next: (res: LogoutResponseDto) => {
       alert('Successfully reached POST /api/auth/logout');
       this.authResult.set(res);
     },
@@ -321,6 +327,30 @@ authLogout() {
       this.authError.set(err?.message ?? 'Auth logout failed'),
   });
 }
+
+authRegister() {
+  this.authResult.set(null);
+  this.authError.set(null);
+
+  const body: RegisterRequestDto = {
+    firstName: 'Loba',
+    lastName: 'Alyahya',
+    email: this.dummyEmail,
+    password: this.dummyPassword,
+    address: 'Riyadh',
+    ccId: '1111222233334444',
+  };
+
+  this.auth.register(body).subscribe({
+    next: (res: RegisterResponseDto) => {
+      alert('Successfully reached POST /api/auth/register');
+      this.authResult.set(res);
+    },
+    error: (err) =>
+      this.authError.set(err?.message ?? 'Auth register failed'),
+  });
+}
+
 // ================= CHECKOUT APIs =================
 
 checkoutResult = signal<CheckoutDto | null>(null);
