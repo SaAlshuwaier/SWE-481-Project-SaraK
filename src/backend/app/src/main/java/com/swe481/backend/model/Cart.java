@@ -2,7 +2,11 @@ package com.swe481.backend.model; // This defines the package (folder) where thi
 import java.util.ArrayList;  // Used to create an empty list of cart items.
 import java.util.List;  // List is the interface used to store multiple CartItem objects.
 
-import lombok.Data; //Creates setters, getters and constructors 
+//Creates setters, getters and constructors 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * CartModel represents the shopping cart.
@@ -10,7 +14,12 @@ import lombok.Data; //Creates setters, getters and constructors
  *  - A list of items -> a cartItem is the movieID, title and quantity
  *  - The total quantity of all items
  */
-@Data
+
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Cart {
 
     // List that stores all items inside the cart
@@ -18,20 +27,14 @@ public class Cart {
     // Total quantity of all items combined
     private int totalQuantity;
 
-    // Default constructor (required for JSON conversion)
-    public Cart() {}
-
-    // Constructor to create a cart with predefined values
-    public Cart(List<CartItem> items, int totalQuantity) {
-        this.items = items;
-        this.totalQuantity = totalQuantity;
-    }
-
 
     /**
      * Nested static class representing a single item in the cart.
      */
-    @Data
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class CartItem {
 
         // ID of the movie
@@ -40,16 +43,6 @@ public class Cart {
         private String title;
         // Quantity of this movie in the cart
         private int quantity;
-
-        // Default constructor (needed for JSON mapping)
-        public CartItem() {}
-
-        // Constructor with values
-        public CartItem(String movieId, String title, int quantity) {
-            this.movieId = movieId;
-            this.title = title;
-            this.quantity = quantity;
-        }
     }
 }
 

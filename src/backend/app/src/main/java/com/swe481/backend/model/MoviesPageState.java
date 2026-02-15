@@ -28,12 +28,6 @@ public class MoviesPageState {
     private boolean hasNext;
     // True if there is a next page (page < totalPages).
 
-    private String sortBy;
-    // Field used for sorting (title or rating).
-
-    private String order;
-    // Sorting direction (asc or desc).
-
     private List<Movie> movies;
     // List of movies for the current page only.
 
@@ -41,7 +35,7 @@ public class MoviesPageState {
     }
 
     public MoviesPageState(int page, int pageSize, int totalResults,
-            String sortBy, String order,
+
             List<Movie> movies) {
 
         this.page = page;
@@ -50,8 +44,7 @@ public class MoviesPageState {
         this.totalPages = (int) Math.ceil((double) totalResults / pageSize);
         this.hasPrev = page > 1;
         this.hasNext = page < totalPages;
-        this.sortBy = sortBy;
-        this.order = order;
+
         this.movies = movies;
     }
 }
