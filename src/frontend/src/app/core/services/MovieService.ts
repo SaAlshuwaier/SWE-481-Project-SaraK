@@ -14,15 +14,38 @@ export class MovieService {
     constructor(private http: HttpClient) { }
 
     /**
-     * SEARCH movies
-     * Search by:
-     * - title
-     * - year
-     * - director
-     * - star name
-     *
-     * Multiple parameters can be used together (AND logic in backend)
-     */
+     * Search movies.
+ *
+ * Logic:
+ * - Sends optional filters (title, year, director, starName)
+ * - Applies pagination (page, pageSize)
+ * - Receives paged movie list with metadata
+ *
+ * @request GET /api/movies/search
+ * @return {
+ *   "page": 1,
+ *   "pageSize": 20,
+ *   "totalResults": 1,
+ *   "totalPages": 1,
+ *   "hasPrev": false,
+ *   "hasNext": false,
+ *   "movies": [
+ *     {
+ *       "id": "tt123",
+ *       "title": "Inception",
+ *       "year": 2010,
+ *       "director": "Christopher Nolan",
+ *       "rating": 4.7,
+ *       "genres": [
+ *         { "id": 1, "name": "Action" }
+ *       ],
+ *       "stars": [
+ *         { "id": "1", "name": "Leonardo DiCaprio", "birthYear": 1974 }
+ *       ]
+ *     }
+ *   ]
+ * }
+ */
     searchMovies(
         title?: string,
         year?: number,
@@ -48,12 +71,42 @@ export class MovieService {
     }
 
     /**
-     * BROWSE movies by GENRE
+     * Browse movies by genre.
+     *
+     * Logic:
+     * - Sends genreId
+     * - Applies pagination (page, pageSize)
+     * - Receives paged movie list with metadata
+     *
+     * @request GET /api/movies/browseByGenre
+     * @return {
+     *   "page": 1,
+     *   "pageSize": 20,
+     *   "totalResults": 1,
+     *   "totalPages": 1,
+     *   "hasPrev": false,
+     *   "hasNext": false,
+     *   "movies": [
+     *     {
+     *       "id": "tt555",
+     *       "title": "The Dark Knight",
+     *       "year": 2008,
+     *       "director": "Christopher Nolan",
+     *       "rating": 4.9,
+     *       "genres": [
+     *         { "id": 1, "name": "Action" }
+     *       ],
+     *       "stars": [
+     *         { "id": "2", "name": "Christian Bale", "birthYear": 1974 }
+     *       ]
+     *     }
+     *   ]
+     * }
      */
     browseMoviesByGenre(
         genreId: number,
         page: number = 1,
-        pageSize: number = 10
+        pageSize: number = 20
     ): Observable<MoviesPageStateDto> {
 
         return this.http.get<MoviesPageStateDto>(
@@ -69,13 +122,42 @@ export class MovieService {
     }
 
     /**
-     * BROWSE movies by FIRST LETTER or DIGIT
-     * Example: A, B, C, 2
+    * Browse movies by first letter.
+     *
+     * Logic:
+     * - Sends startsWith character
+     * - Applies pagination (page, pageSize)
+     * - Receives paged movie list with metadata
+     *
+     * @request GET /api/movies/browseByFirstLetter
+     * @return {
+     *   "page": 1,
+     *   "pageSize": 20,
+     *   "totalResults": 1,
+     *   "totalPages": 1,
+     *   "hasPrev": false,
+     *   "hasNext": false,
+     *   "movies": [
+     *     {
+     *       "id": "tt777",
+     *       "title": "Avatar",
+     *       "year": 2009,
+     *       "director": "James Cameron",
+     *       "rating": 4.2,
+     *       "genres": [
+     *         { "id": 2, "name": "Sci-Fi" }
+     *       ],
+     *       "stars": [
+     *         { "id": "3", "name": "Sam Worthington", "birthYear": 1976 }
+     *       ]
+     *     }
+     *   ]
+     * }
      */
     browseMoviesByFirstLetter(
         startsWith: string,
         page: number = 1,
-        pageSize: number = 10
+        pageSize: number = 20
     ): Observable<MoviesPageStateDto> {
 
         return this.http.get<MoviesPageStateDto>(
@@ -91,7 +173,28 @@ export class MovieService {
     }
 
     /**
-     * GET single movie by ID
+     * Get movie by ID.
+     *
+     * Logic:
+     * - Sends movie ID
+     * - Receives full movie details including genres and stars
+     *
+     * @request GET /api/movies/{id}
+     * @return {
+     *   "id": "tt999",
+     *   "title": "Study",
+     *   "year": 2004,
+     *   "director": "Layan",
+     *   "rating": 4.5,
+     *   "genres": [
+     *     { "id": 1, "name": "Action" },
+     *     { "id": 2, "name": "Drama" }
+     *   ],
+     *   "stars": [
+     *     { "id": "1", "name": "Tom Hanks", "birthYear": 1956 },
+     *     { "id": "2", "name": "Lena Headey", "birthYear": 1973 }
+     *   ]
+     * }
      */
     getMovieById(movieId: string): Observable<MovieDto> {
         return this.http.get<MovieDto>(
