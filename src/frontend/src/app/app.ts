@@ -21,12 +21,12 @@ import { LoginRequestDto } from './core/models/Auth/LoginRequestDto';
 import { RegisterRequestDto } from './core/models/Auth/RegisterRequestDto';
 import { RegisterResponseDto } from './core/models/Auth/RegisterResponseDto';
 
-import {StarService} from './core/services/StarService';
-import {StarDto} from './core/models/StarDto';
+import { StarService } from './core/services/StarService';
+import { StarDto } from './core/models/StarDto';
 
-import {GenreService} from './core/services/GenreService';
-import {GenreDto} from './core/models/GenreDto';
-import {Observable} from 'rxjs';
+import { GenreService } from './core/services/GenreService';
+import { GenreDto } from './core/models/GenreDto';
+import { Observable } from 'rxjs';
 
 import {StarService} from './core/services/StarService';
 import {StarDto} from './core/models/StarDto';
@@ -100,7 +100,7 @@ export class App {
   // Star dummy data
   private readonly dummyStarId = "nm1636964";
 
-// GET /api/cart
+  // GET /api/cart
   cartGet() {
     this.cartResult.set(null);
     this.cartError.set(null);
@@ -173,7 +173,7 @@ export class App {
       undefined,
       undefined,
       1,
-      10
+      20
     )
       .subscribe({
         next: (res) => {
@@ -192,7 +192,7 @@ export class App {
     this.movie.browseMoviesByGenre(
       this.dummyGenreId,
       1,
-      10
+      20
     ).subscribe({
       next: (res) => {
         alert('Successfully reached GET /api/movies/browseByGenre');
@@ -211,7 +211,7 @@ export class App {
     this.movie.browseMoviesByFirstLetter(
       this.dummyFirstLetter,
       1,
-      10
+      20
     ).subscribe({
       next: (res) => {
         alert('Successfully reached GET /api/movies/browseByFirstLetter');
@@ -245,7 +245,7 @@ export class App {
     this.starError.set(null);
 
     this.star.getStar(this.dummyStarId).subscribe({
-      next: (res) =>{
+      next: (res) => {
         alert('Successfully reached Get Star Details endpoint');
         this.starResult.set(res);
       },
@@ -260,9 +260,10 @@ export class App {
     this.starError.set(null);
 
     this.star.getStarsOfMovie(this.dummyMovieId).subscribe({
-      next: (res) =>{
+      next: (res) => {
         alert('Successfully reached Get Stars of movies endpoint');
-        this.starListResult.set(res);},
+        this.starListResult.set(res);
+      },
       error: (err) => this.starError.set(err?.message ?? 'Get Stars of movies failed'),
     });
   }
@@ -276,117 +277,119 @@ export class App {
     this.star.getMoviesOfStar(this.dummyStarId).subscribe({
       next: (res) => {
         alert('Successfully reached Get movies of stars endpoint');
-        this.movieListResult.set(res);},
+        this.movieListResult.set(res);
+      },
       error: (err) => this.movieError.set(err?.message ?? 'Get movies of stars failed'),
     });
   }
 
   // GET /genres
-  allGenresGet(){
+  allGenresGet() {
     this.genreResult.set(null);
     this.genreError.set(null);
 
     this.genre.getAllGenres().subscribe({
-      next:(res)=> {
+      next: (res) => {
         alert('Successfully reached Get All Genres endpoint');
-        this.genreResult.set(res);},
-      error:(err)=> this.genreError.set(err?.message ?? 'Get all Genres failed'),
+        this.genreResult.set(res);
+      },
+      error: (err) => this.genreError.set(err?.message ?? 'Get all Genres failed'),
     });
   }
 
-// ================= AUTH APIs =================
+  // ================= AUTH APIs =================
 
-authResult = signal<LoginResponseDto | LogoutResponseDto | RegisterResponseDto | null>(null);
-authError = signal<string | null>(null);
+  authResult = signal<LoginResponseDto | LogoutResponseDto | RegisterResponseDto | null>(null);
+  authError = signal<string | null>(null);
 
-private readonly dummyEmail = 'test@uci.edu';
-private readonly dummyPassword = 'test123';
+  private readonly dummyEmail = 'test@uci.edu';
+  private readonly dummyPassword = 'test123';
 
-authLogin() {
-  this.authResult.set(null);
-  this.authError.set(null);
+  authLogin() {
+    this.authResult.set(null);
+    this.authError.set(null);
 
-  const body: LoginRequestDto = {
-    email: this.dummyEmail,
-    password: this.dummyPassword,
-  };
-  
-  this.auth.login(body).subscribe({
-    next: (res) => {
-      alert('Successfully reached POST /api/auth/login');
-      this.authResult.set(res);
-    },
-    error: (err) =>
-      this.authError.set(err?.message ?? 'Auth login failed'),
-  });
-}
+    const body: LoginRequestDto = {
+      email: this.dummyEmail,
+      password: this.dummyPassword,
+    };
 
-authLogout() {
-  this.authResult.set(null);
-  this.authError.set(null);
+    this.auth.login(body).subscribe({
+      next: (res) => {
+        alert('Successfully reached POST /api/auth/login');
+        this.authResult.set(res);
+      },
+      error: (err) =>
+        this.authError.set(err?.message ?? 'Auth login failed'),
+    });
+  }
 
-  this.auth.logout().subscribe({
-    next: (res: LogoutResponseDto) => {
-      alert('Successfully reached POST /api/auth/logout');
-      this.authResult.set(res);
-    },
-    error: (err) =>
-      this.authError.set(err?.message ?? 'Auth logout failed'),
-  });
-}
+  authLogout() {
+    this.authResult.set(null);
+    this.authError.set(null);
 
-authRegister() {
-  this.authResult.set(null);
-  this.authError.set(null);
+    this.auth.logout().subscribe({
+      next: (res: LogoutResponseDto) => {
+        alert('Successfully reached POST /api/auth/logout');
+        this.authResult.set(res);
+      },
+      error: (err) =>
+        this.authError.set(err?.message ?? 'Auth logout failed'),
+    });
+  }
 
-  const body: RegisterRequestDto = {
-    firstName: 'Loba',
-    lastName: 'Alyahya',
-    email: this.dummyEmail,
-    password: this.dummyPassword,
-    address: 'Riyadh',
-    ccId: '1111222233334444',
-  };
+  authRegister() {
+    this.authResult.set(null);
+    this.authError.set(null);
 
-  this.auth.register(body).subscribe({
-    next: (res: RegisterResponseDto) => {
-      alert('Successfully reached POST /api/auth/register');
-      this.authResult.set(res);
-    },
-    error: (err) =>
-      this.authError.set(err?.message ?? 'Auth register failed'),
-  });
-}
+    const body: RegisterRequestDto = {
+      firstName: 'Loba',
+      lastName: 'Alyahya',
+      email: this.dummyEmail,
+      password: this.dummyPassword,
+      address: 'Riyadh',
+      ccId: '1111222233334444',
+    };
 
-// ================= CHECKOUT APIs =================
+    this.auth.register(body).subscribe({
+      next: (res: RegisterResponseDto) => {
+        alert('Successfully reached POST /api/auth/register');
+        this.authResult.set(res);
+      },
+      error: (err) =>
+        this.authError.set(err?.message ?? 'Auth register failed'),
+    });
+  }
 
-checkoutResult = signal<CheckoutDto | null>(null);
-checkoutError = signal<string | null>(null);
+  // ================= CHECKOUT APIs =================
 
-// Dummy data (Phase 2)
-private readonly dummyFirstName = 'Jana';
-private readonly dummyLastName = 'Alshreef';
-private readonly dummyCardNumber = '1211111111111111';
-private readonly dummyExpiration = '2030-12-31';
+  checkoutResult = signal<CheckoutDto | null>(null);
+  checkoutError = signal<string | null>(null);
 
-doCheckout() {
-  this.checkoutResult.set(null);
-  this.checkoutError.set(null);
+  // Dummy data (Phase 2)
+  private readonly dummyFirstName = 'Jana';
+  private readonly dummyLastName = 'Alshreef';
+  private readonly dummyCardNumber = '1211111111111111';
+  private readonly dummyExpiration = '2030-12-31';
 
-  this.checkout.checkout({
-    firstName: this.dummyFirstName,
-    lastName: this.dummyLastName,
-    cardNumber: this.dummyCardNumber,
-    expiration: this.dummyExpiration,
-  }).subscribe({
-    next: (res) => {
-      alert('Successfully reached POST /api/checkout');
-      this.checkoutResult.set(res);
-    },
-    error: (err) =>
-      this.checkoutError.set(err?.message ?? 'Checkout failed'),
-  });
-}
+  doCheckout() {
+    this.checkoutResult.set(null);
+    this.checkoutError.set(null);
+
+    this.checkout.checkout({
+      firstName: this.dummyFirstName,
+      lastName: this.dummyLastName,
+      cardNumber: this.dummyCardNumber,
+      expiration: this.dummyExpiration,
+    }).subscribe({
+      next: (res) => {
+        alert('Successfully reached POST /api/checkout');
+        this.checkoutResult.set(res);
+      },
+      error: (err) =>
+        this.checkoutError.set(err?.message ?? 'Checkout failed'),
+    });
+  }
 
 
 
