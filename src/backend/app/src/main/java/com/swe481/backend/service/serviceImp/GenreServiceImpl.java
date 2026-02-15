@@ -16,7 +16,6 @@ public class GenreServiceImpl implements GenreService {
      * -Retrieves: all genres information
      * -Returns: list of Genres
      *
-     * @request GET /api/genres
      * @return {
      *   "success": true,
      *   "data": [

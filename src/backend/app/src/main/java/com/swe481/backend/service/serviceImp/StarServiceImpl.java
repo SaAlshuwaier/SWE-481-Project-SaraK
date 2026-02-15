@@ -24,7 +24,6 @@ public class StarServiceImpl implements StarService {
      * -Returns: star object
      *
      * @param starId
-     * @request GET /api/stars/{starId}
      * @return {
      *     "success": true,
      *     "data":{
@@ -50,7 +49,6 @@ public class StarServiceImpl implements StarService {
      * -Returns: list of Stars
      *
      * @param movieId
-     * @request GET /api/movies/{movieId}/stars
      * @return {
      *   "success": true,
      *   "data": [
@@ -81,7 +79,6 @@ public class StarServiceImpl implements StarService {
      * -Returns: list of Movies
      *
      * @param starId
-     * @request GET /api/stars/{starId}/movies
      * @return {
      *   "success": true,
      *   "data": [
