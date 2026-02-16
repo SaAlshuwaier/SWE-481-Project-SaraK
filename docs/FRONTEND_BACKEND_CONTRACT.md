@@ -11,7 +11,12 @@ This README explains how to:
 
 ### 2. Verify Backend
 Open in browser: 
-- `http://localhost:8080/api/`
+- `http://localhost:8080/api/cart`
+#### Expected JSON Response: 
+- `{`
+-  `"items": [],`
+-  `"totalQuantity": 0`
+- `}`
 ---
 
 ## 2. Run frontend (Angular)
