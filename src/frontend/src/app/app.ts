@@ -1,8 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { JsonPipe } from '@angular/common';
-import { HealthService } from './core/services/health';
-import { HealthResponse } from './core/models/HealthDto';
 
 import { CartService } from './core/services/CartService';
 import { CartDto } from './core/models/CartDto';
@@ -38,9 +36,6 @@ import { GenreDto } from './core/models/GenreDto';
 export class App {
   protected readonly title = signal('frontend');
 
-  result = signal<HealthResponse | null>(null);
-  error = signal<string | null>(null);
-
   // Cart output (separate)
   cartResult = signal<CartDto | null>(null);
   cartError = signal<string | null>(null);
@@ -59,7 +54,6 @@ export class App {
   genreError = signal<string | null>(null);
 
   constructor(
-    private health: HealthService,
     private cart: CartService,
     private movie: MovieService,
     private auth: AuthService,
@@ -68,16 +62,6 @@ export class App {
     private genre: GenreService
 
   ) { }
-
-  pingBackend() {
-    this.result.set(null);
-    this.error.set(null);
-
-    this.health.getHealth().subscribe({
-      next: (res) => this.result.set(res),
-      error: (err) => this.error.set(err?.message ?? 'Request failed'),
-    });
-  }
 
   //CART dummy data for connection only
   private readonly dummyMovieId = 'tt0000001';

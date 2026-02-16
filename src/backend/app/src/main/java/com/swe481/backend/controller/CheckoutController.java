@@ -28,32 +28,7 @@ public class CheckoutController {
     public CheckoutController(CheckoutService checkoutService) {
         this.checkoutService = checkoutService;
     }
- /**
-     * Checkout Payment API
-     *
-     * Logic:
-     * - Receives: CheckoutModel (firstName, lastName, cardNumber, expiration)
-     * - Validates missing fields
-     * - Calls validatePayment() in service
-     *
-     * Returns:
-     * - success = true  -> Transaction succeeded
-     * - success = false -> Invalid payment info
-     *
-     * @request POST /api/checkout
-     *
-     * @param request {
-     *   "firstName": "Jana",
-     *   "lastName": "Alshreef",
-     *   "cardNumber": "1234567890123456",
-     *   "expiration": "12/2026"
-     * }
-     *
-     * @return {
-     *   "success": true,
-     *   "message": "Transaction succeeded (mock)"
-     * }
-     */
+
     @PostMapping("/checkout")
     public ResponseEntity<CheckoutModel> checkout(@RequestBody CheckoutModel request) {
         CheckoutModel response = new CheckoutModel();
