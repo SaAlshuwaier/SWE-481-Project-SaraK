@@ -20,8 +20,8 @@ In this phase we focus on system architicture setup, communication between front
 ### Comleted in Phase 2:
 - Full-stack architecture setup between frontend,and backend (database deferred to later phases)
 - Running Spring Boot backend with REST support.
-- Verified the connection between frontend and backend using a health-chack endpoint.
-- Complete API and Interface Specification  for all features that will be implemented in later phases.
+- Verified the connection between frontend and backend.
+- Complete API and Interface Specification for all features that will be implemented in later phases.
 
 ### API and Interface Specification Requirements:
 The following specifications are defind under the '/docs' directory:
