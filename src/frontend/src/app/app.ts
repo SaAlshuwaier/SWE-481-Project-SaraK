@@ -26,6 +26,7 @@ import { StarDto } from './core/models/StarDto';
 import { GenreService } from './core/services/GenreService';
 import { GenreDto } from './core/models/GenreDto';
 
+
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet,
