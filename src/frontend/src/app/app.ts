@@ -131,7 +131,7 @@ export class App {
     });
   }
 
-  // POST /api/cart/updateItem/{movieId}
+  // PATCH /api/cart/updateItem/{movieId}
   cartUpdate() {
     this.cartResult.set(null);
     this.cartError.set(null);
