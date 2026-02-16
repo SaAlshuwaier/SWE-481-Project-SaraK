@@ -19,7 +19,8 @@ export class CartService {
  /**
    * Get the current cart
    * Logic:
-   * - Retrieves: current cart for the user from backend
+   * - Sends: nothing (just calls the endpoint)
+   * - Backend retrieves the user's current cart
    * - Returns: CartDto (items + totalQuantity)
    *
    * @request GET /api/cart
@@ -46,13 +47,11 @@ export class CartService {
  * Add an item to the cart
  *
  *
- * Logic:
- *  - Receives: CartItemDto (movieId, title, quantity)
- *  - Movie does NOT already exist in cart
- *  - A new CartItem is created
- *  - Item is added to the cart list
- *  - totalQuantity is updated
- *  - Returns: updated CartDto 
+   * Logic:
+   * - Sends: CartItemDto (movieId, title, quantity)
+   * - Backend adds the item to the cart
+   * - Backend updates totalQuantity
+   * - Returns: updated CartDto
 
  * @request POST /api/cart/addItem
  * @param request
@@ -86,9 +85,11 @@ export class CartService {
 
   /**
    * Update quantity of an item in the cart
+   * 
    * Logic:
-   * - Receives: movieId + quantity 
-   * - Updates: quantity for that specific movie
+   * - Sends: movieId + quantity
+   * - Backend updates that item's quantity in the cart
+   * - Backend recalculates totalQuantity
    * - Returns: updated CartDto
    *
    * @request PATCH /api/cart/updateItem/{movieId}
@@ -117,9 +118,11 @@ export class CartService {
 
   /**
    * Delete an item from the cart
+   * 
    * Logic:
-   * - Receives: movieId 
-   * - Deletes: that item completely from the cart
+   * - Sends: movieId
+   * - Backend removes that item from the cart
+   * - Backend updates totalQuantity
    * - Returns: updated CartDto
    *
    * @request DELETE /api/cart/deleteItem/{movieId}
