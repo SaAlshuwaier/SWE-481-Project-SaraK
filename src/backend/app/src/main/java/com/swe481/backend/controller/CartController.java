@@ -1,7 +1,7 @@
 package com.swe481.backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired; // Allows automatic injection of CartService.
-
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*; // Contains all Spring web annotations like @RestController, @GetMapping, etc.
 
 import com.swe481.backend.model.Cart;
@@ -38,29 +38,29 @@ public class CartController {
 
 
     @GetMapping
-    public Cart getCart() {
-        return cartService.getCart();
+    public ResponseEntity<Cart> getCart() {
+        return ResponseEntity.ok(cartService.getCart());
     }
 
 
     @PostMapping("/addItem")
-    public Cart addItem(@RequestBody CartItem request) { //RequestBody: takes the JSON and converts it to java object
-        return cartService.addItem(request);
+    public ResponseEntity<Cart> addItem(@RequestBody CartItem request) { //RequestBody: takes the JSON and converts it to java object
+        return ResponseEntity.ok(cartService.addItem(request));
     }
 
 
     @PatchMapping("/updateItem/{movieId}")
-    public Cart updateItem(
+    public ResponseEntity<Cart> updateItem(
             @PathVariable("movieId") String movieId,
             @RequestBody CartItem request) {
 
-        return cartService.updateItem(movieId, request.getQuantity());
+        return ResponseEntity.ok(cartService.updateItem(movieId, request.getQuantity()));
     }
 
 
     @DeleteMapping("/deleteItem/{movieId}")
-    public Cart deleteItem(@PathVariable("movieId") String movieId) {
-        return cartService.deleteItem(movieId);
+    public ResponseEntity<Cart> deleteItem(@PathVariable("movieId") String movieId) {
+        return ResponseEntity.ok(cartService.deleteItem(movieId));
     }
 
 }

@@ -2,6 +2,8 @@ package com.swe481.backend.controller;
 import com.swe481.backend.model.Movie;
 import com.swe481.backend.model.Star;
 import com.swe481.backend.service.serviceInterface.StarService;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,23 +21,23 @@ public class StarController {
     }
 
     @GetMapping("/stars/{starId}")
-    public Star getStar(
+    public ResponseEntity<Star> getStar(
             @PathVariable String starId
     ) {
-        return starService.getStar(starId);
+        return ResponseEntity.ok(starService.getStar(starId));
     }
 
     @GetMapping("/movies/{movieId}/stars")
-    public List<Star> getStarsOfMovie(
+    public ResponseEntity<List<Star>> getStarsOfMovie(
             @PathVariable String movieId
     ) {
-        return starService.getStarsOfMovie(movieId);
+        return ResponseEntity.ok(starService.getStarsOfMovie(movieId));
     }
 
     @GetMapping("/stars/{starId}/movies")
-    public  List<Movie> getStarMovies(
+    public ResponseEntity<List<Movie>> getStarMovies(
             @PathVariable String starId
     ){
-        return starService.getStarMovies(starId);
+        return ResponseEntity.ok(starService.getStarMovies(starId));
      }
 }
