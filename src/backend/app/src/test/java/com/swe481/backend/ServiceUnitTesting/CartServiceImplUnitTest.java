@@ -1,4 +1,4 @@
-package com.swe481.backend;
+package com.swe481.backend.ServiceUnitTesting;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
