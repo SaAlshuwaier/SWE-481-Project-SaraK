@@ -1,7 +1,7 @@
-package com.swe481.backend.controller;
+package com.swe481.backend.ControllerIntegrationTesting;
 
 import com.swe481.backend.model.CheckoutModel;
-import com.swe481.backend.service.serviceInterface.CheckoutService;
+import com.swe481.backend.ServiceUnitTesting.serviceInterface.CheckoutService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 /**
