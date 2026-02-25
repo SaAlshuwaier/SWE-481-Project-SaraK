@@ -16,7 +16,7 @@ import java.util.List;
 public class StarController {
 
     private final StarService starService;
-    public StarController(StarService starService, StarService star) {
+    public StarController(StarService starService) {
         this.starService = starService;
     }
 
