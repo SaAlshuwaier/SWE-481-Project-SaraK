@@ -45,12 +45,6 @@ describe('MovieDetailsPageComponent', () => {
       stars: [
         { id: 'nm1636964', name: 'Phantom Artsy', birthYear: 1970 },
         { id: 'nm1382753', name: 'Maria Angelucci', birthYear: 1975 },
-        { id: 'nm1637113', name: 'R.G. Christie', birthYear: 1965 },
-        { id: 'nm1349998', name: 'Robert G. Christie', birthYear: 1960 },
-        { id: 'nm1696209', name: 'Fran Lane', birthYear: 1982 },
-        { id: 'nm0627614', name: 'Adrienne Newberg', birthYear: 1984 },
-        { id: 'nm1635658', name: 'Mark Kelly', birthYear: 1978 },
-        { id: 'nm1637717', name: 'Sean Washburn', birthYear: 1981 },
       ],
     };
 
