@@ -1,0 +1,48 @@
+<header class="app-header">
+  <img class="app-logo" src="/favicon.ico" alt="PLOT BOX logo" />
+
+  <div class="app-title">
+    <h1>PLOT BOX</h1>
+    <p>Star Details</p>
+  </div>
+</header>
+
+<section class="page-wrap">
+  <div class="card">
+
+    <a class="back-link" routerLink="/movies">← Back to Movies</a>
+    <div *ngIf="isLoading()" class="muted">Loading star details…</div>
+
+    <div *ngIf="error()" class="err-box">
+      {{ error() }}
+    </div>
+
+    <ng-container *ngIf="!isLoading() && star() as s">
+      <h2 class="title">{{ s.name }}</h2>
+
+      <div class="meta">
+        <div class="meta-row">
+          <span class="label">Birth Year:</span>
+          <span class="value">{{ formatBirthYear(s.birthYear) }}</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3 class="section-title">Movies</h3>
+
+        <div *ngIf="!movies()?.length" class="muted">No movies found.</div>
+
+        <ul class="movie-list" *ngIf="movies()?.length">
+          <!-- Clicking movie navigates to /movies/:movieId -->
+          <li *ngFor="let m of movies()">
+            <a class="movie-link"
+               [routerLink]="['/movies', m.id]">
+              {{ m.title }}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </ng-container>
+
+  </div>
+</section>

@@ -6,10 +6,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 /**
  * Integration tests for CheckoutController
@@ -29,15 +30,15 @@ class CheckoutControllerIntegrationTesting {
             { "firstName": "Neil" }
         """;
 
-        MvcResult result = mockMvc.perform(
+    mockMvc.perform(
                 post("/api/checkout")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
-        ).andReturn();
+        ).andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").exists());
 
         // Expect 400 Bad Request
-        assertEquals(400, result.getResponse().getStatus());
-    }
+}
 
     @Test
     void checkout_whenValidFields_shouldReturn200() throws Exception {
@@ -52,13 +53,13 @@ class CheckoutControllerIntegrationTesting {
             }
         """;
 
-        MvcResult result = mockMvc.perform(
+        mockMvc.perform(
                 post("/api/checkout")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
-        ).andReturn();
+        ).andExpect(status().isOk())
+         .andExpect(jsonPath("$.success").isBoolean())
+                .andExpect(jsonPath("$.message").isString());
 
-        // With current dummy service returning true => should be 200 OK
-        assertEquals(200, result.getResponse().getStatus());
     }
 }

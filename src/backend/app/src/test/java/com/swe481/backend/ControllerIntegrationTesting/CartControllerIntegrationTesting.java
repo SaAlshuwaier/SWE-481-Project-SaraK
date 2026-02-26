@@ -5,10 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Integration test for CartController (delete endpoint only)
@@ -26,10 +26,11 @@ class CartControllerIntegrationTesting {
         // Use a real movieId from our dataset
         String movieId = "tt0421974";
 
-        MvcResult result = mockMvc.perform(
+       mockMvc.perform(
                 delete("/api/cart/deleteItem/{movieId}", movieId)
-        ).andReturn();
+        ).andExpect(status().isOk())
 
-        assertEquals(200, result.getResponse().getStatus());
+        .andExpect(jsonPath("$.items").isArray())
+        .andExpect(jsonPath("$.items.length()").isNumber());
     }
 }

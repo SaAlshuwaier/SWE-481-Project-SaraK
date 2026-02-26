@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { JsonPipe } from '@angular/common';
+import { Router, RouterOutlet } from '@angular/router';
+import { JsonPipe, CommonModule } from '@angular/common';
 
 import { CartService } from './core/services/CartService';
 import { CartDto } from './core/models/CartDto';
@@ -24,12 +24,9 @@ import { StarDto } from './core/models/StarDto';
 import { GenreService } from './core/services/GenreService';
 import { GenreDto } from './core/models/GenreDto';
 
-
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet,
-    JsonPipe
-  ],
+  imports: [CommonModule, RouterOutlet, JsonPipe],
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })
@@ -54,6 +51,7 @@ export class App {
   genreError = signal<string | null>(null);
 
   constructor(
+    public router: Router,          // add this
     private cart: CartService,
     private movie: MovieService,
     private auth: AuthService,
@@ -229,21 +227,6 @@ export class App {
     });
   }
 
-  // GET /api/movies/{movieId}/stars
-  starsOfMovieGet() {
-    //Reset States, for a new Req
-    this.starListResult.set(null);
-    this.starError.set(null);
-
-    this.star.getStarsOfMovie(this.dummyMovieId).subscribe({
-      next: (res) => {
-        alert('Successfully reached GET /api/movies/{movieId}/stars');
-        this.starListResult.set(res);
-      },
-      error: (err) => this.starError.set(err?.message ?? 'Get Stars of movies failed'),
-    });
-  }
-
   // GET /api/stars/${starId}/movies
   moviesOfStarGet() {
     //Reset States, for a new Req
@@ -372,3 +355,5 @@ export class App {
 
 
 }
+
+

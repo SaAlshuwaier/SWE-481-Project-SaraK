@@ -7,8 +7,9 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 /**
@@ -23,9 +24,11 @@ public class GenreControllerIntegrationTesting {
 
     @Test
     void getAllGenres() throws Exception {
-        MvcResult result = mockMvc.perform(
+        mockMvc.perform(
                 get("/api/genres")
-        ).andReturn();
-        assertEquals(200, result.getResponse().getStatus());
+        ).andExpect(status().isOk())
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$[0].id").isNumber())
+        .andExpect(jsonPath("$[0].name").isString());
     }
 }

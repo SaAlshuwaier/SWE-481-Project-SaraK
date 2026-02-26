@@ -27,13 +27,6 @@ public class StarController {
         return ResponseEntity.ok(starService.getStar(starId));
     }
 
-    @GetMapping("/movies/{movieId}/stars")
-    public ResponseEntity<List<Star>> getStarsOfMovie(
-            @PathVariable String movieId
-    ) {
-        return ResponseEntity.ok(starService.getStarsOfMovie(movieId));
-    }
-
     @GetMapping("/stars/{starId}/movies")
     public ResponseEntity<List<Movie>> getStarMovies(
             @PathVariable String starId

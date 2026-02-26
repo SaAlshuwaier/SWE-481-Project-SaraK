@@ -1,0 +1,133 @@
+ :host{
+  display: block;
+  background: #fff;
+  color: #111;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.app-header{
+  max-width: 980px;
+  margin: 22px auto 0;
+  padding: 14px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.app-logo{
+  width: 100px;
+  height: 58px;
+  border-radius: 12px;
+  padding: 8px;
+  background: #fff;
+}
+
+.app-title h1{
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.app-title p{
+  margin: 4px 0 0 0;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.page-wrap{
+  max-width: 980px;
+  margin: 14px auto 0;
+  padding: 0 16px 30px;
+}
+
+.card{
+  border: 2px solid #000;
+  border-radius: 12px;
+  background: #fff;
+  padding: 18px;
+}
+
+.back-link{
+  display: inline-block;
+  margin-bottom: 12px;
+  text-decoration: none;
+  font-weight: 800;
+  color: #920513;
+}
+
+.back-link:hover{
+  text-decoration: underline;
+}
+
+.title{
+  margin: 0 0 10px 0;
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.meta{
+  margin-bottom: 18px;
+}
+
+.meta-row{
+  display: flex;
+  gap: 8px;
+}
+
+.label{
+  font-weight: 900;
+  min-width: 110px;
+}
+
+.value{
+  color: #111;
+}
+
+.section{
+  margin-top: 18px;
+}
+
+.section-title{
+  margin: 0 0 10px 0;
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+
+/* Movie list with a subtle left bar */
+.movie-list{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.movie-list li{
+  border-left: 4px solid #920513;
+  padding-left: 12px;
+}
+
+.movie-link{
+  color: #920513;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.movie-link:hover{
+  text-decoration: underline;
+}
+
+.muted{
+  color: #555;
+  font-weight: 700;
+}
+
+.err-box{
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 2px solid #d81b2e;
+  border-radius: 10px;
+  color: #d81b2e;
+  font-weight: 900;
+}

@@ -1,4 +1,5 @@
-<header class="app-header">
+<div *ngIf="router.url === '/'">
+  <header class="app-header">
   <img class="app-logo" src="/favicon.ico" alt="PLOT BOX logo" />
 
   <div class="app-title">
@@ -13,7 +14,6 @@
     <h2>Star Service</h2>
     <div class="btn-row">
       <button class="btn" (click)="starGet()">Star Details</button>
-      <button class="btn" (click)="starsOfMovieGet()">Stars of a movie</button>
       <button class="btn" (click)="moviesOfStarGet()">movies of a star</button>    </div>
   </div>
 
@@ -62,3 +62,6 @@
   </div>
 
 </section>
+</div>
+<!-- Router outlet for other pages -->
+<router-outlet></router-outlet>
