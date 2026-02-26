@@ -86,7 +86,7 @@ export class BrowseMoviesComponent implements OnInit {
   order: 'asc' | 'desc' = 'asc';
 
   ngOnInit(): void {
-   // this.loadMovies(1); for backend integration
+    //this.loadMovies(1); for backend E2E
     this.applySorting();
   }
 
@@ -96,7 +96,7 @@ export class BrowseMoviesComponent implements OnInit {
       .subscribe(state => {
         this.pageState = state;
         this.movies = state.movies;
-        this.applySorting(); //what the frontEnd applies
+        this.applySorting(); //what the frontEnd applies, must be called on each load
       });
   }
 
@@ -153,12 +153,7 @@ export class BrowseMoviesComponent implements OnInit {
   }
 
   /**
-   * Applies frontend sorting to the movies of the CURRENT page.
-   *
-   * This method should be called when:
-   *  - a new page is loaded from the backend
-   *  - the sort field changes
-   *  - the sort order changes
+   * Applies frontend sorting to the movies of the current page.
    */
   applySorting(): void {
     // Clone the array to avoid mutating backend state

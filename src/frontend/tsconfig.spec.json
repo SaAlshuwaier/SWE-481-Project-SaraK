@@ -5,23 +5,12 @@
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
     "types": [
-      "vitest/globals"
+      "vitest/globals",
+      "jasmine"
     ]
   },
   "include": [
     "src/**/*.d.ts",
     "src/**/*.spec.ts"
-  ],
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "outDir": "./out-tsc/spec",
-    "types": [
-      "jasmine",
-      "node"
-    ]
-  },
-  "include": [
-    "**/*.spec.ts",
-    "**/*.d.ts"
   ]
 }
