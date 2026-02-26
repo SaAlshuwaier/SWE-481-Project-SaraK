@@ -4,11 +4,11 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 
 import { MovieDetailsPageComponent } from './movieDetailsPage';
-import { MovieService } from '../core/services/MovieService';
-import { CartService } from '../core/services/CartService';
+import { MovieService } from '../../core/services/MovieService';
+import { CartService } from '../../core/services/CartService';
 
-import { MovieDto } from '../core/models/MovieDto';
-import { CartDto } from '../core/models/CartDto';
+import { MovieDto } from '../../core/models/MovieDto';
+import { CartDto } from '../../core/models/CartDto';
 
 describe('MovieDetailsPageComponent', () => {
 

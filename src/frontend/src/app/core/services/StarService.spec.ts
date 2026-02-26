@@ -41,7 +41,11 @@ describe('StarService (HTTP Mock Tests)', () => {
 
     // Act
     service.getStar(mockStar.id).subscribe(response => {
-      
+      // Key existence
+      expect('id' in response).toBeTrue();
+      expect('name' in response).toBeTrue();
+      expect('birthYear' in response).toBeTrue();
+
       // Type validation
       expect(typeof response.id).toBe('string');
       expect(typeof response.name).toBe('string');
@@ -122,6 +126,15 @@ describe('StarService (HTTP Mock Tests)', () => {
       expect(response.length).toBe(1);
 
       const movie = response[0];
+      
+      // Key existence
+      expect('id' in movie).toBeTrue();
+      expect('title' in movie).toBeTrue();
+      expect('year' in movie).toBeTrue();
+      expect('director' in movie).toBeTrue();
+      expect('rating' in movie).toBeTrue();
+      expect('genres' in movie).toBeTrue();
+      expect('stars' in movie).toBeTrue();
 
       // Type validation
       expect(typeof movie.id).toBe('string');
