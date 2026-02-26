@@ -1,5 +1,4 @@
-<div *ngIf="router.url === '/'">
-  <header class="app-header">
+<header *ngIf="router.url === '/' " class="app-header">
   <img class="app-logo" src="/favicon.ico" alt="PLOT BOX logo" />
 
   <div class="app-title">
@@ -9,63 +8,6 @@
 
 <section class="api-stack">
 
-<<<<<<< HEAD
-  <div class="api-box">
-    <h2>Star Service</h2>
-    <div class="btn-row">
-      <button class="btn" (click)="starGet()">Star Details</button>
-      <button class="btn" (click)="moviesOfStarGet()">movies of a star</button>    </div>
-  </div>
-
-  <div class="api-box">
-    <h2>Genre Service</h2>
-    <div  class="btn-row">
-      <button class="btn" (click)="allGenresGet()">All Genres</button>    </div>
-  </div>
-
-  <div class="api-box">
-    <h2>Cart Service</h2>
-    <div class="btn-row">
-      <button class="btn" (click)="cartGet()">View Cart</button>
-      <button class="btn" (click)="cartAdd()">Add Item</button>
-      <button class="btn" (click)="cartUpdate()">Update Quantity</button>
-      <button class="btn" (click)="cartDelete()">Delete Item</button>
-    </div>
-  </div>
-
-  <div class="api-box">
-    <h2>Movie Service</h2>
-    <div class="btn-row">
-      <button class="btn" (click)="movieSearch()">Search</button>
-      <button class="btn" (click)="movieBrowseGenre()">BROWSE BY GENRE</button>
-      <button class="btn" (click)="movieBrowseFirstLetter()">Browse by first letter</button>
-      <button class="btn" (click)="movieGetById()">Movie details</button>
-    </div>
-  </div>
-
-
-  <div class="api-box">
-    <h2>Auth Service</h2>
-    <div class="btn-row">
-      <button class="btn" (click)="authRegister()">Register</button>
-      <button class="btn" (click)="authLogin()">Login</button>
-      <button class="btn" (click)="authLogout()">Logout</button>
-    </div>
-  </div>
-
-
-  <div class="api-box">
-    <h2>Checkout Service</h2>
-    <div class="btn-row">
-      <button class="btn" (click)="doCheckout()">Checkout</button>
-    </div>
-  </div>
-
-=======
   <!-- HomePage is the main Route -->
   <router-outlet></router-outlet>
->>>>>>> origin/main
 </section>
-</div>
-<!-- Router outlet for other pages -->
-<router-outlet></router-outlet>

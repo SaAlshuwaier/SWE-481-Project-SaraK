@@ -65,8 +65,7 @@
           <!-- Clicking star navigates to /stars/:starId -->
           <li *ngFor="let s of m.stars">
             <a class="link"
-               [routerLink]="['/stars', s.id]">
-              {{ s.name }}
+             [routerLink]="['/movies', m.id, 'stars', s.id]">{{ s.name }}            
             </a>
           </li>
         </ul>

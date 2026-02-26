@@ -1,13 +1,12 @@
 import { Routes } from '@angular/router';
 import { MovieDetailsPageComponent } from './pages/MovieDetailsPage/movieDetailsPage';
-import { App } from './app';
 import { StarDetailsPageComponent } from './pages/StarDetailsPage/starDetailsPage';
 import { BrowseMoviesComponent } from './pages/browseMovies/browseMovies.component';
 
 export const routes: Routes = [
     {path: 'movies/:movieId', component: MovieDetailsPageComponent},
-      {path: 'stars/:starId', component: StarDetailsPageComponent},
-      
+      {path: 'movies/:movieId/stars/:starId', component: StarDetailsPageComponent},
+
   {  path: '',
     redirectTo: 'movies',
     pathMatch: 'full'
