@@ -4,9 +4,9 @@
     <h1>Browse Movies</h1>
 
     <div class="controls">
-      <span class="genre">
-        Genre: <strong>{{ currentGenre }}</strong>
-      </span>
+    <span class="context" *ngIf="contextTitle">
+      <strong>{{ contextTitle }}</strong>
+    </span>
 
       <select (change)="onSortChange($event)">
         <option value="title">Title</option>
@@ -26,28 +26,34 @@
   <div class="movies">
     <div class="movie-card" *ngFor="let movie of sortedMovies">
 
-      <h3>{{ movie.title }}</h3>
+      <h3>
+        <a
+          [routerLink]="['/movies', movie.id]"
+          class="movie-title-link"
+        >
+          {{ movie.title }}
+        </a>
+      </h3>
       <p>Year: {{ movie.year }}</p>
       <p>Director: {{ movie.director }}</p>
 
       <p>
         Genres:
-        <span *ngFor="let g of movie.genres; let last = last">
-    <a [routerLink]="['/genres', g.id]" class="genre-link">
-      {{ g.name }}
-    </a>
-    <span *ngIf="!last">, </span>
-  </span>
+        <ng-container *ngFor="let g of movie.genres; let last = last">
+          <a
+            [routerLink]="['/movies/genre', g.id]"
+            [queryParams]="{ genreName: g.name }"
+          >
+            {{ g.name }}
+          </a><span *ngIf="!last">, </span>
+        </ng-container>
       </p>
 
       <p>
         Stars:
-        <span *ngFor="let s of movie.stars; let last = last">
-    <a [routerLink]="['/star', s.id]" class="star-link">
-      {{ s.name }}
-    </a>
-    <span *ngIf="!last">, </span>
-  </span>
+        <ng-container *ngFor="let s of movie.stars; let last = last">
+          <a [routerLink]="['/movies/star', s.id]">{{ s.name }}</a><span *ngIf="!last">, </span>
+        </ng-container>
       </p>
 
     </div>

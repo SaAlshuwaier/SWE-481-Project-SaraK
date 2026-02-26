@@ -4,7 +4,7 @@ import {MovieDto} from '../../core/models/MovieDto';
 import {MovieService} from '../../core/services/MovieService';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
-import {RouterModule} from '@angular/router';
+import {ActivatedRoute, Params, RouterModule} from '@angular/router';
 
 @Component({
   selector: 'app-browse-movies',
@@ -13,25 +13,25 @@ import {RouterModule} from '@angular/router';
   styleUrls: ['./browseMovies.component.css']
 })
 export class BrowseMoviesComponent implements OnInit {
+  pageState!: MoviesPageStateDto;
 
-  constructor(private movieService: MovieService) {}
+  // Movies returned from backend (filled with dummy for now)
+  movies: MovieDto[] = [];
+  // Movies after frontend sorting
+  sortedMovies: MovieDto[] = [];
+  //for html page title rendering
+  contextTitle = '';
 
-  //Browsing context will be routed later, taken from the homePage
-  genreId = 1;
-  currentGenre = 'Drama';
+  //init
+  page = 1;
+  pageSize = 20;
 
-  //using the Backend-driven state of paging here. dummy data for now
-  pageState: MoviesPageStateDto = {
-    page: 1,
-    pageSize: 20,
-    totalResults: 0,
-    totalPages: 2,
-    hasPrev: false,
-    hasNext: false,
-    movies: []
-  };
-  //Dummy for now, here the returned movies from the backend
-  movies: MovieDto[] = [
+  //constants
+  sortBy: 'title' | 'year' | 'director' | 'star' = 'title';
+  order: 'asc' | 'desc' = 'asc';
+
+  // Dummy Data
+  dummyMovies: MovieDto[] = [
     {
       id: 'tt1',
       title: 'Zebra Story',
@@ -39,9 +39,7 @@ export class BrowseMoviesComponent implements OnInit {
       director: 'Alice Brown',
       rating: 7.2,
       genres: [{ id: 1, name: 'Drama' }],
-      stars: [
-        { id: 'nm3', name: 'Chris Evans', birthYear: 1981 }
-      ]
+      stars: [{ id: 'nm3', name: 'Chris Evans', birthYear: 1981 }]
     },
     {
       id: 'tt2',
@@ -50,9 +48,7 @@ export class BrowseMoviesComponent implements OnInit {
       director: 'David Clark',
       rating: 8.1,
       genres: [{ id: 2, name: 'Action' }],
-      stars: [
-        { id: 'nm1', name: 'Tom Hardy', birthYear: 1993 }
-      ]
+      stars: [{ id: 'nm1', name: 'Tom Hardy', birthYear: 1993 }]
     },
     {
       id: 'tt3',
@@ -61,9 +57,7 @@ export class BrowseMoviesComponent implements OnInit {
       director: 'Brian Adams',
       rating: 6.9,
       genres: [{ id: 3, name: 'Fiction' }],
-      stars: [
-        { id: 'nm2', name: 'Leonardo DiCaprio', birthYear: 1980 }
-      ]
+      stars: [{ id: 'nm2', name: 'Leonardo DiCaprio', birthYear: 1980 }]
     },
     {
       id: 'tt4',
@@ -72,91 +66,154 @@ export class BrowseMoviesComponent implements OnInit {
       director: 'Aaron Smith',
       rating: 7.9,
       genres: [{ id: 1, name: 'Drama' }],
-      stars: [
-        { id: 'nm4', name: 'Brad Pitt', birthYear: 1963 }
-      ]
+      stars: [{ id: 'nm4', name: 'Brad Pitt', birthYear: 1963 }]
     }
   ];
 
-  //sorting done on frontend, the copy the frontend will display
-  sortedMovies: MovieDto[] = [];
-
-  //for sort and order
-  sortBy: 'title' | 'year' | 'director' | 'star' = 'title';
-  order: 'asc' | 'desc' = 'asc';
-
+  constructor(
+    private route: ActivatedRoute,
+    private movieService: MovieService
+  ) {}
   ngOnInit(): void {
-    //this.loadMovies(1); for backend E2E
+
+    this.route.paramMap.subscribe(params => {
+
+      this.page = 1;
+
+      const genreIdParam = params.get('genreId');
+      const starIdParam = params.get('starId');
+
+      // Browse by Genre (dummy simulation)
+      if (genreIdParam) {
+        const genreId = Number(genreIdParam);
+        const genreName = this.route.snapshot.queryParams['genreName'];
+
+        this.contextTitle = genreName
+          ? `Genre: ${genreName}`
+          : 'Genre Movies';
+
+        const filteredMovies = this.dummyMovies.filter(movie =>
+          movie.genres?.some(g => g.id === genreId)
+        );
+
+        this.updateState({
+          page: 1,
+          pageSize: this.pageSize,
+          totalResults: filteredMovies.length,
+          totalPages: 1,
+          hasPrev: false,
+          hasNext: false,
+          movies: filteredMovies
+        });
+
+        return;
+      }
+
+      //Browse by Star (dummy simulation)
+      if (starIdParam) {
+        this.contextTitle = 'Star Movies';
+
+        const filteredMovies = this.dummyMovies.filter(movie =>
+          movie.stars?.some(s => s.id === starIdParam)
+        );
+
+        this.updateState({
+          page: 1,
+          pageSize: this.pageSize,
+          totalResults: filteredMovies.length,
+          totalPages: 1,
+          hasPrev: false,
+          hasNext: false,
+          movies: filteredMovies
+        });
+
+        return;
+      }
+
+      // Default: Browse all movies
+      this.contextTitle = 'Browse Movies';
+
+      this.updateState({
+        page: 1,
+        pageSize: this.pageSize,
+        totalResults: this.dummyMovies.length,
+        totalPages: 1,
+        hasPrev: false,
+        hasNext: false,
+        movies: this.dummyMovies
+      });
+
+    });
+  }
+
+  private loadMovies(params: Params): void {
+
+    // Browse by genre
+    if (params['genreId']) {
+      this.contextTitle = `Genre: ${params['genreName']}`;
+      this.movieService
+        .browseMoviesByGenre(+params['genreId'], this.page, this.pageSize)
+        .subscribe(state => this.updateState(state));
+      return;
+    }
+
+    // Browse by first letter
+    if (params['letter']) {
+      this.contextTitle = `Movies Starting With: ${params['letter']}`;
+      this.movieService
+        .browseMoviesByFirstLetter(params['letter'], this.page, this.pageSize)
+        .subscribe(state => this.updateState(state));
+      return;
+    }
+
+    // Search (title / director / star / year)
+    this.contextTitle = 'Search Results';
+    this.movieService
+      .searchMovies(
+        params['title'],
+        params['year'],
+        params['director'],
+        params['star'],
+        this.page,
+        this.pageSize
+      )
+      .subscribe(state => this.updateState(state));
+  }
+
+
+  private updateState(state: MoviesPageStateDto): void {
+    this.pageState = state;
+    this.movies = state.movies;
     this.applySorting();
   }
 
-  loadMovies(page: number): void {
-    this.movieService
-      .browseMoviesByGenre(this.genreId, page, 20)
-      .subscribe(state => {
-        this.pageState = state;
-        this.movies = state.movies;
-        this.applySorting(); //what the frontEnd applies, must be called on each load
-      });
+  onSortChange(event: Event): void {
+    this.sortBy = (event.target as HTMLSelectElement)
+      .value as 'title' | 'year' | 'director' | 'star';
+    this.applySorting();
   }
 
-  /**
-   * Pages handling
-   */
+  onOrderChange(event: Event): void {
+    this.order = (event.target as HTMLSelectElement)
+      .value as 'asc' | 'desc';
+    this.applySorting();
+  }
+
   nextPage(): void {
     if (this.pageState.hasNext) {
-      this.loadMovies(this.pageState.page + 1);
+      this.page++;
+      this.loadMovies(this.route.snapshot.queryParams);
     }
   }
+
   previousPage(): void {
     if (this.pageState.hasPrev) {
-      this.loadMovies(this.pageState.page - 1);
+      this.page--;
+      this.loadMovies(this.route.snapshot.queryParams);
     }
   }
 
-  private getSortValue(movie: MovieDto): string | number {
-    switch (this.sortBy) {
-
-      case 'title':
-        return movie.title.toLowerCase();
-      case 'year':
-        return movie.year;
-      case 'director':
-        return movie.director.toLowerCase();
-      case 'star': {
-        if (!movie.stars || movie.stars.length === 0) {
-          return '';
-        }
-        // sort stars alphabetically and take the first one
-        return movie.stars
-          .slice()
-          .sort((a, b) => a.name.localeCompare(b.name))[0]
-          .name
-          .toLowerCase();
-      }
-    }
-  }
-
-  /**
-   * Triggered when the user changes the "Sort By" option.
-   * Sorting or ordering is re-applied without reloading data from backend.
-   */
-  onSortChange(event: Event): void {
-    const value = (event.target as HTMLSelectElement).value;
-    this.sortBy = value as 'title' | 'year' | 'director' | 'star';
-    this.applySorting();
-  }
-  onOrderChange(event: Event): void {
-    const value = (event.target as HTMLSelectElement).value;
-    this.order = value as 'asc' | 'desc';
-    this.applySorting();
-  }
-
-  /**
-   * Applies frontend sorting to the movies of the current page.
-   */
-  applySorting(): void {
-    // Clone the array to avoid mutating backend state
+  public applySorting(): void {
     this.sortedMovies = [...this.movies].sort((a, b) => {
       const aVal = this.getSortValue(a);
       const bVal = this.getSortValue(b);
@@ -165,5 +222,23 @@ export class BrowseMoviesComponent implements OnInit {
       if (aVal > bVal) return this.order === 'asc' ? 1 : -1;
       return 0;
     });
+  }
+
+  private getSortValue(movie: MovieDto): string | number {
+    switch (this.sortBy) {
+      case 'title':
+        return movie.title.toLowerCase();
+      case 'year':
+        return movie.year;
+      case 'director':
+        return movie.director.toLowerCase();
+      case 'star':
+        if (!movie.stars || movie.stars.length === 0) return '';
+        return movie.stars
+          .slice()
+          .sort((a, b) => a.name.localeCompare(b.name))[0]
+          .name
+          .toLowerCase();
+    }
   }
 }

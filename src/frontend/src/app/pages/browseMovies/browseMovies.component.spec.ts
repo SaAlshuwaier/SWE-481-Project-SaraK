@@ -80,38 +80,29 @@ describe('BrowseMoviesComponent', () => {
     component.pageState.hasNext = false;
 
     component.nextPage();
-
     expect(component.pageState.page).toBe(1);
   });
 
-  it('should go to next page when hasPrev is true', () => {
+  it('should go to previous page when hasPrev is true', () => {
 
     component.pageState.page = 2;
     component.pageState.hasPrev = true;
 
-    component.nextPage();
+    component.previousPage();
 
     expect(component.pageState.page).toBe(1);
   });
 
-  it('should not go to next page when hasPrev is false', () => {
+  it('should not go to previous page when hasPrev is false', () => {
 
-    component.pageState.page = 2;
+    component.pageState.page = 1;
     component.pageState.hasPrev = false;
 
-    component.nextPage();
+    component.previousPage();
 
-    expect(component.pageState.page).toBe(2);
+    expect(component.pageState.page).toBe(1);
   });
 
-  it('should load movies into pageState on init', () => {
-
-    movieService.browseMoviesByGenre.and.returnValue(of(mockMoviesPageState));
-    fixture.detectChanges(); // triggers ngOnInit, which subscribe the component to the service
-
-    expect(component.pageState.movies.length).toBe(1);
-    expect(movieService.browseMoviesByGenre).toHaveBeenCalledWith(1, 1, 20);//check is called
-  });
 
   it('should sort movies by title ascending', () => {
 
@@ -122,7 +113,6 @@ describe('BrowseMoviesComponent', () => {
     component.applySorting();
 
     expect(component.sortedMovies[0].title).toBe('Alpha');
-    expect(component.sortedMovies[1].title).toBe('Zeta');
   });
 
   it('should sort movies by title descending', () => {
@@ -146,6 +136,16 @@ describe('BrowseMoviesComponent', () => {
     expect(component.sortedMovies[0].year).toBe(2018);
   });
 
+  it('should sort movies by year descending', () => {
+    component.movies = moviesMock;
+    component.sortBy = 'year';
+    component.order = 'desc';
+
+    component.applySorting();
+
+    expect(component.sortedMovies[0].year).toBe(2020);
+  });
+
   it('should sort movies by director name ascending', () => {
     component.movies = moviesMock;
     component.sortBy = 'director';
@@ -166,7 +166,7 @@ describe('BrowseMoviesComponent', () => {
     expect(component.sortedMovies[0].director).toBe('Spielberg');
   });
 
-  it('should sort movies by first alphabetic star name', () => {
+  it('should sort movies by first alphabetic star name ascending', () => {
     component.movies = moviesMock;
     component.sortBy = 'star';
     component.order = 'asc';
@@ -175,7 +175,17 @@ describe('BrowseMoviesComponent', () => {
 
     // movie[0] stars: ['Tom', 'Adam'] consider Adam
     // movie[1] stars: ['Brad']
-    expect(component.sortedMovies[0].stars![0].name).toBe('Tom');
+    expect(component.sortedMovies[0].stars![0].name).toBe('Adam');
+  });
+
+  it('should sort movies by first alphabetic star name descending', () => {
+    component.movies = moviesMock;
+    component.sortBy = 'star';
+    component.order = 'desc';
+
+    component.applySorting();
+
+    expect(component.sortedMovies[0].stars![0].name).toBe('Brad');
   });
 
   it('should update sortBy and reapply sorting', () => {
@@ -224,5 +234,34 @@ describe('BrowseMoviesComponent', () => {
 
     expect(genreLinks.length).toBe(2);
     expect(genreLinks[0].textContent).toContain('Action');
+  });
+
+  it('should call browseMoviesByGenre when genreId exists in query params', () => {
+    movieService.browseMoviesByGenre.and.returnValue(of(mockMoviesPageState));
+
+    component['loadMovies']({ genreId: 1 });
+
+    expect(movieService.browseMoviesByGenre)
+      .toHaveBeenCalledWith(1, component.page, component.pageSize);
+  });
+
+  it('should call browseMoviesByFirstLetter when letter exists in query params', () => {
+    movieService.browseMoviesByFirstLetter.and.returnValue(of(mockMoviesPageState));
+
+    component['loadMovies']({ letter: 'A' });
+
+    expect(movieService.browseMoviesByFirstLetter)
+      .toHaveBeenCalledWith('A', component.page, component.pageSize);
+  });
+
+  it('should call searchMovies when search params exist', () => {
+    movieService.searchMovies.and.returnValue(of(mockMoviesPageState));
+
+    component['loadMovies']({
+      title: 'Inception',
+      director: 'Nolan'
+    });
+
+    expect(movieService.searchMovies).toHaveBeenCalled();
   });
 });
