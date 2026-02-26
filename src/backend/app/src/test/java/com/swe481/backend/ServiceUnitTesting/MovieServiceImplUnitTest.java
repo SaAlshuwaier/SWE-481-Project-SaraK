@@ -1,9 +1,11 @@
 package com.swe481.backend.ServiceUnitTesting;
 import com.swe481.backend.model.MoviesPageState;
-import com.swe481.backend.ServiceUnitTesting.serviceInterface.MovieService;
-import com.swe481.backend.ServiceUnitTesting.serviceImp.MovieServiceImpl;
+import com.swe481.backend.service.serviceImp.MovieServiceImpl;
+import com.swe481.backend.service.serviceInterface.MovieService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -12,13 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class MovieServiceImplUnitTest {
 
-    private MovieService movieService;
-
-    @BeforeEach
-    void setUp() {
-    //instance to be tested
-    movieService = new MovieServiceImpl();
-    }
+    @InjectMocks
+    private MovieServiceImpl movieService;
 
     // test suite of searchMovies() method
     @Test
