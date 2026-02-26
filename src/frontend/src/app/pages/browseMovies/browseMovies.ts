@@ -14,65 +14,79 @@ import {RouterModule} from '@angular/router';
 })
 export class BrowseMoviesComponent implements OnInit {
 
-  //Browsing context will be routed later
+  constructor(private movieService: MovieService) {}
+
+  //Browsing context will be routed later, taken from the homePage
   genreId = 1;
   currentGenre = 'Drama';
 
-  //using the Backend-driven state. dummy data for now
+  //using the Backend-driven state of paging here. dummy data for now
   pageState: MoviesPageStateDto = {
     page: 1,
     pageSize: 20,
     totalResults: 0,
-    totalPages: 1,
+    totalPages: 2,
     hasPrev: false,
     hasNext: false,
     movies: []
   };
-
+  //Dummy for now, here the returned movies from the backend
   movies: MovieDto[] = [
     {
       id: 'tt1',
-      title: 'Dummy Movie A',
-      year: 2005,
-      director: 'Director Z',
-      rating: 7.8,
-      genres: [
-        { id: 1, name: 'Drama' },
-        { id: 2, name: 'Action' }
-      ],
+      title: 'Zebra Story',
+      year: 2018,
+      director: 'Alice Brown',
+      rating: 7.2,
+      genres: [{ id: 1, name: 'Drama' }],
       stars: [
-        { id: 'nm1', name: 'Tom Hardy' , birthYear:1993},
-        { id: 'nm2', name: 'Leonardo DiCaprio',birthYear:1980}
+        { id: 'nm3', name: 'Chris Evans', birthYear: 1981 }
       ]
     },
     {
-      id: 'tt1',
-      title: 'Dummy Movie A',
+      id: 'tt2',
+      title: 'Alpha Movie',
       year: 2005,
-      director: 'Director Z',
-      rating: 7.8,
-      genres: [
-        { id: 1, name: 'Drama' },
-        { id: 2, name: 'fiction' }
-      ],
+      director: 'David Clark',
+      rating: 8.1,
+      genres: [{ id: 2, name: 'Action' }],
       stars: [
-        { id: 'nm1', name: 'Tom Hardy' , birthYear:1993},
-        { id: 'nm2', name: 'Leonardo DiCaprio',birthYear:1980}
+        { id: 'nm1', name: 'Tom Hardy', birthYear: 1993 }
       ]
     },
+    {
+      id: 'tt3',
+      title: 'Middle Ground',
+      year: 2012,
+      director: 'Brian Adams',
+      rating: 6.9,
+      genres: [{ id: 3, name: 'Fiction' }],
+      stars: [
+        { id: 'nm2', name: 'Leonardo DiCaprio', birthYear: 1980 }
+      ]
+    },
+    {
+      id: 'tt4',
+      title: 'Another Tale',
+      year: 2022,
+      director: 'Aaron Smith',
+      rating: 7.9,
+      genres: [{ id: 1, name: 'Drama' }],
+      stars: [
+        { id: 'nm4', name: 'Brad Pitt', birthYear: 1963 }
+      ]
+    }
   ];
 
-  //sorting done on frontend
+  //sorting done on frontend, the copy the frontend will display
   sortedMovies: MovieDto[] = [];
 
   //for sort and order
   sortBy: 'title' | 'year' | 'director' | 'star' = 'title';
   order: 'asc' | 'desc' = 'asc';
 
-  constructor(private movieService: MovieService) {}
-
   ngOnInit(): void {
-   // this.loadMovies(1); for backend
+   // this.loadMovies(1); for backend integration
     this.applySorting();
   }
 
@@ -86,35 +100,39 @@ export class BrowseMoviesComponent implements OnInit {
       });
   }
 
+  /**
+   * Pages handling
+   */
   nextPage(): void {
     if (this.pageState.hasNext) {
       this.loadMovies(this.pageState.page + 1);
     }
   }
-
   previousPage(): void {
     if (this.pageState.hasPrev) {
       this.loadMovies(this.pageState.page - 1);
     }
   }
 
-
   private getSortValue(movie: MovieDto): string | number {
     switch (this.sortBy) {
 
       case 'title':
         return movie.title.toLowerCase();
-
       case 'year':
         return movie.year;
-
       case 'director':
         return movie.director.toLowerCase();
-
-      // We use the FIRST star alphabetically to keep
-      // sorting deterministic and consistent.
       case 'star': {
-        return movie.director.toLowerCase(); //SEEETHIS
+        if (!movie.stars || movie.stars.length === 0) {
+          return '';
+        }
+        // sort stars alphabetically and take the first one
+        return movie.stars
+          .slice()
+          .sort((a, b) => a.name.localeCompare(b.name))[0]
+          .name
+          .toLowerCase();
       }
     }
   }
