@@ -45,15 +45,6 @@ export class StarDetailsPageComponent implements OnDestroy {
       genres: [{ id: 16, name: 'Mystery' }],
       stars: [],
     },
-    {
-      id: 'tt0000002',
-      title: 'Mock Movie 2',
-      year: 2025,
-      director: 'Another Director',
-      rating: 4.1,
-      genres: [{ id: 4, name: 'Action' }],
-      stars: [],
-    },
   ];
 
   star = signal<StarDto | null>(null);

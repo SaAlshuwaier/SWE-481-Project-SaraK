@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -14,7 +15,10 @@ describe('StarDetailsPageComponent', () => {
   let component: StarDetailsPageComponent;
   let fixture: ComponentFixture<StarDetailsPageComponent>;
 
-  let starService: jasmine.SpyObj<StarService>;
+  let starService: {
+      getStar: ReturnType<typeof vi.fn>;
+      getMoviesOfStar: ReturnType<typeof vi.fn>;
+    };
 
   // mocks created in beforeEach
   let mockStar: StarDto;
@@ -23,10 +27,10 @@ describe('StarDetailsPageComponent', () => {
   beforeEach(async () => {
 
     // create mock service
-    starService = jasmine.createSpyObj('StarService', [
-      'getStar',
-      'getMoviesOfStar',
-    ]);
+    starService = {
+      getStar: vi.fn(),
+      getMoviesOfStar: vi.fn(),
+    };
 
     // create mock data
     mockStar = {
@@ -79,8 +83,8 @@ describe('StarDetailsPageComponent', () => {
 
   it('should load star and its movies on init (check each key)', () => {
     // Arrange
-    starService.getStar.and.returnValue(of(mockStar));
-    starService.getMoviesOfStar.and.returnValue(of(mockMovies));
+    starService.getStar.mockReturnValue(of(mockStar));
+    starService.getMoviesOfStar.mockReturnValue(of(mockMovies));
 
     // Act
     fixture.detectChanges(); // triggers ngOnInit
@@ -126,8 +130,8 @@ describe('StarDetailsPageComponent', () => {
 
   it('should render movies as hyperlinks (anchor + correct titles)', () => {
     // Arrange
-    starService.getStar.and.returnValue(of(mockStar));
-    starService.getMoviesOfStar.and.returnValue(of(mockMovies));
+    starService.getStar.mockReturnValue(of(mockStar));
+    starService.getMoviesOfStar.mockReturnValue(of(mockMovies));
 
     // Act
     fixture.detectChanges();
@@ -147,7 +151,7 @@ describe('StarDetailsPageComponent', () => {
     // 3) correct text based on mock titles
     const renderedTexts = Array.from(movieLinks).map(a => (a.textContent ?? '').trim());
     for (const m of mockMovies) {
-      expect(renderedTexts.some(t => t.includes(String(m.title)))).toBeTrue();
+      expect(renderedTexts.some(t => t.includes(String(m.title)))).toBe(true);
     }
   });
 

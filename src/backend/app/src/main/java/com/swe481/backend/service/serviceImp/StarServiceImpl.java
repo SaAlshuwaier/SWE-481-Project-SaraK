@@ -1,5 +1,4 @@
 package com.swe481.backend.service.serviceImp;
-import com.swe481.backend.model.Genre;
 import com.swe481.backend.model.Movie;
 import com.swe481.backend.model.Star;
 import com.swe481.backend.service.serviceInterface.StarService;

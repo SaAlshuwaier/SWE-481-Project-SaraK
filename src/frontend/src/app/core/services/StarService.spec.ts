@@ -42,9 +42,9 @@ describe('StarService (HTTP Mock Tests)', () => {
     // Act
     service.getStar(mockStar.id).subscribe(response => {
       // Key existence
-      expect('id' in response).toBeTrue();
-      expect('name' in response).toBeTrue();
-      expect('birthYear' in response).toBeTrue();
+      expect('id' in response).toBeTruthy();
+      expect('name' in response).toBeTruthy();
+      expect('birthYear' in response).toBeTruthy();
 
       // Type validation
       expect(typeof response.id).toBe('string');
@@ -128,13 +128,13 @@ describe('StarService (HTTP Mock Tests)', () => {
       const movie = response[0];
       
       // Key existence
-      expect('id' in movie).toBeTrue();
-      expect('title' in movie).toBeTrue();
-      expect('year' in movie).toBeTrue();
-      expect('director' in movie).toBeTrue();
-      expect('rating' in movie).toBeTrue();
-      expect('genres' in movie).toBeTrue();
-      expect('stars' in movie).toBeTrue();
+      expect('id' in movie).toBeTruthy();
+      expect('title' in movie).toBeTruthy();
+      expect('year' in movie).toBeTruthy();
+      expect('director' in movie).toBeTruthy();
+      expect('rating' in movie).toBeTruthy();
+      expect('genres' in movie).toBeTruthy();
+      expect('stars' in movie).toBeTruthy();
 
       // Type validation
       expect(typeof movie.id).toBe('string');
@@ -143,8 +143,8 @@ describe('StarService (HTTP Mock Tests)', () => {
       expect(typeof movie.director).toBe('string');
       expect(typeof movie.rating).toBe('number');
 
-      expect(Array.isArray(movie.genres)).toBeTrue();
-      expect(Array.isArray(movie.stars)).toBeTrue();
+      expect(Array.isArray(movie.genres)).toBeTruthy();
+      expect(Array.isArray(movie.stars)).toBeTruthy();
 
       // Validate nested genre
       const genre = movie.genres[0];

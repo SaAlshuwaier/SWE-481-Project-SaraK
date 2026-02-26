@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -15,8 +16,8 @@ describe('MovieDetailsPageComponent', () => {
   let component: MovieDetailsPageComponent;
   let fixture: ComponentFixture<MovieDetailsPageComponent>;
 
-  let movieService: jasmine.SpyObj<MovieService>;
-  let cartService: jasmine.SpyObj<CartService>;
+  let movieService: { getMovieById: ReturnType<typeof vi.fn> };
+  let cartService: { addItem: ReturnType<typeof vi.fn> };
 
   // mocks created in beforeEach 
   let mockMovie: MovieDto;
@@ -25,8 +26,13 @@ describe('MovieDetailsPageComponent', () => {
   beforeEach(async () => {
 
     // create mock services
-    movieService = jasmine.createSpyObj('MovieService', ['getMovieById']);
-    cartService = jasmine.createSpyObj('CartService', ['addItem']);
+    movieService = {
+      getMovieById: vi.fn(),
+    };
+
+    cartService = {
+      addItem: vi.fn(),
+    };
 
     // create mock movie
     mockMovie = {
@@ -74,7 +80,7 @@ describe('MovieDetailsPageComponent', () => {
 
   it('should load movie on init from route (check each key)', () => {
     // Arrange
-    movieService.getMovieById.and.returnValue(of(mockMovie));
+    movieService.getMovieById.mockReturnValue(of(mockMovie));
 
     // Act
     fixture.detectChanges(); // triggers ngOnInit
@@ -109,34 +115,28 @@ describe('MovieDetailsPageComponent', () => {
   it('should increase quantity', () => {
     // Arrange
     component.quantity.set(1);
-
     // Act
     component.incQty();
-
     // Assert
     expect(component.quantity()).toBe(2);
   });
 
   it('should decrease quantity when greater than 1', () => {
     component.quantity.set(2);
-
     component.decQty();
-
     expect(component.quantity()).toBe(1);
   });
 
   it('should not decrease quantity below 1', () => {
     component.quantity.set(1);
-
     component.decQty();
-
     expect(component.quantity()).toBe(1);
   });
 
   it('should call CartService.addItem with correct data', () => {
     // Arrange
-    movieService.getMovieById.and.returnValue(of(mockMovie));
-    cartService.addItem.and.returnValue(of(mockCart));
+    movieService.getMovieById.mockReturnValue(of(mockMovie));
+    cartService.addItem.mockReturnValue(of(mockCart));
 
     // Act
     fixture.detectChanges(); // loads movie in ngOnInit
@@ -153,7 +153,7 @@ describe('MovieDetailsPageComponent', () => {
 
   it('should render stars as hyperlinks (anchor + correct names)', () => {
     // Arrange
-    movieService.getMovieById.and.returnValue(of(mockMovie));
+    movieService.getMovieById.mockReturnValue(of(mockMovie));
 
     // Act
     fixture.detectChanges();
@@ -173,7 +173,7 @@ describe('MovieDetailsPageComponent', () => {
     // 3) correct text based on mock
     const renderedTexts = Array.from(starLinks).map(a => (a.textContent ?? '').trim());
     for (const s of mockMovie.stars) {
-      expect(renderedTexts.some(t => t.includes(String(s.name)))).toBeTrue();
+      expect(renderedTexts.some(t => t.includes(String(s.name)))).toBe(true);
     }
   });
 
