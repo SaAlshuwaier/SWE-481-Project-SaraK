@@ -1,12 +1,12 @@
-package com.swe481.backend.ControllerIntegrationTesting;
+package com.swe481.backend.controller;
 
+import com.swe481.backend.service.serviceInterface.CartService;
 import org.springframework.beans.factory.annotation.Autowired; // Allows automatic injection of CartService.
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*; // Contains all Spring web annotations like @RestController, @GetMapping, etc.
 
 import com.swe481.backend.model.Cart;
 import com.swe481.backend.model.Cart.CartItem;
-import com.swe481.backend.ServiceUnitTesting.serviceInterface.CartService;
 
 /**
  * CartController
@@ -34,7 +34,7 @@ import com.swe481.backend.ServiceUnitTesting.serviceInterface.CartService;
 public class CartController {
 
     @Autowired //Spring, give me the CartService implementation automatically. No need to write new CartServiceImpl()
-    private CartService cartService; 
+    private CartService cartService;
 
 
     @GetMapping

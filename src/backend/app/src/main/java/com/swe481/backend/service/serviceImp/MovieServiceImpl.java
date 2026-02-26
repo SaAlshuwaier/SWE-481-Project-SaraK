@@ -1,14 +1,14 @@
-package com.swe481.backend.ServiceUnitTesting.serviceImp;
+package com.swe481.backend.service.serviceImp;
 
 import java.util.List;
 
+import com.swe481.backend.service.serviceInterface.MovieService;
 import org.springframework.stereotype.Service;
 
 import com.swe481.backend.model.Genre;
 import com.swe481.backend.model.Movie;
 import com.swe481.backend.model.MoviesPageState;
 import com.swe481.backend.model.Star;
-import com.swe481.backend.ServiceUnitTesting.serviceInterface.MovieService;
 
 @Service
 public class MovieServiceImpl implements MovieService {

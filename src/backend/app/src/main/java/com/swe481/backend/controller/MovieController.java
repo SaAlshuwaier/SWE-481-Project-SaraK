@@ -1,8 +1,8 @@
-package com.swe481.backend.ControllerIntegrationTesting;
+package com.swe481.backend.controller;
 
 import com.swe481.backend.model.Movie;
 import com.swe481.backend.model.MoviesPageState;
-import com.swe481.backend.ServiceUnitTesting.serviceInterface.MovieService;
+import com.swe481.backend.service.serviceInterface.MovieService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

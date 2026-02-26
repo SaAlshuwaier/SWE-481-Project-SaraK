@@ -1,11 +1,11 @@
-package com.swe481.backend.ControllerIntegrationTesting;
+package com.swe481.backend.controller;
 
 import com.swe481.backend.model.Auth.LoginRequest;
 import com.swe481.backend.model.Auth.LoginResponse;
 import com.swe481.backend.model.Auth.LogoutResponse;
 import com.swe481.backend.model.Auth.RegisterRequest;
 import com.swe481.backend.model.Auth.RegisterResponse;
-import com.swe481.backend.ServiceUnitTesting.serviceInterface.AuthService;
+import com.swe481.backend.service.serviceInterface.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

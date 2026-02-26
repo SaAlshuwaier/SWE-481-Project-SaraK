@@ -1,11 +1,10 @@
-package com.swe481.backend.ServiceUnitTesting.serviceImp;
-
+package com.swe481.backend.service.serviceImp;
 import com.swe481.backend.model.Auth.LoginRequest;
 import com.swe481.backend.model.Auth.LoginResponse;
 import com.swe481.backend.model.Auth.LogoutResponse;
 import com.swe481.backend.model.Auth.RegisterRequest;
 import com.swe481.backend.model.Auth.RegisterResponse;
-import com.swe481.backend.ServiceUnitTesting.serviceInterface.AuthService;
+import com.swe481.backend.service.serviceInterface.AuthService;
 import org.springframework.stereotype.Service;
 /**
  * AuthServiceImpl is where authentication logic will go later.

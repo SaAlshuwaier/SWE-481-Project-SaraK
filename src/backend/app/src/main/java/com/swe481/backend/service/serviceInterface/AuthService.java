@@ -1,4 +1,5 @@
-package com.swe481.backend.ServiceUnitTesting.serviceInterface;
+package com.swe481.backend.service.serviceInterface;
+
 import com.swe481.backend.model.Auth.LoginRequest;
 import com.swe481.backend.model.Auth.LoginResponse;
 import com.swe481.backend.model.Auth.LogoutResponse;

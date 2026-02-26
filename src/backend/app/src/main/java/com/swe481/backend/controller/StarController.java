@@ -1,8 +1,7 @@
-package com.swe481.backend.ControllerIntegrationTesting;
+package com.swe481.backend.controller;
 import com.swe481.backend.model.Movie;
 import com.swe481.backend.model.Star;
-import com.swe481.backend.ServiceUnitTesting.serviceInterface.StarService;
-
+import com.swe481.backend.service.serviceInterface.StarService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
