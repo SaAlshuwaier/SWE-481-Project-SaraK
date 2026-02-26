@@ -33,8 +33,11 @@
       <p>
         Genres:
         <span *ngFor="let g of movie.genres; let last = last">
-          {{ g.name }}<span *ngIf="!last">, </span>
-        </span>
+    <a [routerLink]="['/genres', g.id]" class="genre-link">
+      {{ g.name }}
+    </a>
+    <span *ngIf="!last">, </span>
+  </span>
       </p>
 
       <p>
