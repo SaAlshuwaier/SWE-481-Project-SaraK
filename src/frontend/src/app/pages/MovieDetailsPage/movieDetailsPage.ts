@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { finalize, Subscription } from 'rxjs';
 
-import { MovieService } from '../core/services/MovieService';
-import { CartService } from '../core/services/CartService';
+import { MovieService } from '../../core/services/MovieService';
+import { CartService } from '../../core/services/CartService';
 
-import { MovieDto } from '../core/models/MovieDto';
-import { CartDto } from '../core/models/CartDto';
+import { MovieDto } from '../../core/models/MovieDto';
+import { CartDto } from '../../core/models/CartDto';
 /**
  * MovieDetailsPage
  *
