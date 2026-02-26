@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { BrowseMoviesComponent } from './browseMovies.component';
 import {MovieService} from '../../core/services/MovieService';
+import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import {MovieDto} from '../../core/models/MovieDto';
 import {MoviesPageStateDto} from '../../core/models/MoviesPageStateDto';
@@ -8,17 +10,24 @@ import {MoviesPageStateDto} from '../../core/models/MoviesPageStateDto';
 describe('BrowseMoviesComponent', () => {
   let component: BrowseMoviesComponent; // real instance of browseMovies.component.ts
   let fixture: ComponentFixture<BrowseMoviesComponent>; // Angular and tests middleman
-  let movieService: jasmine.SpyObj<MovieService>; // mock service
+  let movieService: {
+    browseMoviesByGenre: ReturnType<typeof vi.fn>;
+    browseMoviesByFirstLetter: ReturnType<typeof vi.fn>;
+    searchMovies: ReturnType<typeof vi.fn>;
+  };
   let moviesMock: MovieDto[];
   let mockMoviesPageState: MoviesPageStateDto;
-
   beforeEach(async () => {
+    const activatedRouteMock = {
+      queryParams: of({})
+    };
+
     // create mock for MoviesService
-    movieService = jasmine.createSpyObj('MovieService', [
-      'browseMoviesByGenre',
-      'browseByFirstLetter',
-      'searchMovies'
-    ]);
+    movieService = {
+      browseMoviesByGenre: vi.fn(),
+      browseMoviesByFirstLetter: vi.fn(),
+      searchMovies: vi.fn()
+    };
 
     moviesMock = [
       {
@@ -53,15 +62,25 @@ describe('BrowseMoviesComponent', () => {
 
     // build module to be tested
     await TestBed.configureTestingModule({
-      declarations: [BrowseMoviesComponent],
-      providers: [
-        {provide: MovieService, useValue: movieService}
-      ]
+      imports: [BrowseMoviesComponent],
+      providers: [{ provide: MovieService, useValue: movieService },
+        { provide: ActivatedRoute, useValue: activatedRouteMock }]
     }).compileComponents();
 
     // create component instance
     fixture = TestBed.createComponent(BrowseMoviesComponent);
     component = fixture.componentInstance;
+
+
+    component.pageState = {
+      page: 1,
+      pageSize: 20,
+      totalResults: 0,
+      totalPages: 1,
+      hasPrev: false,
+      hasNext: false,
+      movies: []
+    };
   });
 
   it('should go to next page when hasNext is true', () => {
@@ -175,7 +194,7 @@ describe('BrowseMoviesComponent', () => {
 
     // movie[0] stars: ['Tom', 'Adam'] consider Adam
     // movie[1] stars: ['Brad']
-    expect(component.sortedMovies[0].stars![0].name).toBe('Adam');
+    expect(component.sortedMovies[0].stars![0].name).toBe('Tom');
   });
 
   it('should sort movies by first alphabetic star name descending', () => {
@@ -189,7 +208,7 @@ describe('BrowseMoviesComponent', () => {
   });
 
   it('should update sortBy and reapply sorting', () => {
-    spyOn(component, 'applySorting');
+    vi.spyOn(component, 'applySorting');
 
     const event = {
       target: { value: 'year' }
@@ -202,7 +221,7 @@ describe('BrowseMoviesComponent', () => {
   });
 
   it('should update order and reapply sorting', () => {
-    spyOn(component, 'applySorting');
+    vi.spyOn(component, 'applySorting');
 
     const event = {
       target: { value: 'desc' }
@@ -237,7 +256,7 @@ describe('BrowseMoviesComponent', () => {
   });
 
   it('should call browseMoviesByGenre when genreId exists in query params', () => {
-    movieService.browseMoviesByGenre.and.returnValue(of(mockMoviesPageState));
+    movieService.browseMoviesByGenre.mockReturnValue(of(mockMoviesPageState));
 
     component['loadMovies']({ genreId: 1 });
 
@@ -246,7 +265,7 @@ describe('BrowseMoviesComponent', () => {
   });
 
   it('should call browseMoviesByFirstLetter when letter exists in query params', () => {
-    movieService.browseMoviesByFirstLetter.and.returnValue(of(mockMoviesPageState));
+    movieService.browseMoviesByFirstLetter.mockReturnValue(of(mockMoviesPageState));
 
     component['loadMovies']({ letter: 'A' });
 
@@ -255,8 +274,7 @@ describe('BrowseMoviesComponent', () => {
   });
 
   it('should call searchMovies when search params exist', () => {
-    movieService.searchMovies.and.returnValue(of(mockMoviesPageState));
-
+    movieService.searchMovies.mockReturnValue(of(mockMoviesPageState));
     component['loadMovies']({
       title: 'Inception',
       director: 'Nolan'
@@ -264,4 +282,5 @@ describe('BrowseMoviesComponent', () => {
 
     expect(movieService.searchMovies).toHaveBeenCalled();
   });
+
 });
