@@ -1,9 +1,8 @@
-package com.swe481.backend.controller;
+package com.swe481.backend.ControllerIntegrationTesting;
 
 import com.swe481.backend.model.Movie;
 import com.swe481.backend.model.MoviesPageState;
-import com.swe481.backend.service.serviceInterface.MovieService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.swe481.backend.ServiceUnitTesting.serviceInterface.MovieService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,11 +11,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/movies")
 
 public class MovieController {
-    @Autowired
-    private MovieService movieService;
+
+    private final MovieService movieService;
+    public MovieController(MovieService movieService) {
+        this.movieService = movieService;
+    }
 
     @GetMapping("/search")
-
     public ResponseEntity<MoviesPageState> searchMovies(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) Integer year,

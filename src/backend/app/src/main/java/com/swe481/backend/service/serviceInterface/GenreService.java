@@ -1,6 +1,6 @@
-package com.swe481.backend.service.serviceInterface;
+package com.swe481.backend.ServiceUnitTesting.serviceInterface;
 import com.swe481.backend.model.Genre;
-import com.swe481.backend.model.Movie;
+
 import java.util.List;
 
 public interface GenreService {

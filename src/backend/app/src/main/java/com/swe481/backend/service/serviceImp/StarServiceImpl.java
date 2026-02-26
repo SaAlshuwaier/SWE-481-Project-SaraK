@@ -1,8 +1,7 @@
-package com.swe481.backend.service.serviceImp;
-import com.swe481.backend.model.Genre;
+package com.swe481.backend.ServiceUnitTesting.serviceImp;
 import com.swe481.backend.model.Movie;
 import com.swe481.backend.model.Star;
-import com.swe481.backend.service.serviceInterface.StarService;
+import com.swe481.backend.ServiceUnitTesting.serviceInterface.StarService;
 import org.springframework.stereotype.Service;
 import java.util.List;
 

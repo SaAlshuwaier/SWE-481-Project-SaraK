@@ -1,7 +1,7 @@
-package com.swe481.backend.controller;
+package com.swe481.backend.ControllerIntegrationTesting;
 import com.swe481.backend.model.Movie;
 import com.swe481.backend.model.Star;
-import com.swe481.backend.service.serviceInterface.StarService;
+import com.swe481.backend.ServiceUnitTesting.serviceInterface.StarService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +16,7 @@ import java.util.List;
 public class StarController {
 
     private final StarService starService;
-    public StarController(StarService starService, StarService star) {
+    public StarController(StarService starService) {
         this.starService = starService;
     }
 

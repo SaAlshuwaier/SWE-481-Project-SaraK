@@ -1,4 +1,4 @@
-package com.swe481.backend.service.serviceInterface;
+package com.swe481.backend.ServiceUnitTesting.serviceInterface;
 
 import com.swe481.backend.model.Movie;
 import com.swe481.backend.model.MoviesPageState;

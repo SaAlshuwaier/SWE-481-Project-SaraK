@@ -1,3 +1,25 @@
 import { Routes } from '@angular/router';
+import { BrowseMoviesComponent } from './pages/browseMovies/browseMovies.component';
+export const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'movies',
+    pathMatch: 'full'
+  },
 
-export const routes: Routes = [];
+  {
+    path: 'movies',
+    component: BrowseMoviesComponent
+  },
+
+  {
+    path: 'movies/genre/:genreId',
+    component: BrowseMoviesComponent
+  },
+
+  {
+    path: 'movies/star/:starId',
+    component: BrowseMoviesComponent
+  }
+];
+

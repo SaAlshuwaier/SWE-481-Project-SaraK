@@ -1,4 +1,4 @@
-package com.swe481.backend.service.serviceInterface;
+package com.swe481.backend.ServiceUnitTesting.serviceInterface;
 import com.swe481.backend.model.Cart;
 import com.swe481.backend.model.Cart.CartItem;
 

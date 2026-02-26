@@ -1,6 +1,6 @@
-package com.swe481.backend.service.serviceImp;
+package com.swe481.backend.ServiceUnitTesting.serviceImp;
 
-import com.swe481.backend.service.serviceInterface.CheckoutService;
+import com.swe481.backend.ServiceUnitTesting.serviceInterface.CheckoutService;
 import org.springframework.stereotype.Service;
 /**
  * CheckoutServiceImpl is where the payment business logic will go later.

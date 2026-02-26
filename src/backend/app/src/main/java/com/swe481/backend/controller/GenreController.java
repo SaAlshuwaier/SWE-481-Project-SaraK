@@ -1,6 +1,6 @@
-package com.swe481.backend.controller;
+package com.swe481.backend.ControllerIntegrationTesting;
 import com.swe481.backend.model.Genre;
-import com.swe481.backend.service.serviceInterface.GenreService;
+import com.swe481.backend.ServiceUnitTesting.serviceInterface.GenreService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

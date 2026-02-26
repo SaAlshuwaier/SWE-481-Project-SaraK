@@ -1,6 +1,6 @@
-package com.swe481.backend.service.serviceImp;
+package com.swe481.backend.ServiceUnitTesting.serviceImp;
 import com.swe481.backend.model.Genre;
-import com.swe481.backend.service.serviceInterface.GenreService;
+import com.swe481.backend.ServiceUnitTesting.serviceInterface.GenreService;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
