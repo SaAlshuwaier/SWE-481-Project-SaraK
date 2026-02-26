@@ -1,4 +1,165 @@
+<<<<<<< HEAD
 /* Minimal styling — Bootstrap handles the UI */
 :host {
   display: block;
+=======
+/* =========================
+   Angular Host Wrapper
+========================= */
+:host {
+  display: block; /* Ensure component occupies full width */
+}
+
+/* =========================
+   Brand Theme Variables
+========================= */
+:root{
+  --pb-red:#A31D1D;
+  --pb-charcoal:#1A1A1B;
+  --pb-bg:#F9F9F9;
+}
+
+/* =========================
+   Page Background (Dark Theme)
+========================= */
+.pb-page{
+  min-height: 100vh;
+
+  /* Layered gradients for cinematic look */
+  background:
+    radial-gradient(circle at 20% 0%, rgba(163,29,29,0.35), transparent 50%),
+    linear-gradient(160deg, #1A1A1B 0%, #111113 100%);
+
+  color: #F9F9F9;
+}
+
+/* =========================
+   Top Navigation Bar
+========================= */
+.pb-topbar{
+  position: sticky;
+  top:0;
+  z-index:10;
+
+  background: rgba(26,26,27,0.9);
+  padding: 14px 18px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+/* Logo */
+.pb-logo{
+  width:48px;
+  height:48px;
+  object-fit:contain;
+}
+
+/* Brand Title */
+.pb-brand-title{
+  font-size:18px;
+  font-weight:900;
+}
+
+.pb-plot{ color: #F9F9F9; }
+.pb-box{ color: var(--pb-red); }
+
+/* Subtitle */
+.pb-brand-subtitle{
+  font-size:12px;
+  color: rgba(255,255,255,0.65);
+}
+
+/* Navigation Links */
+.pb-links{ display:flex; gap:12px; }
+
+.pb-link{
+  text-decoration:none;
+  color:#F9F9F9;
+  font-weight:600;
+}
+
+.pb-link:hover{
+  color: var(--pb-red);
+}
+
+/* =========================
+   Search Card
+========================= */
+.pb-card{
+  border-radius: 14px;
+  background: rgba(255,255,255,0.05);
+  padding: 16px;
+}
+
+/* Buttons */
+.pb-btn-primary{
+  background: var(--pb-red);
+  border: none;
+  color: white;
+}
+
+.pb-btn-primary:hover{
+  background: #8e1919;
+}
+
+.pb-btn-soft{
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+}
+
+.pb-btn-soft:hover{
+  background: rgba(255,255,255,0.1);
+}
+
+/* =========================
+   Inputs (Clean & Clear)
+========================= */
+.form-control{
+  background: white;
+  color: var(--pb-charcoal);
+  border: 1px solid rgba(0,0,0,0.2);
+}
+
+.form-control::placeholder{
+  color: rgba(0,0,0,0.4);
+}
+
+/* =========================
+   Browse Sections
+========================= */
+.pb-section-title{
+  font-weight:700;
+  color:#F9F9F9;
+  margin-bottom:10px;
+}
+
+/* Horizontal pill layout */
+.pb-scrollnav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+/* Genre / Letter Button */
+.pb-pill{
+  border:1px solid rgba(255,255,255,0.3);
+  background: transparent;
+  color:white;
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:14px;
+}
+
+.pb-pill:hover{
+  background: rgba(255,255,255,0.15);
+  border-color: var(--pb-red);
+}
+
+.pb-pill-active{
+  background: var(--pb-red);
+  border-color: var(--pb-red);
+>>>>>>> db7453d (Final updates)
 }
