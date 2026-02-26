@@ -152,7 +152,6 @@ export class BrowseMoviesComponent implements OnInit {
     this.applySorting();
   }
 
-
   /**
    * Applies frontend sorting to the movies of the CURRENT page.
    *
