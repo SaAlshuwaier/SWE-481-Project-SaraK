@@ -58,7 +58,11 @@ class MovieServiceImplUnitTest {
                 movieService.searchMovies(
                         "Letters", 2006, "Clint Eastwood", null, 1, 10);
 
-        assertFalse(result.getMovies().isEmpty());
+        assertTrue(result.getMovies().stream().allMatch(m ->
+                m.getTitle().contains("Letters")
+                        && m.getYear() == 2006
+                        && m.getDirector().equals("Clint Eastwood")
+        ));
     }
 
     @Test
