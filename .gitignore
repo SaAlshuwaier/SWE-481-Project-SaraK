@@ -23,3 +23,11 @@ yarn-error.log*
 *.backup
 
 .vscode/
+
+# =========================
+# IntelliJ IDEA
+# =========================
+.idea/
+*.iml
+out/
+.idea_modules/
