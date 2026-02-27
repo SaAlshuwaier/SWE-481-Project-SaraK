@@ -180,7 +180,6 @@ export class BrowseMoviesComponent implements OnInit {
       .subscribe(state => this.updateState(state));
   }
 
-
   private updateState(state: MoviesPageStateDto): void {
     this.pageState = state;
     this.movies = state.movies;
@@ -201,14 +200,14 @@ export class BrowseMoviesComponent implements OnInit {
 
   nextPage(): void {
     if (this.pageState.hasNext) {
-      this.page++;
+      this.pageState.page++;
       this.loadMovies(this.route.snapshot.queryParams);
     }
   }
 
   previousPage(): void {
     if (this.pageState.hasPrev) {
-      this.page--;
+      this.pageState.page--;
       this.loadMovies(this.route.snapshot.queryParams);
     }
   }

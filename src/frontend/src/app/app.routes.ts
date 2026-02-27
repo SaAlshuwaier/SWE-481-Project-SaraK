@@ -6,19 +6,16 @@ export const routes: Routes = [
     redirectTo: 'movies',
     pathMatch: 'full'
   },
-
   {
     path: 'movies',
     component: BrowseMoviesComponent
   },
-
   {
     path: 'movies/genre/:genreId',
     component: BrowseMoviesComponent
   },
-
   {
-    path: 'movies/star/:starId',
+    path: 'movies/stars/:starId',
     component: BrowseMoviesComponent
   }
 ];
