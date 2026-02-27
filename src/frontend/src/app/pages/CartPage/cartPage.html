@@ -1,0 +1,81 @@
+<header class="app-header">
+  <img class="app-logo" src="/favicon.ico" alt="PLOT BOX logo" />
+
+  <div class="app-title">
+    <h1>PLOT BOX</h1>
+    <p>Cart</p>
+  </div>
+</header>
+
+<section class="page-wrap">
+  <div class="card">
+    <h2 class="title">Your Cart</h2>
+
+    <div class="grid">
+      <div class="panel">
+        <h3 class="section-title">Actions</h3>
+
+        <div class="row">
+          <label class="label">Movie ID</label>
+          <input
+            class="input"
+            [value]="movieId()"
+            (input)="setMovieId(($any($event.target).value))"
+          />
+        </div>
+
+        <div class="row">
+          <label class="label">Title</label>
+          <input
+            class="input"
+            [value]="title()"
+            (input)="setTitle(($any($event.target).value))"
+          />
+        </div>
+
+        <div class="row">
+          <label class="label">Quantity</label>
+          <input
+            class="input"
+            type="number"
+            [value]="quantity()"
+            (input)="setQuantity(+$any($event.target).value)"
+          />
+        </div>
+
+        <div class="btn-row">
+          <button class="btn" (click)="loadCart()" [disabled]="isLoading()">GET Cart</button>
+          <button class="btn" (click)="addItem()" [disabled]="isLoading()">ADD Item</button>
+          <button class="btn" (click)="updateItem()" [disabled]="isLoading()">UPDATE Item</button>
+          <button class="btn" (click)="deleteItem()" [disabled]="isLoading()">DELETE Item</button>
+        </div>
+
+        <div *ngIf="isLoading()" class="muted">Loading…</div>
+        <div *ngIf="error()" class="err-box">{{ error() }}</div>
+      </div>
+
+      <div class="panel">
+        <h3 class="section-title">Response</h3>
+
+        <div *ngIf="!cart()" class="muted">No cart loaded.</div>
+
+        <div *ngIf="cart() as c">
+          <div class="meta-row">
+            <span class="meta-label">Total Quantity:</span>
+            <span class="meta-value">{{ c.totalQuantity }}</span>
+          </div>
+
+          <ul class="item-list" *ngIf="c.items.length">
+            <li *ngFor="let it of c.items">
+              <span class="pill">{{ it.movieId }}</span>
+              <span class="it-title">{{ it.title }}</span>
+              <span class="pill">x{{ it.quantity }}</span>
+            </li>
+          </ul>
+
+          <div *ngIf="!c.items.length" class="muted">Cart is empty.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
