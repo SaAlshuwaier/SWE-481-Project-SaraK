@@ -1,5 +1,4 @@
 package com.swe481.backend.service.serviceImp;
-import com.swe481.backend.model.Genre;
 import com.swe481.backend.model.Movie;
 import com.swe481.backend.model.Star;
 import com.swe481.backend.service.serviceInterface.StarService;
@@ -36,38 +35,6 @@ public class StarServiceImpl implements StarService {
     public Star getStar(String starId) {
         // todo : Logic of Service Added here
         return star ;
-    }
-
-
-
-
-    @Override
-    /**
-     * Get a list of starts for a movie
-     * Logic:
-     * -Retrieves: all starts of a movie
-     * -Returns: list of Stars
-     *
-     * @param movieId
-     * @return {
-     *   "success": true,
-     *   "data": [
-     *     {
-     *       "id": "nm1698522",
-     *       "name": "Chris Cashman",
-     *       "birthYear": 1975
-     *     },
-     *     {
-     *       "id": "nm1698387",
-     *       "name": "Julio Cesar Estrada",
-     *       "birthYear": 1973
-     *     }
-     *   ]
-     * }
-     */
-    public List<Star> getStarsOfMovie(String movieId) {
-        // todo : Logic of Service Added here
-        return stars;
     }
 
 

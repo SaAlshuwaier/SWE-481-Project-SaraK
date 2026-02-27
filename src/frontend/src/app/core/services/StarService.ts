@@ -34,36 +34,6 @@ export class StarService {
     return this.http.get<StarDto>(`${this.baseUrl}/api/stars/${starId}`);
   }
 
-
-  /**
-   * Get a list of starts for a movie
-   * Logic:
-   * -Retrieves: all starts of a movie
-   * -Returns: list of StarDto
-   *
-   * @param movieId
-   * @request GET /api/movies/{movieId}/stars
-   * @return {
-   *   "success": true,
-   *   "data": [
-   *     {
-   *       "id": "nm1698522",
-   *       "name": "Chris Cashman",
-   *       "birthYear": 1975
-   *     },
-   *     {
-   *       "id": "nm1698387",
-   *       "name": "Julio Cesar Estrada",
-   *       "birthYear": 1973
-   *     }
-   *   ]
-   * }
-   */
-  getStarsOfMovie(movieId: string) : Observable<StarDto[]> {
-    return this.http.get<StarDto[]> (`${this.baseUrl}/api/movies/${movieId}/stars`);
-  }
-
-
   /**
    * Get a list of movies for a star
    * Logic:

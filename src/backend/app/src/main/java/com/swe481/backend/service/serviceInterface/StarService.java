@@ -5,6 +5,5 @@ import java.util.List;
 
 public interface StarService {
     public Star getStar(String starId);
-    public List<Star> getStarsOfMovie(String movieId);
     public List<Movie> getStarMovies(String starId);
 }

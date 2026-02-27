@@ -1,6 +1,6 @@
 export interface StarDto {
-  id: String;
-  name: String;
-  birthYear: number; //bc ts doesn't have int,long or double
+  id: string;
+  name: string;
+  birthYear?: number; //bc ts doesn't have int,long or double
 }
 
