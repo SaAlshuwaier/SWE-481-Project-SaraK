@@ -1,27 +1,30 @@
 import { Routes } from '@angular/router';
+
+import { HomeComponent } from './pages/home/home.component';
+import { BrowseMoviesComponent } from './pages/browseMovies/browseMovies.component';
+import { SearchMoviesComponent } from './pages/searchMovies/searchMovies.component';
 import { MovieDetailsPageComponent } from './pages/MovieDetailsPage/movieDetailsPage';
 import { StarDetailsPageComponent } from './pages/StarDetailsPage/starDetailsPage';
-import { BrowseMoviesComponent } from './pages/browseMovies/browseMovies.component';
 
 export const routes: Routes = [
-    {path: 'movies/:movieId', component: MovieDetailsPageComponent},
-      {path: 'movies/:movieId/stars/:starId', component: StarDetailsPageComponent},
+  // default
+  { path: '', pathMatch: 'full', redirectTo: 'home' },
 
-  {  path: '',
-    redirectTo: 'movies',
-    pathMatch: 'full'
-  },
-  {
-    path: 'movies',
-    component: BrowseMoviesComponent
-  },
-  {
-    path: 'movies/genre/:genreId',
-    component: BrowseMoviesComponent
-  },
-  {
-    path: 'movies/stars/:starId',
-    component: BrowseMoviesComponent
-  }
+  // home
+  { path: 'home', component: HomeComponent },
+
+  // details
+  { path: 'movies/:movieId', component: MovieDetailsPageComponent },
+  { path: 'movies/:movieId/stars/:starId', component: StarDetailsPageComponent },
+
+  // browse pages
+  { path: 'movies', component: BrowseMoviesComponent },
+  { path: 'movies/genre/:genreId', component: BrowseMoviesComponent },
+  { path: 'movies/star/:starId', component: BrowseMoviesComponent },
+
+  // search page (separate)
+  { path: 'movies/search', component: SearchMoviesComponent },
+
+  // fallback
+  { path: '**', redirectTo: 'home' },
 ];
-

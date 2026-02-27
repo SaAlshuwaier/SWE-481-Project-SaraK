@@ -13,44 +13,44 @@
   <div class="card">
 
     <!-- Back link -->
-    <a class="back-link" routerLink="/movies">← Back to Movies</a>
+    <a class="back-link" routerLink="/movies" data-testid="back-to-movies">← Back to Movies</a>
 
     <!-- Loading / Error -->
-    <div *ngIf="isLoading()" class="muted">Loading movie details…</div>
+    <div *ngIf="isLoading()" class="muted" data-testid="movie-loading">Loading movie details…</div>
 
-    <div *ngIf="error()" class="err-box">
+    <div *ngIf="error()" class="err-box" data-testid="movie-error">
       {{ error() }}
     </div>
 
     <!-- Movie Details -->
     <ng-container *ngIf="!isLoading() && movie() as m">
-      <h2 class="title">{{ m.title }}</h2>
+      <h2 class="title" data-testid="movie-title">{{ m.title }}</h2>
 
       <div class="meta">
         <div class="meta-row">
           <span class="label">Year:</span>
-          <span class="value">{{ m.year }}</span>
+          <span class="value" data-testid="movie-year">{{ m.year }}</span>
         </div>
 
         <div class="meta-row">
           <span class="label">Director:</span>
-          <span class="value">{{ m.director }}</span>
+          <span class="value" data-testid="movie-director">{{ m.director }}</span>
         </div>
 
         <div class="meta-row">
           <span class="label">Rating:</span>
-          <span class="value">{{ formatRating(m.rating) }}</span>
+          <span class="value" data-testid="movie-rating">{{ formatRating(m.rating) }}</span>
         </div>
 
         <div class="meta-row">
           <span class="label">Genres:</span>
-          <span class="value">
+          <span class="value" data-testid="movie-genres">
             <ng-container *ngIf="m.genres?.length; else noGenres">
-              <span *ngFor="let g of m.genres; let last = last">
+              <span *ngFor="let g of m.genres; let last = last" data-testid="genre-item">
                 {{ g.name }}<span *ngIf="!last">, </span>
               </span>
             </ng-container>
-            <ng-template #noGenres>-</ng-template>
+            <ng-template #noGenres><span data-testid="no-genres">-</span></ng-template>
           </span>
         </div>
       </div>
@@ -59,12 +59,12 @@
       <div class="section">
         <h3 class="section-title">Stars:</h3>
 
-        <div *ngIf="!m.stars?.length" class="muted">No stars found.</div>
+        <div *ngIf="!m.stars?.length" class="muted" data-testid="no-stars">No stars found.</div>
 
-        <ul class="link-list" *ngIf="m.stars?.length">
+        <ul class="link-list" *ngIf="m.stars?.length" data-testid="stars-list">
           <!-- Clicking star navigates to /stars/:starId -->
           <li *ngFor="let s of m.stars">
-            <a class="link"
+            <a class="link" data-testid="star-link"
              [routerLink]="['/movies', m.id, 'stars', s.id]">{{ s.name }}            
             </a>
           </li>
@@ -76,23 +76,24 @@
         <h3 class="section-title">Add to Cart</h3>
 
         <div class="qty-row">
-          <button class="qty-btn" (click)="decQty()">-</button>
+          <button class="qty-btn" (click)="decQty()" data-testid="qty-dec">-</button>
 
           <input class="qty-input"
+                 data-testid="qty-input"
                  type="number"
                  min="1"
                  [value]="quantity()"
                  (input)="onQtyInput(($any($event.target)).value)" />
 
-          <button class="qty-btn" (click)="incQty()">+</button>
+          <button class="qty-btn" (click)="incQty()" data-testid="qty-inc">+</button>
         </div>
 
-        <button class="primary-btn" (click)="addToCart()">
+        <button class="primary-btn" (click)="addToCart()" data-testid="add-to-cart">
           Add to Cart
         </button>
 
         <!-- cart error -->
-        <div *ngIf="cartError()" class="err-box">
+        <div *ngIf="cartError()" class="err-box" data-testid="cart-error">
           {{ cartError() }}
         </div>
       </div>

@@ -78,6 +78,22 @@ export class BrowseMoviesComponent implements OnInit {
 
     this.route.paramMap.subscribe(params => {
 
+      // 🔎 If we are in search route, use query params
+this.route.queryParams.subscribe(qParams => {
+
+  // if any search parameter exists
+  if (qParams['title'] || qParams['director'] || qParams['year'] || qParams['star']) {
+    
+    this.contextTitle = 'Search Results';
+
+    this.page = 1;
+
+    this.loadMovies(qParams); // reuse existing function
+
+    return;
+  }
+});
+
       this.page = 1;
 
       const genreIdParam = params.get('genreId');

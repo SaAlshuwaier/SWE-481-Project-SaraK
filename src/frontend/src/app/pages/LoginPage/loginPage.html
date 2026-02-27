@@ -1,0 +1,47 @@
+<header class="app-header">
+  <img class="app-logo" src="/favicon.ico" alt="PLOT BOX logo" />
+
+  <div class="app-title">
+    <h1>PLOT BOX</h1>
+    <p>Login</p>
+  </div>
+</header>
+
+<section class="page-wrap">
+  <div class="card">
+
+    <h2 class="title">Sign in</h2>
+
+    <div class="form">
+      <label class="label">Email</label>
+      <input
+        class="input"
+        type="email"
+        [value]="email()"
+        (input)="onEmailInput(($any($event.target).value))"
+        placeholder="name@example.com"
+      />
+
+      <label class="label">Password</label>
+      <input
+        class="input"
+        type="password"
+        [value]="password()"
+        (input)="onPasswordInput(($any($event.target).value))"
+        placeholder="••••••••"
+      />
+
+      <button class="btn" (click)="submit()" [disabled]="isLoading()">
+        {{ isLoading() ? 'Signing in…' : 'Login' }}
+      </button>
+
+      <div *ngIf="error()" class="err-box">{{ error() }}</div>
+
+      <div *ngIf="result()" class="ok-box">
+        <div class="ok-title">Response</div>
+        <div class="ok-text">{{ result()?.message }}</div>
+      </div>
+    </div>
+
+  </div>
+</section>

@@ -1,0 +1,47 @@
+<header class="app-header">
+  <img class="app-logo" src="/favicon.ico" alt="PLOT BOX logo" />
+  <div class="app-title">
+    <h1>PLOT BOX</h1>
+    <p>Create Account</p>
+  </div>
+</header>
+
+<section class="page-wrap">
+  <div class="card">
+    <h2 class="title">Register</h2>
+
+    <div class="form">
+      <label class="label">First Name</label>
+      <input class="input" [value]="firstName()" (input)="setFirstName(($any($event.target).value))"/>
+
+      <label class="label">Last Name</label>
+      <input class="input" [value]="lastName()" (input)="setLastName(($any($event.target).value))"/>
+
+      <label class="label">Email</label>
+      <input class="input" type="email" [value]="email()" (input)="setEmail(($any($event.target).value))"/>
+
+      <label class="label">Password</label>
+      <input class="input" type="password" [value]="password()" (input)="setPassword(($any($event.target).value))"/>
+
+      <label class="label">Address</label>
+      <input class="input" [value]="address()" (input)="setAddress(($any($event.target).value))"/>
+
+      <label class="label">Credit Card ID</label>
+      <input class="input" [value]="ccId()" (input)="setCcId(($any($event.target).value))"/>
+
+      <button class="btn" (click)="submit()" [disabled]="isLoading()">
+        {{ isLoading() ? 'Creating…' : 'Create Account' }}
+      </button>
+
+      <div *ngIf="error()" class="err-box">{{ error() }}</div>
+
+      <div *ngIf="result()" class="ok-box">
+        <div class="ok-title">Response</div>
+        <div class="ok-text">
+          {{ result()?.message }}
+          <span *ngIf="result()?.customerId"> (ID: {{ result()?.customerId }})</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

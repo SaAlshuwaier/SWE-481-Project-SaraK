@@ -1,0 +1,99 @@
+<header class="app-header">
+  <img class="app-logo" src="/favicon.ico" alt="PLOT BOX logo" />
+
+  <div class="app-title">
+    <h1>PLOT BOX</h1>
+    <p>Cart</p>
+  </div>
+</header>
+
+<section class="page-wrap">
+  <div class="cart-card">
+    <h2 class="cart-title">Shopping Cart</h2>
+
+    <!-- لو ما فيه cart محمّل -->
+    <div *ngIf="!cart()" class="empty-block">
+      <div class="empty">No cart loaded.</div>
+
+      <div class="cart-footer">
+        <button class="btn btn-ghost" (click)="loadCart()" [disabled]="isLoading()">
+          Load Cart
+        </button>
+      </div>
+    </div>
+
+    <!-- لو cart موجود -->
+    <div *ngIf="cart() as c">
+      <div class="meta">
+        <div class="meta-row">
+          <span class="meta-label">Total Quantity</span>
+          <span class="meta-value">{{ c.totalQuantity }}</span>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="cart-table" *ngIf="c.items && c.items.length > 0; else emptyCart">
+          <thead>
+            <tr>
+              <th>Movie</th>
+              <th class="col-qty">Quantity</th>
+              <th class="col-actions">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let it of c.items">
+              <td class="movie-cell">
+                <span class="movie-title">{{ it.title }}</span>
+                <span class="movie-id">{{ it.movieId }}</span>
+              </td>
+
+              <td class="qty-cell">
+                <input
+                  class="qty-input"
+                  type="number"
+                  min="0"
+                  [value]="it.quantity"
+                  (input)="updateItemById(it.movieId, +$any($event.target).value)"
+                  [disabled]="isLoading()"
+                  aria-label="Quantity"
+                />
+              </td>
+
+              <td class="actions-cell">
+                <button
+                  class="btn btn-danger"
+                  (click)="deleteItemById(it.movieId)"
+                  [disabled]="isLoading()"
+                >
+                  Remove
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <ng-template #emptyCart>
+          <div class="empty">Cart is empty.</div>
+        </ng-template>
+      </div>
+
+      <div class="cart-footer">
+        <button class="btn btn-ghost" (click)="clearCartLocal()" [disabled]="isLoading()">
+          Clear Cart
+        </button>
+
+        <a class="link" routerLink="/browse">
+          Continue Shopping
+        </a>
+
+        <a class="btn btn-primary" routerLink="/checkout">
+          Proceed to Checkout
+        </a>
+      </div>
+
+      <div *ngIf="isLoading()" class="muted">Loading…</div>
+      <div *ngIf="error()" class="err-box">{{ error() }}</div>
+    </div>
+  </div>
+</section>

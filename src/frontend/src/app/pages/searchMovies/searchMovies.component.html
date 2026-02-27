@@ -1,0 +1,71 @@
+<div class="container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <h1>Search Results</h1>
+
+    <div class="controls">
+      <button class="btn btn-light" type="button" (click)="backToHome()">
+        ← Back to Home
+      </button>
+    </div>
+  </div>
+
+  <!-- Context line -->
+  <div class="context" *ngIf="query.title || query.year || query.director || query.star">
+    <span><b>Title:</b> {{ query.title || '-' }}</span>
+    <span><b>Year:</b> {{ query.year || '-' }}</span>
+    <span><b>Director:</b> {{ query.director || '-' }}</span>
+    <span><b>Star:</b> {{ query.star || '-' }}</span>
+  </div>
+
+  <!-- Empty -->
+  <div class="empty" *ngIf="movies.length === 0">
+    No movies found.
+  </div>
+
+  <!-- Movies -->
+  <div class="movies" *ngIf="movies.length > 0">
+    <div class="movie-card" *ngFor="let movie of movies">
+      <h3>
+        <a [routerLink]="['/movies', movie.id]">
+          {{ movie.title }}
+        </a>
+      </h3>
+
+      <p>Year: {{ movie.year }}</p>
+      <p>Director: {{ movie.director }}</p>
+      <p>Rating: {{ movie.rating }}</p>
+
+      <p>
+        Genres:
+        <ng-container *ngFor="let g of movie.genres; let last = last">
+          <a [routerLink]="['/movies/genre', g.id]" [queryParams]="{ genreName: g.name }">
+            {{ g.name }}
+          </a><span *ngIf="!last">, </span>
+        </ng-container>
+      </p>
+
+      <p>
+        Stars:
+        <ng-container *ngFor="let s of movie.stars; let last = last">
+          <a [routerLink]="['/movies/star', s.id]">{{ s.name }}</a><span *ngIf="!last">, </span>
+        </ng-container>
+      </p>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="pageState">
+    <button (click)="previousPage()" [disabled]="!pageState.hasPrev">
+      Previous
+    </button>
+
+    <span>Page {{ pageState.page }}</span>
+
+    <button (click)="nextPage()" [disabled]="!pageState.hasNext">
+      Next
+    </button>
+  </div>
+
+</div>
