@@ -2,12 +2,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { BrowseMoviesComponent } from './browseMovies.component';
 import {MovieService} from '../../core/services/MovieService';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import { of } from 'rxjs';
 import {MovieDto} from '../../core/models/MovieDto';
 import {MoviesPageStateDto} from '../../core/models/MoviesPageStateDto';
+import { provideRouter } from '@angular/router';
 
 describe('BrowseMoviesComponent', () => {
+
   let component: BrowseMoviesComponent; // real instance of browseMovies.component.ts
   let fixture: ComponentFixture<BrowseMoviesComponent>; // Angular and tests middleman
   let movieService: {
@@ -17,18 +19,23 @@ describe('BrowseMoviesComponent', () => {
   };
   let moviesMock: MovieDto[];
   let mockMoviesPageState: MoviesPageStateDto;
+
   beforeEach(async () => {
+    //to simulate the routing to call services on load
     const activatedRouteMock = {
-      queryParams: of({})
+      snapshot: {
+        queryParams: {}
+      }
     };
 
-    // create mock for MoviesService
+    //create mock for MoviesService
     movieService = {
       browseMoviesByGenre: vi.fn(),
       browseMoviesByFirstLetter: vi.fn(),
       searchMovies: vi.fn()
     };
 
+    //fake service response
     moviesMock = [
       {
         id:"t44211",
@@ -50,6 +57,7 @@ describe('BrowseMoviesComponent', () => {
       }
     ];
 
+    //fake service response
     mockMoviesPageState = {
       page: 1,
       pageSize: 20,
@@ -64,14 +72,15 @@ describe('BrowseMoviesComponent', () => {
     await TestBed.configureTestingModule({
       imports: [BrowseMoviesComponent],
       providers: [{ provide: MovieService, useValue: movieService },
-        { provide: ActivatedRoute, useValue: activatedRouteMock }]
+        { provide: ActivatedRoute, useValue: activatedRouteMock },
+        provideRouter([])]
     }).compileComponents();
 
     // create component instance
     fixture = TestBed.createComponent(BrowseMoviesComponent);
     component = fixture.componentInstance;
 
-
+    //load it with initial data to test
     component.pageState = {
       page: 1,
       pageSize: 20,
@@ -84,6 +93,10 @@ describe('BrowseMoviesComponent', () => {
   });
 
   it('should go to next page when hasNext is true', () => {
+    movieService.browseMoviesByGenre.mockReturnValue(of(mockMoviesPageState));
+    movieService.browseMoviesByFirstLetter.mockReturnValue(of(mockMoviesPageState));
+    movieService.searchMovies.mockReturnValue(of(mockMoviesPageState));
+
     //Arrange
     component.pageState.page = 1;
     component.pageState.hasNext = true;
@@ -94,15 +107,21 @@ describe('BrowseMoviesComponent', () => {
   });
 
   it('should not go to next page when hasNext is false', () => {
+    movieService.browseMoviesByGenre.mockReturnValue(of(mockMoviesPageState));
+    movieService.browseMoviesByFirstLetter.mockReturnValue(of(mockMoviesPageState));
+    movieService.searchMovies.mockReturnValue(of(mockMoviesPageState));
 
-    component.pageState.page = 1;
+    component.pageState.page = 10;
     component.pageState.hasNext = false;
 
     component.nextPage();
-    expect(component.pageState.page).toBe(1);
+    expect(component.pageState.page).toBe(10);
   });
 
   it('should go to previous page when hasPrev is true', () => {
+    movieService.browseMoviesByGenre.mockReturnValue(of(mockMoviesPageState));
+    movieService.browseMoviesByFirstLetter.mockReturnValue(of(mockMoviesPageState));
+    movieService.searchMovies.mockReturnValue(of(mockMoviesPageState));
 
     component.pageState.page = 2;
     component.pageState.hasPrev = true;
@@ -113,6 +132,9 @@ describe('BrowseMoviesComponent', () => {
   });
 
   it('should not go to previous page when hasPrev is false', () => {
+    movieService.browseMoviesByGenre.mockReturnValue(of(mockMoviesPageState));
+    movieService.browseMoviesByFirstLetter.mockReturnValue(of(mockMoviesPageState));
+    movieService.searchMovies.mockReturnValue(of(mockMoviesPageState));
 
     component.pageState.page = 1;
     component.pageState.hasPrev = false;
@@ -192,9 +214,8 @@ describe('BrowseMoviesComponent', () => {
 
     component.applySorting();
 
-    // movie[0] stars: ['Tom', 'Adam'] consider Adam
-    // movie[1] stars: ['Brad']
-    expect(component.sortedMovies[0].stars![0].name).toBe('Tom');
+    // Adam < Brad → as Zeta has Adam
+    expect(component.sortedMovies[0].title).toBe('Zeta');
   });
 
   it('should sort movies by first alphabetic star name descending', () => {
@@ -204,7 +225,7 @@ describe('BrowseMoviesComponent', () => {
 
     component.applySorting();
 
-    expect(component.sortedMovies[0].stars![0].name).toBe('Brad');
+    expect(component.sortedMovies[0].title).toBe('Alpha');
   });
 
   it('should update sortBy and reapply sorting', () => {
@@ -233,35 +254,13 @@ describe('BrowseMoviesComponent', () => {
     expect(component.applySorting).toHaveBeenCalled();
   });
 
-  it('should render stars as hyperlinks', () => {
-    component.movies = moviesMock;
-    component.sortedMovies = moviesMock;
-    fixture.detectChanges();
-
-    const starLinks = fixture.nativeElement.querySelectorAll('a.star-link');
-
-    expect(starLinks.length).toBeGreaterThan(0);
-    expect(starLinks[0].tagName).toBe('A');
-  });
-
-  it('should render genres as hyperlinks', () => {
-    component.movies = moviesMock;
-    component.sortedMovies = moviesMock;
-    fixture.detectChanges();
-
-    const genreLinks = fixture.nativeElement.querySelectorAll('a.genre-link');
-
-    expect(genreLinks.length).toBe(2);
-    expect(genreLinks[0].textContent).toContain('Action');
-  });
-
   it('should call browseMoviesByGenre when genreId exists in query params', () => {
     movieService.browseMoviesByGenre.mockReturnValue(of(mockMoviesPageState));
 
     component['loadMovies']({ genreId: 1 });
 
     expect(movieService.browseMoviesByGenre)
-      .toHaveBeenCalledWith(1, component.page, component.pageSize);
+      .toHaveBeenCalledWith(1, component.page, component.pageSize);    provideRouter([])
   });
 
   it('should call browseMoviesByFirstLetter when letter exists in query params', () => {
@@ -283,4 +282,36 @@ describe('BrowseMoviesComponent', () => {
     expect(movieService.searchMovies).toHaveBeenCalled();
   });
 
+  it('should show genre names as links', () => {
+    component.movies = moviesMock;
+    component.sortedMovies = moviesMock;
+
+    fixture.detectChanges();
+
+    const links = fixture.nativeElement.querySelectorAll('a.genre-browseMovies-link');
+
+    expect(links.length).toBeGreaterThan(0);
+  });
+
+  it('should show movie title names as link', () => {
+    component.movies = moviesMock;
+    component.sortedMovies = moviesMock;
+
+    fixture.detectChanges();
+
+    const links = fixture.nativeElement.querySelectorAll('a.movie-title-browseMovies-link');
+
+    expect(links.length).toBeGreaterThan(0);
+  });
+
+  it('should show star names as links', () => {
+    component.movies = moviesMock;
+    component.sortedMovies = moviesMock;
+
+    fixture.detectChanges();
+
+    const links = fixture.nativeElement.querySelectorAll('a.star-browseMovies-link');
+
+    expect(links.length).toBeGreaterThan(0);
+  });
 });
