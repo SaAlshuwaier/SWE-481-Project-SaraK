@@ -1,0 +1,101 @@
+<!-- Header -->
+<header class="app-header">
+  <img class="app-logo" src="/favicon.ico" alt="PLOT BOX logo" />
+
+  <div class="app-title">
+    <h1>PLOT BOX</h1>
+    <p>Movie Details</p>
+  </div>
+</header>
+
+<!-- Main card area -->
+<section class="page-wrap">
+  <div class="card">
+
+    <!-- Back link -->
+    <a class="back-link" routerLink="/movies">← Back to Movies</a>
+
+    <!-- Loading / Error -->
+    <div *ngIf="isLoading()" class="muted">Loading movie details…</div>
+
+    <div *ngIf="error()" class="err-box">
+      {{ error() }}
+    </div>
+
+    <!-- Movie Details -->
+    <ng-container *ngIf="!isLoading() && movie() as m">
+      <h2 class="title">{{ m.title }}</h2>
+
+      <div class="meta">
+        <div class="meta-row">
+          <span class="label">Year:</span>
+          <span class="value">{{ m.year }}</span>
+        </div>
+
+        <div class="meta-row">
+          <span class="label">Director:</span>
+          <span class="value">{{ m.director }}</span>
+        </div>
+
+        <div class="meta-row">
+          <span class="label">Rating:</span>
+          <span class="value">{{ formatRating(m.rating) }}</span>
+        </div>
+
+        <div class="meta-row">
+          <span class="label">Genres:</span>
+          <span class="value">
+            <ng-container *ngIf="m.genres?.length; else noGenres">
+              <span *ngFor="let g of m.genres; let last = last">
+                {{ g.name }}<span *ngIf="!last">, </span>
+              </span>
+            </ng-container>
+            <ng-template #noGenres>-</ng-template>
+          </span>
+        </div>
+      </div>
+
+      <!-- Stars list -->
+      <div class="section">
+        <h3 class="section-title">Stars:</h3>
+
+        <div *ngIf="!m.stars?.length" class="muted">No stars found.</div>
+
+        <ul class="link-list" *ngIf="m.stars?.length">
+          <!-- Clicking star navigates to /stars/:starId -->
+          <li *ngFor="let s of m.stars">
+            <a class="link"
+             [routerLink]="['/movies', m.id, 'stars', s.id]">{{ s.name }}            
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Add to Cart -->
+      <div class="section">
+        <h3 class="section-title">Add to Cart</h3>
+
+        <div class="qty-row">
+          <button class="qty-btn" (click)="decQty()">-</button>
+
+          <input class="qty-input"
+                 type="number"
+                 min="1"
+                 [value]="quantity()"
+                 (input)="onQtyInput(($any($event.target)).value)" />
+
+          <button class="qty-btn" (click)="incQty()">+</button>
+        </div>
+
+        <button class="primary-btn" (click)="addToCart()">
+          Add to Cart
+        </button>
+
+        <!-- cart error -->
+        <div *ngIf="cartError()" class="err-box">
+          {{ cartError() }}
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</section>
