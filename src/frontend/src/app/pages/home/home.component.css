@@ -1,0 +1,4 @@
+/* Minimal styling — Bootstrap handles the UI */
+:host {
+  display: block;
+}
