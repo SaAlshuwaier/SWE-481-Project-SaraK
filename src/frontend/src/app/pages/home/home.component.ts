@@ -116,6 +116,7 @@ export class HomeComponent implements OnInit {
   goToSearchResults(): void {
     const queryParams: Record<string, string> = {};
 
+<<<<<<< HEAD
     if (this.filters.title.trim()) queryParams.title = this.filters.title.trim();
     if (this.filters.year.trim()) queryParams.year = this.filters.year.trim();
     if (this.filters.director.trim()) queryParams.director = this.filters.director.trim();
@@ -127,6 +128,17 @@ export class HomeComponent implements OnInit {
   /* =========================
      🧹 Clear Filters (UI Only)
   ========================= */
+=======
+  if (this.filters.title.trim()) queryParams.title = this.filters.title.trim();
+  if (this.filters.year.trim()) queryParams.year = this.filters.year.trim();
+  if (this.filters.director.trim()) queryParams.director = this.filters.director.trim();
+  if (this.filters.star.trim()) queryParams.star = this.filters.star.trim();
+
+  this.router.navigate(['/movies/search'], { queryParams });
+}
+
+  
+>>>>>>> 2990dc0 (Fix routes + search page + tests adjustments)
   onClear(): void {
     this.filters = { title: '', year: '', director: '', star: '' };
   }
@@ -149,6 +161,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
+<<<<<<< HEAD
   /* =========================
      🔤 Browse by Title (First Letter)
      Navigates to /movies?letter=A
@@ -156,4 +169,10 @@ export class HomeComponent implements OnInit {
   goToBrowseTitle(startsWith: TitleFilter): void {
     this.router.navigate(['/movies'], { queryParams: { letter: startsWith } });
   }
+=======
+  
+  goToBrowseTitle(startsWith: string): void {
+  this.router.navigate(['/movies'], { queryParams: { letter: startsWith } });
+}
+>>>>>>> 2990dc0 (Fix routes + search page + tests adjustments)
 }
