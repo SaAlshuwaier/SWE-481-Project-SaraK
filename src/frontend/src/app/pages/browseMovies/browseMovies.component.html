@@ -64,16 +64,14 @@
         <ng-container *ngFor="let s of movie.stars; let last = last">
           <a
             class="star-browseMovies-link"
-            [routerLink]="['/movies/stars', s.id]"
+            [routerLink]="['/movies', movie.id, 'stars', s.id]"
           >
             {{ s.name }}
           </a>
           <span *ngIf="!last">, </span>
         </ng-container>
       </p>
-
     </div>
-
   </div>
 
   <!-- Pagination -->
