@@ -30,7 +30,6 @@ describe('StarService (HTTP Mock Tests)', () => {
     httpMock.verify();
   });
 
-  // TEST 1: GET /api/stars/{starId}
   it('should fetch star details by id', () => {
 
     const mockStar: StarDto = {
@@ -70,7 +69,6 @@ describe('StarService (HTTP Mock Tests)', () => {
   });
 
 
-  // TEST 2: GET /api/stars/{starId}/movies
 
   it('should fetch movies of a star', () => {
 

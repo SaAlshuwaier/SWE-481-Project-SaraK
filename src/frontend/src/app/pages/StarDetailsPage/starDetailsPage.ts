@@ -107,7 +107,6 @@ export class StarDetailsPageComponent implements OnDestroy {
       if (doneCount >= 2) this.isLoading.set(false);
     };
 
-    // 1) GET /api/stars/{starId}
     this.starService
       .getStar(starId)
       .pipe(finalize(markDone))
@@ -120,7 +119,6 @@ export class StarDetailsPageComponent implements OnDestroy {
         },
       });
 
-    // 2) GET /api/stars/{starId}/movies
     this.starService
       .getMoviesOfStar(starId)
       .pipe(finalize(markDone))
