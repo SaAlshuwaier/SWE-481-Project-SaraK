@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 
+
 import { HomeComponent } from './pages/home/home.component';
 import { BrowseMoviesComponent } from './pages/browseMovies/browseMovies.component';
 import { SearchMoviesComponent } from './pages/searchMovies/searchMovies.component';

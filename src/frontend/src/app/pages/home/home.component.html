@@ -1,48 +1,18 @@
-<<<<<<< HEAD
 <div class="container my-4">
 
   <h2 class="text-center fw-bold mb-1">IMDB Movie Store</h2>
 
   <nav class="mb-4">
     <a class="me-3" routerLink="/home">Home</a>
-    <a class="me-3" routerLink="/movies">Movies</a>
-=======
-<!-- =========================
-     Home Page Container
-========================= -->
-<div class="container my-4">
-
-  <!-- =========================
-       Page Title
-  ========================= -->
-  <h2 class="text-center fw-bold mb-1">IMDB Movie Store</h2>
-
-  <!-- =========================
-       Navigation Links
-  ========================= -->
-  <nav class="mb-4">
-    <a class="me-3" routerLink="/home">Home</a>
->>>>>>> db7453d (Final updates)
     <a class="me-3" routerLink="/cart">Cart</a>
     <a routerLink="/logout">Logout</a>
   </nav>
 
-<<<<<<< HEAD
-=======
-  <!-- =========================
-       Search Section (Home does NOT show results)
-       It only navigates to /movies with query params
-  ========================= -->
->>>>>>> db7453d (Final updates)
   <div class="card shadow-sm mb-4">
     <div class="card-body">
 
       <h5 class="fw-bold mb-3">Search Movies</h5>
 
-<<<<<<< HEAD
-=======
-      <!-- Search Inputs Row -->
->>>>>>> db7453d (Final updates)
       <div class="row g-3 align-items-end">
 
         <!-- Title -->
@@ -73,7 +43,6 @@
                  [(ngModel)]="filters.star" />
         </div>
 
-<<<<<<< HEAD
         <!-- Search Button -->
         <div class="col-md-1 d-grid">
           <button class="btn btn-primary" (click)="goToSearchResults()">
@@ -87,17 +56,7 @@
             Clear
           </button>
         </div>
-=======
-        <!-- Buttons -->
-        <div class="col-md-1 d-grid">
-          <button class="btn btn-primary" (click)="goToSearchResults()">Search</button>
-        </div>
 
-        <div class="col-md-2 d-grid">
-          <button class="btn btn-outline-secondary" (click)="onClear()">Clear</button>
-        </div>
-
->>>>>>> db7453d (Final updates)
       </div>
 
       <small class="text-muted d-block mt-2">
@@ -107,18 +66,6 @@
     </div>
   </div>
 
-<<<<<<< HEAD
-  <!--
-       Browse by Genre
-       Navigate to /movies/genre/:id
-   -->
-=======
-  <!-- =========================
-       Browse by Genre
-       Buttons are generated from mock response (genres[])
-       Clicking navigates to /movies?genre=...
-  ========================= -->
->>>>>>> db7453d (Final updates)
   <h6 class="fw-bold mb-2">Browse by Genre</h6>
   <div class="d-flex flex-wrap gap-2 mb-4">
     <button *ngFor="let g of genres"
@@ -128,15 +75,6 @@
     </button>
   </div>
 
-  <!-- =========================
-<<<<<<< HEAD
-       Browse by Title
-=======
-       Browse by Title (0-9, A-Z)
-       Buttons are generated from mock response (titleFilters[])
-       Clicking navigates to /movies?startsWith=...
->>>>>>> db7453d (Final updates)
-  ========================= -->
   <h6 class="fw-bold mb-2">Browse by Title</h6>
   <div class="d-flex flex-wrap gap-2">
     <button *ngFor="let t of titleFilters"
@@ -146,8 +84,4 @@
     </button>
   </div>
 
-<<<<<<< HEAD
 </div>
-=======
-</div>
->>>>>>> db7453d (Final updates)

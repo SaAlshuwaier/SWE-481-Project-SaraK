@@ -88,40 +88,66 @@ export class BrowseMoviesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+  this.route.paramMap.subscribe(params => {
+    // reset page on route change
+    this.page = 1;
 
-    this.route.paramMap.subscribe(params => {
+    const genreIdParam = params.get('genreId');
+    const starIdParam = params.get('starId');
 
-      const genreId = params.get('genreId');
+    this.route.queryParams.subscribe(qParams => {
 
-      this.route.queryParams.subscribe(qParams => {
+      // 🔎 Search route (if any search filters exist)
+      if (qParams['title'] || qParams['director'] || qParams['year'] || qParams['star']) {
+        this.contextTitle = 'Search Results';
+        this.loadMovies(qParams);
+        return;
+      }
 
-        const letter = qParams['letter'];
+      // Browse by first letter (query param)
+      if (qParams['letter']) {
+        this.contextTitle = `Movies Starting With: ${qParams['letter']}`;
+        this.loadMovies(qParams);
+        return;
+      }
+
+      // Browse by genre (param) + use genreName (query)
+      if (genreIdParam) {
         const genreName = qParams['genreName'];
+        this.contextTitle = genreName ? `Genre: ${genreName}` : 'Genre Movies';
 
-        // First Letter
-        if (letter) {
-          this.contextTitle = `Title Starting With: ${letter}`;
-          this.updateState(this.createDummyState(this.dummyMovies));
-          return;
-        }
+        // loadMovies expects genreId in params, so pass it in
+        this.loadMovies({ ...qParams, genreId: genreIdParam } as Params);
+        return;
+      }
 
-        // Genre
-        if (genreId) {
-          this.contextTitle = genreName
-            ? `Genre: ${genreName}`
-            : 'Genre Movies';
+      // Browse by star (if your app supports it). If no backend call exists, keep dummy.
+      if (starIdParam) {
+        this.contextTitle = 'Star Movies';
 
-          this.updateState(this.createDummyState(this.dummyMovies));
-          return;
-        }
+        const filteredMovies = this.dummyMovies.filter(movie =>
+          movie.stars?.some(s => s.id === starIdParam)
+        );
 
-        // Default
-        this.contextTitle = 'Browsing';
-        this.updateState(this.createDummyState(this.dummyMovies));
+        this.updateState({
+          page: 1,
+          pageSize: this.pageSize,
+          totalResults: filteredMovies.length,
+          totalPages: 1,
+          hasPrev: false,
+          hasNext: false,
+          movies: filteredMovies
+        });
 
-      });
+        return;
+      }
+
+      // Default
+      this.contextTitle = 'Browse Movies';
+      this.updateState(this.createDummyState(this.dummyMovies));
     });
-  }
+  });
+}
 
   private loadMovies(params: Params): void {
 
