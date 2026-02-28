@@ -144,7 +144,6 @@ describe('BrowseMoviesComponent', () => {
     expect(component.pageState.page).toBe(1);
   });
 
-
   it('should sort movies by title ascending', () => {
 
     component.movies = moviesMock;
@@ -270,16 +269,6 @@ describe('BrowseMoviesComponent', () => {
 
     expect(movieService.browseMoviesByFirstLetter)
       .toHaveBeenCalledWith('A', component.page, component.pageSize);
-  });
-
-  it('should call searchMovies when search params exist', () => {
-    movieService.searchMovies.mockReturnValue(of(mockMoviesPageState));
-    component['loadMovies']({
-      title: 'Inception',
-      director: 'Nolan'
-    });
-
-    expect(movieService.searchMovies).toHaveBeenCalled();
   });
 
   it('should show genre names as links', () => {

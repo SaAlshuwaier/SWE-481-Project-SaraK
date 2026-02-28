@@ -13,6 +13,9 @@ export const routes: Routes = [
   // home
   { path: 'home', component: HomeComponent },
 
+  // search page (separate)
+  { path: 'movies/search', component: SearchMoviesComponent },
+
   // details
   { path: 'movies/:movieId', component: MovieDetailsPageComponent },
   { path: 'movies/:movieId/stars/:starId', component: StarDetailsPageComponent },
@@ -22,8 +25,6 @@ export const routes: Routes = [
   { path: 'movies/genre/:genreId', component: BrowseMoviesComponent },
   { path: 'movies/star/:starId', component: BrowseMoviesComponent },
 
-  // search page (separate)
-  { path: 'movies/search', component: SearchMoviesComponent },
 
   // fallback
   { path: '**', redirectTo: 'home' },
