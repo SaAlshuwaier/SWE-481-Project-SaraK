@@ -13,6 +13,7 @@ import { CartDto } from '../../core/models/CartDto';
   styleUrls: ['./cartPage.css'],
 })
 export class CartPageComponent {
+
   cart = signal<CartDto | null>(null);
   isLoading = signal<boolean>(false);
   error = signal<string | null>(null);
@@ -78,17 +79,5 @@ export class CartPageComponent {
         next: (res) => this.cart.set(res),
         error: (err) => this.error.set(err?.message ?? 'Cart DELETE failed'),
       });
-  }
-
-  // Phase 2 (dummy): local clear فقط للـ UI
-  clearCartLocal() {
-    const current = this.cart();
-    if (!current) return;
-
-    this.cart.set({
-      ...current,
-      items: [],
-      totalQuantity: 0,
-    } as any);
   }
 }

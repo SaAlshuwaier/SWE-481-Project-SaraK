@@ -1,8 +1,6 @@
 package com.swe481.backend.ServiceUnitTesting;
 import com.swe481.backend.model.MoviesPageState;
 import com.swe481.backend.service.serviceImp.MovieServiceImpl;
-import com.swe481.backend.service.serviceInterface.MovieService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
