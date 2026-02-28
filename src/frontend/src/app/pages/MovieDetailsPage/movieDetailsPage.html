@@ -65,7 +65,7 @@
           <!-- Clicking star navigates to /stars/:starId -->
           <li *ngFor="let s of m.stars">
             <a class="link" data-testid="star-link"
-             [routerLink]="['/movies', m.id, 'stars', s.id]">{{ s.name }}            
+             [routerLink]="['/stars', s.id]">{{ s.name }}            
             </a>
           </li>
         </ul>

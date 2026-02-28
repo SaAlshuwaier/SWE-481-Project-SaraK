@@ -148,7 +148,7 @@ describe('StarDetailsPageComponent', () => {
     // 2) anchor
     expect(movieLinks[0].tagName).toBe('A');
 
-    // 3) correct text based on mock titles
+    // 3) correct text 
     const renderedTexts = Array.from(movieLinks).map(a => (a.textContent ?? '').trim());
     for (const m of mockMovies) {
       expect(renderedTexts.some(t => t.includes(String(m.title)))).toBe(true);

@@ -48,7 +48,7 @@ test('E2E: Movie Details loads from DB, renders fields, star links look correct,
 });
 
 test('E2E: Star Details loads from DB, renders fields, and has valid movie links', async ({ page }) => {
-  await page.goto(`${FRONTEND_URL}/movies/${MOVIE_ID}/stars/${STAR_ID}`);
+  await page.goto(`${FRONTEND_URL}/stars/${STAR_ID}`);
 
   await expect(page.getByTestId('star-name')).toBeVisible();
   await expect(page.getByTestId('star-birthyear')).toBeVisible();
@@ -82,7 +82,7 @@ test('E2E: Navigation flow Movie -> Star -> Movie works', async ({ page }) => {
   await expect(firstStarLink).toBeVisible();
   await firstStarLink.click();
 
-  await expect(page).toHaveURL(/\/movies\/[^/]+\/stars\/[^/]+/);
+  await expect(page).toHaveURL(/\/stars\/[^/]+$/);
   await expect(page.getByTestId('star-name')).toBeVisible();
 
   const moviesList = page.getByTestId('movies-list');
