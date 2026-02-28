@@ -28,22 +28,49 @@ export class StarDetailsPageComponent implements OnDestroy {
 
   // DELETE THIS LATER WHEN WE CONNECT TO THE DATABASE.
   private readonly MOCK_STAR: StarDto = {
-    id: 'nm1636964',
-    name: 'Phantom Artsy',
-    birthYear: 1970,
+    id: 'nm1719697',
+    name: 'Jason Noto',
+    birthYear: 1978,
   };
 
 
-  // Movies list returned from GET /api/stars/{starId}/movies DELETE THIS LATER
   private readonly MOCK_MOVIES: MovieDto[] = [
     {
-      id: 'tt0413051',
-      title: 'No Longer My Twin',
-      year: 2002,
-      director: 'Robert G. Christie',
-      rating: 1.4,
-      genres: [{ id: 16, name: 'Mystery' }],
-      stars: [],
+      id: 'tt0476024',
+      title: 'Straight Forward',
+      year: 2005,
+      director: 'Jason Noto',
+      rating: 0,
+      genres: [{ id: 9, name: 'Drama' }],
+      stars: [
+        { id: 'nm1719697', name: 'Jason Noto', birthYear: 1978 },
+        { id: 'nm2057434', name: 'Gabe Fazio' },
+        { id: 'nm2183354', name: 'Sean Duhame' },
+        { id: 'nm0894448', name: 'Kristen Vermilyea', birthYear: 1969 },
+        { id: 'nm2965023', name: 'Terence Ziegler'},
+        { id: 'nm1164862', name: 'Lev Gorn' },
+        { id: 'nm0186963', name: 'Stacia Crawford' },
+      ],
+    },
+    {
+      id: 'tt0490839',
+      title: 'Charlie',
+      year: 2007,
+      director: 'Salvatore Interlandi',
+      rating: 7.8,
+      genres: [{ id: 9, name: 'Drama' }],
+      stars: [
+        { id: 'nm1118462', name: 'Salvatore Interlandi' },
+        { id: 'nm1719697', name: 'Jason Noto', birthYear: 1978 },
+        { id: 'nm1710833', name: 'Daniel Sharnoff' },
+        { id: 'nm4405403', name: 'Matty Charles'},
+        { id: 'nm1749019', name: 'Erik S. Weigel', birthYear: 1978 },
+        { id: 'nm1496657', name: 'Adam Mcclelland' },
+        { id: 'nm1651044', name: 'Tim Donovan Jr.' },
+        { id: 'nm2138831', name: 'Gabriela Crocco' },
+        { id: 'nm1132361', name: 'Denise Greber' },
+        { id: 'nm0578815', name: 'D.J. Mendel' },
+    ],
     },
   ];
 

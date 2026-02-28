@@ -4,16 +4,19 @@ const FRONTEND_URL = 'http://localhost:4200';
 
 // REAL IDs that exist in DB:
 const MOVIE_ID = 'tt0378947';
-const STAR_ID  = 'nm1636964';
+const STAR_ID  = 'nm0591555';
 
 test('E2E: Movie Details loads from DB, renders fields, star links look correct, cart works, back works', async ({ page }) => {
   await page.goto(`${FRONTEND_URL}/movies/${MOVIE_ID}`);
 
-  await expect(page.getByTestId('movie-title')).toBeVisible();
-  await expect(page.getByTestId('movie-year')).toBeVisible();
-  await expect(page.getByTestId('movie-director')).toBeVisible();
-  await expect(page.getByTestId('movie-rating')).toBeVisible();
-  await expect(page.getByTestId('movie-genres')).toBeVisible();
+  // Assert real DB values
+  await expect(page.getByTestId('movie-title')).toHaveText('Melinda and Melinda');
+  await expect(page.getByTestId('movie-year')).toHaveText('2004');
+  await expect(page.getByTestId('movie-director')).toHaveText('Woody Allen');
+  await expect(page.getByTestId('movie-rating')).toHaveText('6.5');
+  await expect(page.getByTestId('movie-genres')).toContainText('Drama');
+  await expect(page.getByTestId('movie-genres')).toContainText('Comedy');
+  await expect(page.getByTestId('movie-genres')).toContainText('Romance');
 
   // quantity: click + twice -> 3
   await page.getByTestId('qty-inc').click();
@@ -21,26 +24,18 @@ test('E2E: Movie Details loads from DB, renders fields, star links look correct,
   await expect(page.getByTestId('qty-input')).toHaveValue('3');
 
   await page.getByTestId('add-to-cart').click();
-
-  // cart error should NOT appear
   await expect(page.getByTestId('cart-error')).toHaveCount(0);
 
-  // stars list exists OR "No stars found."
+  // Stars list should be visible and contain stars
   const starsList = page.getByTestId('stars-list');
-  const noStars = page.getByTestId('no-stars');
-  await expect(starsList.or(noStars)).toBeVisible();
+  await expect(starsList).toBeVisible();
+  await expect(starsList).toContainText('Wallace Shawn');
+  await expect(starsList).toContainText('Chiwetel Ejiofor');
+  await expect(starsList).toContainText('Woody Allen');
 
-  // If stars exist, verify the first link points to the nested route
-  if (await starsList.isVisible().catch(() => false)) {
-    const firstStarLink = page.getByTestId('star-link').first();
-    await expect(firstStarLink).toBeVisible();
-
-    // hyperlink correctness without navigating
-    await expect(firstStarLink).toHaveAttribute(
-      'href',
-      new RegExp(`.*/movies/${MOVIE_ID}/stars/[^/]+$`)
-    );
-  }
+  // Star links point to correct route
+  const firstStarLink = page.getByTestId('star-link').first();
+  await expect(firstStarLink).toHaveAttribute('href', new RegExp(`.*/stars/[^/]+$`));
 
   // Back to Movies works
   await page.getByTestId('back-to-movies').click();
@@ -50,22 +45,20 @@ test('E2E: Movie Details loads from DB, renders fields, star links look correct,
 test('E2E: Star Details loads from DB, renders fields, and has valid movie links', async ({ page }) => {
   await page.goto(`${FRONTEND_URL}/stars/${STAR_ID}`);
 
-  await expect(page.getByTestId('star-name')).toBeVisible();
-  await expect(page.getByTestId('star-birthyear')).toBeVisible();
+  // Assert real DB values
+  await expect(page.getByTestId('star-name')).toHaveText('Lorenzo Minoli');
+  // No birthYear in DB, so assert it's not shown OR shows a fallback
+  await expect(page.getByTestId('star-birthyear')).toHaveText('-'); // adjust to whatever your UI shows for null
 
-  // movies list exists OR "No movies found."
+  // Movies list should be visible and contain his one known movie
   const moviesList = page.getByTestId('movies-list');
-  const noMovies = page.getByTestId('no-movies');
-  await expect(moviesList.or(noMovies)).toBeVisible();
+  await expect(moviesList).toBeVisible();
+  await expect(moviesList).toContainText('An Italian Affair'); 
 
-  // If movies exist, verify the first link points to /movies/:movieId
-  if (await moviesList.isVisible().catch(() => false)) {
-    const firstMovieLink = page.getByTestId('movie-link').first();
-    await expect(firstMovieLink).toBeVisible();
-
-    // hyperlink correctness without navigating
-    await expect(firstMovieLink).toHaveAttribute('href', /.*\/movies\/[^/]+$/);
-  }
+  // Movie link points to correct route
+  const firstMovieLink = page.getByTestId('movie-link').first();
+  await expect(firstMovieLink).toBeVisible();
+  await expect(firstMovieLink).toHaveAttribute('href', /.*\/movies\/tt0400548$/);
 
   // Back to Movies works
   await page.getByTestId('back-to-movies').click();
