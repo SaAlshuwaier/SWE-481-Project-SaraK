@@ -70,79 +70,56 @@ export class BrowseMoviesComponent implements OnInit {
     }
   ];
 
+  private createDummyState(movies: MovieDto[]): MoviesPageStateDto {
+    return {
+      page: 1,
+      pageSize: this.pageSize,
+      totalResults: movies.length,
+      totalPages: 1,
+      hasPrev: false,
+      hasNext: false,
+      movies: this.movies
+    };
+  }
+
   constructor(
     private route: ActivatedRoute,
     private movieService: MovieService
   ) {}
+
   ngOnInit(): void {
 
     this.route.paramMap.subscribe(params => {
 
-      this.page = 1;
+      const genreId = params.get('genreId');
 
-      const genreIdParam = params.get('genreId');
-      const starIdParam = params.get('starId');
+      this.route.queryParams.subscribe(qParams => {
 
-      // Browse by Genre (dummy simulation)
-      if (genreIdParam) {
-        const genreId = Number(genreIdParam);
-        const genreName = this.route.snapshot.queryParams['genreName'];
+        const letter = qParams['letter'];
+        const genreName = qParams['genreName'];
 
-        this.contextTitle = genreName
-          ? `Genre: ${genreName}`
-          : 'Genre Movies';
+        // First Letter
+        if (letter) {
+          this.contextTitle = `Title Starting With: ${letter}`;
+          this.updateState(this.createDummyState(this.dummyMovies));
+          return;
+        }
 
-        const filteredMovies = this.dummyMovies.filter(movie =>
-          movie.genres?.some(g => g.id === genreId)
-        );
+        // Genre
+        if (genreId) {
+          this.contextTitle = genreName
+            ? `Genre: ${genreName}`
+            : 'Genre Movies';
 
-        this.updateState({
-          page: 1,
-          pageSize: this.pageSize,
-          totalResults: filteredMovies.length,
-          totalPages: 1,
-          hasPrev: false,
-          hasNext: false,
-          movies: filteredMovies
-        });
+          this.updateState(this.createDummyState(this.dummyMovies));
+          return;
+        }
 
-        return;
-      }
+        // Default
+        this.contextTitle = 'Browsing';
+        this.updateState(this.createDummyState(this.dummyMovies));
 
-      //Browse by Star (dummy simulation)
-      if (starIdParam) {
-        this.contextTitle = 'Star Movies';
-
-        const filteredMovies = this.dummyMovies.filter(movie =>
-          movie.stars?.some(s => s.id === starIdParam)
-        );
-
-        this.updateState({
-          page: 1,
-          pageSize: this.pageSize,
-          totalResults: filteredMovies.length,
-          totalPages: 1,
-          hasPrev: false,
-          hasNext: false,
-          movies: filteredMovies
-        });
-
-        return;
-      }
-
-      // Default: Browse all movies
-      this.contextTitle = 'Browse Movies';
-
-      this.updateState({
-        page: 1,
-        pageSize: this.pageSize,
-        totalResults: this.dummyMovies.length,
-        totalPages: 1,
-        hasPrev: false,
-        hasNext: false,
-        movies: this.dummyMovies
       });
-
     });
   }
 
@@ -165,21 +142,7 @@ export class BrowseMoviesComponent implements OnInit {
         .subscribe(state => this.updateState(state));
       return;
     }
-
-    // Search (title / director / star / year)
-    this.contextTitle = 'Search Results';
-    this.movieService
-      .searchMovies(
-        params['title'],
-        params['year'],
-        params['director'],
-        params['star'],
-        this.page,
-        this.pageSize
-      )
-      .subscribe(state => this.updateState(state));
   }
-
 
   private updateState(state: MoviesPageStateDto): void {
     this.pageState = state;
@@ -201,44 +164,43 @@ export class BrowseMoviesComponent implements OnInit {
 
   nextPage(): void {
     if (this.pageState.hasNext) {
-      this.page++;
+      this.pageState.page++;
       this.loadMovies(this.route.snapshot.queryParams);
     }
   }
 
   previousPage(): void {
     if (this.pageState.hasPrev) {
-      this.page--;
+      this.pageState.page--;
       this.loadMovies(this.route.snapshot.queryParams);
     }
   }
 
   public applySorting(): void {
-    this.sortedMovies = [...this.movies].sort((a, b) => {
-      const aVal = this.getSortValue(a);
-      const bVal = this.getSortValue(b);
-
-      if (aVal < bVal) return this.order === 'asc' ? -1 : 1;
-      if (aVal > bVal) return this.order === 'asc' ? 1 : -1;
-      return 0;
-    });
+    this.sortedMovies = [...this.movies];
+    //this.sortedMovies = [...this.movies].sort((a, b) => {
+    // const aVal = this.getSortValue(a);
+    // const bVal = this.getSortValue(b);
+    // if (aVal < bVal) return this.order === 'asc' ? -1 : 1;
+    // if (aVal > bVal) return this.order === 'asc' ? 1 : -1;
+    // return 0; //});
   }
 
-  private getSortValue(movie: MovieDto): string | number {
-    switch (this.sortBy) {
-      case 'title':
-        return movie.title.toLowerCase();
-      case 'year':
-        return movie.year;
-      case 'director':
-        return movie.director.toLowerCase();
-      case 'star':
-        if (!movie.stars || movie.stars.length === 0) return '';
-        return movie.stars
-          .slice()
-          .sort((a, b) => a.name.localeCompare(b.name))[0]
-          .name
-          .toLowerCase();
-    }
-  }
+  //private getSortValue(movie: MovieDto): string | number {
+   // switch (this.sortBy) {
+   //   case 'title':
+    //    return movie.title.toLowerCase();
+    //  case 'year':
+     //   return movie.year;
+     // case 'director':
+     //   return movie.director.toLowerCase();
+     // case 'star':
+      //  if (!movie.stars || movie.stars.length === 0) return '';
+      //  return movie.stars
+       //   .slice()
+       //   .sort((a, b) => a.name.localeCompare(b.name))[0]
+        //  .name
+        //  .toLowerCase();
+   // }
+ // }
 }

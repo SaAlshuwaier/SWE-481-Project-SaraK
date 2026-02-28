@@ -18,10 +18,10 @@ export class CartPageComponent {
   isLoading = signal<boolean>(false);
   error = signal<string | null>(null);
 
-  // demo inputs (like your App dummy data)
-  movieId = signal<string>('tt0000001');
-  title = signal<string>('Dummy Movie');
-  quantity = signal<number>(2);
+  // demo inputs (used when we update/delete via table inputs)
+  movieId = signal<string>('');
+  title = signal<string>('');
+  quantity = signal<number>(1);
 
   constructor(private cartService: CartService) {}
 
@@ -30,10 +30,9 @@ export class CartPageComponent {
   setQuantity(v: number) { this.quantity.set(v); }
 
   loadCart() {
-    this.cart.set(null);
     this.error.set(null);
-
     this.isLoading.set(true);
+
     this.cartService.getCart()
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
@@ -58,11 +57,11 @@ export class CartPageComponent {
     });
   }
 
-  updateItem() {
+  updateItemById(movieId: string, qty: number) {
     this.error.set(null);
     this.isLoading.set(true);
 
-    this.cartService.updateItem(this.movieId(), this.quantity())
+    this.cartService.updateItem(movieId, qty)
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
         next: (res) => this.cart.set(res),
@@ -70,11 +69,11 @@ export class CartPageComponent {
       });
   }
 
-  deleteItem() {
+  deleteItemById(movieId: string) {
     this.error.set(null);
     this.isLoading.set(true);
 
-    this.cartService.deleteItem(this.movieId())
+    this.cartService.deleteItem(movieId)
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
         next: (res) => this.cart.set(res),

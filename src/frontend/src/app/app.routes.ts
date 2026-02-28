@@ -1,34 +1,32 @@
 import { Routes } from '@angular/router';
+
+import { HomeComponent } from './pages/home/home.component';
+import { BrowseMoviesComponent } from './pages/browseMovies/browseMovies.component';
+import { SearchMoviesComponent } from './pages/searchMovies/searchMovies.component';
 import { MovieDetailsPageComponent } from './pages/MovieDetailsPage/movieDetailsPage';
 import { StarDetailsPageComponent } from './pages/StarDetailsPage/starDetailsPage';
-import { BrowseMoviesComponent } from './pages/browseMovies/browseMovies.component';
-import { LoginPageComponent } from './pages/LoginPage/loginPage';
-import { CartPageComponent } from './pages/CartPage/cartPage';
-import { RegisterPageComponent } from './pages/RegisterPage/registerPage';
+
 export const routes: Routes = [
-    {path: 'movies/:movieId', component: MovieDetailsPageComponent},
-      {path: 'movies/:movieId/stars/:starId', component: StarDetailsPageComponent},
- { path: 'login', component: LoginPageComponent },
-  { path: 'cart', component: CartPageComponent },
-   { path: 'register', component: RegisterPageComponent },
-  {  path: '',
-    redirectTo: 'movies',
-    pathMatch: 'full'
-  },
+  // default
+  { path: '', pathMatch: 'full', redirectTo: 'home' },
 
-  {
-    path: 'movies',
-    component: BrowseMoviesComponent
-  },
+  // home
+  { path: 'home', component: HomeComponent },
 
-  {
-    path: 'movies/genre/:genreId',
-    component: BrowseMoviesComponent
-  },
+  // search page (separate)
+  { path: 'movies/search', component: SearchMoviesComponent },
 
-  {
-    path: 'movies/star/:starId',
-    component: BrowseMoviesComponent
-  }
+  // details
+  { path: 'movies/:movieId', component: MovieDetailsPageComponent },
+  { path: 'stars/:starId', component: StarDetailsPageComponent },
+
+  // browse pages
+  { path: 'movies', component: BrowseMoviesComponent },
+  { path: 'movies/genre/:genreId', component: BrowseMoviesComponent },
+  { path: 'movies/star/:starId', component: BrowseMoviesComponent },
+
+
+
+  // fallback
+  { path: '**', redirectTo: 'home' },
 ];
-
