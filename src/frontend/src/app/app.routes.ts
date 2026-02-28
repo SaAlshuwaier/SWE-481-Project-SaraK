@@ -18,12 +18,13 @@ export const routes: Routes = [
 
   // details
   { path: 'movies/:movieId', component: MovieDetailsPageComponent },
-  { path: 'movies/:movieId/stars/:starId', component: StarDetailsPageComponent },
+  { path: 'stars/:starId', component: StarDetailsPageComponent },
 
   // browse pages
   { path: 'movies', component: BrowseMoviesComponent },
   { path: 'movies/genre/:genreId', component: BrowseMoviesComponent },
   { path: 'movies/star/:starId', component: BrowseMoviesComponent },
+
 
 
   // fallback
