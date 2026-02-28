@@ -221,10 +221,10 @@ class CartControllerIntegrationTesting {
 
             // 3. ROOT KEYS
             .andExpect(jsonPath("$.items").exists())
-            .andExpect(jsonPath("$.totalPrice").exists())
+            .andExpect(jsonPath("$.totalQuantity").exists())
 
             // 4. TYPES
             .andExpect(jsonPath("$.items").isArray())
-            .andExpect(jsonPath("$.totalPrice").isNumber());
+            .andExpect(jsonPath("$.totalQuantity").isNumber());
     }
 }

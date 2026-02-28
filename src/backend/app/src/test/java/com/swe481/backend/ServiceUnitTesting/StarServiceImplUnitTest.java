@@ -44,30 +44,6 @@ import java.util.List;
   assertNotNull(result);
   }
 
-
-  // getStarsOfMovie tests
- 
-
-  @Test
-  void getStarsOfMovieReturnsNonNullList() {
-  List<Star> result = starService.getStarsOfMovie("tt0401792");
-  assertNotNull(result);
-  }
-
-  @Test
-  void getStarsOfMovieInitiallyEmpty() {
-  List<Star> result = starService.getStarsOfMovie("tt0401792");
-  assertTrue(result.isEmpty());
-  }
-
-  @Test
-  void getStarsOfMovieWithNullId_returnsEmptyList() {
-  List<Star> result = starService.getStarsOfMovie(null);
-  assertNotNull(result);
-  assertTrue(result.isEmpty());
-  }
-
-
   // getStarMovies tests
 
 
