@@ -4,18 +4,18 @@
   justify-content: space-between;
   align-items: center;
 
-  padding: 20px 24px;
-  margin-bottom: 30px;
+  padding: 24px 32px;
+  margin-bottom: 40px;
 
   background-color: #ffffff;
-  border-radius: 12px;
-  border: 1px solid #eaeaea;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
 }
 
 /* Title */
 .page-header h1 {
   margin: 0;
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 600;
 }
 
@@ -52,29 +52,24 @@
 }
 /* container */
 .container {
-  max-width: 1200px;
-  margin: 20px auto;
-  padding: 0 20px;
-  font-family: Arial, sans-serif;
+  max-width: 2000px;
+  margin: 30px auto;
+  padding: 0 40px;
 }
-
 /* cards grid */
 .movies {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px;
-  margin-top: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 24px;
 }
-
 /* movie card */
 .movie-card {
   background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.04);
 }
-
 .movie-card h3 {
   margin-top: 0;
   margin-bottom: 8px;
@@ -105,4 +100,23 @@
 .pagination button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.top-nav {
+  padding: 2px 40px 0 40px;
+}
+
+.back-home-btn {
+  background: none;
+  border: none;
+  color: #1e73ff;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.back-home-btn:hover {
+  text-decoration: underline;
 }

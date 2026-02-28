@@ -1,75 +1,131 @@
 <div class="container">
 
-  <div class="page-header">
-    <h1>Browse Movies</h1>
+  <!-- Top Navigation -->
+  <div class="top-nav">
+    <button
+      data-testid="back-home-btn"
+      class="back-home-btn"
+      [routerLink]="['/home']"
+    >
+      ← Back to Home
+    </button>
+  </div>
 
-    <div class="controls">
-    <span class="context" *ngIf="contextTitle">
-      <strong>{{ contextTitle }}</strong>
-    </span>
+  <!-- Header -->
+  <div class="page-header" data-testid="browse-header">
 
-      <select (change)="onSortChange($event)">
+    <h1 data-testid="browse-title">Browse Movies</h1>
+
+    <div class="controls" data-testid="browse-controls">
+
+      <span class="context" *ngIf="contextTitle" data-testid="context-title">
+        <strong>{{ contextTitle }}</strong>
+      </span>
+
+      <select
+        data-testid="sort-select"
+        (change)="onSortChange($event)"
+      >
         <option value="title">Title</option>
         <option value="year">Year</option>
         <option value="director">Director</option>
         <option value="star">Star Name</option>
       </select>
 
-      <select (change)="onOrderChange($event)">
+      <select
+        data-testid="order-select"
+        (change)="onOrderChange($event)"
+      >
         <option value="asc">Ascending</option>
         <option value="desc">Descending</option>
       </select>
+
     </div>
   </div>
 
-  <!-- Movies -->
-  <div class="movies">
-    <div class="movie-card" *ngFor="let movie of sortedMovies">
+  <!-- Movies List -->
+  <div class="movies" data-testid="movies-list">
 
+    <div
+      class="movie-card"
+      *ngFor="let movie of dummyMovies"
+      data-testid="movie-card"
+    >
       <h3>
         <a
+          data-testid="movie-link"
+          class="movie-title-browseMovies-link"
           [routerLink]="['/movies', movie.id]"
-          class="movie-title-link"
         >
           {{ movie.title }}
         </a>
       </h3>
-      <p>Year: {{ movie.year }}</p>
-      <p>Director: {{ movie.director }}</p>
 
+      <p data-testid="movie-year">Year: {{ movie.year }}</p>
+      <p data-testid="movie-director">Director: {{ movie.director }}</p>
+      <p data-testid="movie-rating">Rating: {{ movie.rating }}</p>
+
+
+      <!-- Genres -->
       <p>
         Genres:
         <ng-container *ngFor="let g of movie.genres; let last = last">
           <a
+            data-testid="genre-link"
+            class="genre-browseMovies-link"
             [routerLink]="['/movies/genre', g.id]"
             [queryParams]="{ genreName: g.name }"
           >
             {{ g.name }}
-          </a><span *ngIf="!last">, </span>
+          </a>
+          <span *ngIf="!last">, </span>
         </ng-container>
       </p>
 
+      <!-- Stars -->
       <p>
         Stars:
         <ng-container *ngFor="let s of movie.stars; let last = last">
-          <a [routerLink]="['/movies/star', s.id]">{{ s.name }}</a><span *ngIf="!last">, </span>
+          <a
+            data-testid="star-link"
+            class="star-browseMovies-link"
+            [routerLink]="['/stars', s.id]"
+          >
+            {{ s.name }}
+          </a>
+          <span *ngIf="!last">, </span>
         </ng-container>
       </p>
-
     </div>
   </div>
 
   <!-- Pagination -->
-  <div class="pagination" *ngIf="pageState">
-    <button (click)="previousPage()" [disabled]="!pageState.hasPrev">
+  <div
+    class="pagination"
+    *ngIf="pageState"
+    data-testid="pagination"
+  >
+
+    <button
+      data-testid="prev-btn"
+      (click)="previousPage()"
+      [disabled]="!pageState.hasPrev"
+    >
       Previous
     </button>
 
-    <span>Page {{ pageState.page }}</span>
+    <span data-testid="page-number">
+      Page {{ pageState.page }}
+    </span>
 
-    <button (click)="nextPage()" [disabled]="!pageState.hasNext">
+    <button
+      data-testid="next-btn"
+      (click)="nextPage()"
+      [disabled]="!pageState.hasNext"
+    >
       Next
     </button>
+
   </div>
 
 </div>
