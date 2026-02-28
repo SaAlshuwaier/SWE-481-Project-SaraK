@@ -34,20 +34,24 @@ describe('CartPageComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('should show Load Cart button when cart is null', () => {
+  it('should render 4 cart action buttons', () => {
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
 
-    const loadBtn = Array.from(el.querySelectorAll('button'))
-      .find(b => (b.textContent ?? '').includes('Load Cart'));
+    const buttons = el.querySelectorAll('button');
+    expect(buttons.length).toBe(4);
 
-    expect(loadBtn).toBeTruthy();
+    const texts = Array.from(buttons).map(b => (b.textContent ?? '').trim());
+    expect(texts.some(t => t.includes('GET Cart'))).toBe(true);
+    expect(texts.some(t => t.includes('ADD Item'))).toBe(true);
+    expect(texts.some(t => t.includes('UPDATE Item'))).toBe(true);
+    expect(texts.some(t => t.includes('DELETE Item'))).toBe(true);
   });
 
-  it('should call CartService.getCart when clicking Load Cart', () => {
+  it('should call getCart and render items list', () => {
     const mockCart = {
-      items: [],
-      totalQuantity: 0,
+      items: [{ movieId: 'tt0000001', title: 'Dummy Movie', quantity: 2 }],
+      totalQuantity: 2,
     } as any;
 
     cartService.getCart.mockReturnValue(of(mockCart));
