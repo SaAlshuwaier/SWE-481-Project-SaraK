@@ -114,7 +114,7 @@ test('E2E(browse movies): Browse works for first letter or number', async ({ pag
   const firstTitleLetter = await page.getByTestId('movie-link').first().textContent();
   expect(firstTitleLetter?.toUpperCase().startsWith('A')).toBeTruthy();
 
-  // Browse by Letter
+  // Browse by number
   await page.goto(`${FRONTEND_URL}/movies?letter=2`);
 
   await expect(page.getByTestId('browse-title')).toBeVisible();
@@ -136,12 +136,36 @@ test('E2E(browse movies): Browse works for Genre', async ({ page }) => {
   await page.goto(`${FRONTEND_URL}/movies/genre/2?genreName=Action`);
 
   await expect(page.getByTestId('browse-title')).toBeVisible();
-  await expect(page.getByTestId('context-title')).toBeVisible();
+  await expect(page.getByTestId('movie-link')).toBeVisible();
+  await expect(page.getByTestId('movie-year')).toBeVisible();
+  await expect(page.getByTestId('movie-director')).toBeVisible();
+  await expect(page.getByTestId('movie-rating')).toBeVisible();
+  await expect(page.getByTestId('genre-link')).toBeVisible();
+  await expect(page.getByTestId('star-link')).toBeVisible();
   await expect(page.getByTestId('movie-card').first()).toBeVisible();
+
+  const genreLinks = page.getByTestId('genre-link');
+  await expect(genreLinks).toContainText('Action');
 
 });
 
-test('E2E(browse movies): Sorting and Pagination work', async ({ page }) => {
+test('E2E(browse movies): Browse all movies works, Pagination works', async ({ page }) => {
+  // Browse all
+  await page.goto(`${FRONTEND_URL}/movies`);
+
+  await expect(page.getByTestId('browse-title')).toBeVisible();
+  await expect(page.getByTestId('context-title')).toBeVisible();
+  await expect(page.getByTestId('movie-card').first()).toBeVisible();
+
+  //Pagination
+  const nextBtn = page.getByTestId('next-btn');
+  if (await nextBtn.isEnabled()) {
+    await nextBtn.click();
+    await expect(page.getByTestId('page-number')).toContainText('Page');
+  }
+});
+
+test('E2E(browse movies): Sorting works', async ({ page }) => {
 
   await page.goto(`${FRONTEND_URL}/movies`);
 
@@ -168,13 +192,6 @@ test('E2E(browse movies): Sorting and Pagination work', async ({ page }) => {
     await page.getByTestId('sort-select').selectOption('title');
     await expect(page.getByTestId('movie-card')).toHaveCount(4);
 
-
-    //Pagination
-    const nextBtn = page.getByTestId('next-btn');
-    if (await nextBtn.isEnabled()) {
-      await nextBtn.click();
-      await expect(page.getByTestId('page-number')).toContainText('Page');
-    }
   }
 });
 
