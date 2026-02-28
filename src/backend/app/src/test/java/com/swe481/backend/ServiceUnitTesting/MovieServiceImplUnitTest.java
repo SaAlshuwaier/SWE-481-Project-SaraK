@@ -2,7 +2,9 @@ package com.swe481.backend.ServiceUnitTesting;
 import com.swe481.backend.model.MoviesPageState;
 import com.swe481.backend.service.serviceImp.MovieServiceImpl;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Unit test for MovieServiceImpl
  * Tests searchMovies(), browseMoviesByGenre(), browseMoviesByFirstLetter(), getMovieById() methods
  */
+@ExtendWith(MockitoExtension.class) //to inject the mock class
 class MovieServiceImplUnitTest {
 
     @InjectMocks
