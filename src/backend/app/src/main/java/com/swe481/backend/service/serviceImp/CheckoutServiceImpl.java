@@ -11,7 +11,6 @@ public class CheckoutServiceImpl implements CheckoutService {
      *
      * Logic:
      * - Receives: firstName, lastName, cardNumber, expiration
-     * - Phase 2 (Dummy):
      *     - Always returns true for testing
      *
      * @param firstName customer first name

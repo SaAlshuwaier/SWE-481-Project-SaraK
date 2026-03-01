@@ -7,39 +7,80 @@
 </header>
 
 <section class="page-wrap">
-  <div class="card">
-    <h2 class="title">Register</h2>
+  <div class="card" data-testid="register-page">
+    <h2 class="title" data-testid="register-title">Register</h2>
 
     <div class="form">
       <label class="label">First Name</label>
-      <input class="input" [value]="firstName()" (input)="setFirstName(($any($event.target).value))"/>
+      <input
+        class="input"
+        [value]="firstName()"
+        (input)="setFirstName(($any($event.target).value))"
+        data-testid="reg-firstname"
+      />
 
       <label class="label">Last Name</label>
-      <input class="input" [value]="lastName()" (input)="setLastName(($any($event.target).value))"/>
+      <input
+        class="input"
+        [value]="lastName()"
+        (input)="setLastName(($any($event.target).value))"
+        data-testid="reg-lastname"
+      />
 
       <label class="label">Email</label>
-      <input class="input" type="email" [value]="email()" (input)="setEmail(($any($event.target).value))"/>
+      <input
+        class="input"
+        type="email"
+        [value]="email()"
+        (input)="setEmail(($any($event.target).value))"
+        data-testid="reg-email"
+      />
 
       <label class="label">Password</label>
-      <input class="input" type="password" [value]="password()" (input)="setPassword(($any($event.target).value))"/>
+      <input
+        class="input"
+        type="password"
+        [value]="password()"
+        (input)="setPassword(($any($event.target).value))"
+        data-testid="reg-password"
+      />
 
       <label class="label">Address</label>
-      <input class="input" [value]="address()" (input)="setAddress(($any($event.target).value))"/>
+      <input
+        class="input"
+        [value]="address()"
+        (input)="setAddress(($any($event.target).value))"
+        data-testid="reg-address"
+      />
 
       <label class="label">Credit Card ID</label>
-      <input class="input" [value]="ccId()" (input)="setCcId(($any($event.target).value))"/>
+      <input
+        class="input"
+        [value]="ccId()"
+        (input)="setCcId(($any($event.target).value))"
+        data-testid="reg-ccid"
+      />
 
-      <button class="btn" (click)="submit()" [disabled]="isLoading()">
+      <button
+        class="btn"
+        (click)="submit()"
+        [disabled]="isLoading()"
+        data-testid="reg-submit"
+      >
         {{ isLoading() ? 'Creating…' : 'Create Account' }}
       </button>
 
-      <div *ngIf="error()" class="err-box">{{ error() }}</div>
+      <div *ngIf="error()" class="err-box" data-testid="reg-error">
+        {{ error() }}
+      </div>
 
-      <div *ngIf="result()" class="ok-box">
+      <div *ngIf="result()" class="ok-box" data-testid="reg-success">
         <div class="ok-title">Response</div>
         <div class="ok-text">
-          {{ result()?.message }}
-          <span *ngIf="result()?.customerId"> (ID: {{ result()?.customerId }})</span>
+          <span data-testid="reg-success-message">{{ result()?.message }}</span>
+          <span *ngIf="result()?.customerId" data-testid="reg-customer-id">
+            (ID: {{ result()?.customerId }})
+          </span>
         </div>
       </div>
     </div>

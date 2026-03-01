@@ -4,11 +4,12 @@ import { finalize } from 'rxjs';
 
 import { CartService } from '../../core/services/CartService';
 import { CartDto } from '../../core/models/CartDto';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-cart-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './cartPage.html',
   styleUrls: ['./cartPage.css'],
 })
