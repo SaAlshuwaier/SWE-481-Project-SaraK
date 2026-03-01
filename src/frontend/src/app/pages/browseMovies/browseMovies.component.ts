@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MoviesPageStateDto} from '../../core/models/MoviesPageStateDto';
 import {MovieDto} from '../../core/models/MovieDto';
 import {MovieService} from '../../core/services/MovieService';
@@ -24,10 +24,10 @@ export class BrowseMoviesComponent implements OnInit {
 
   //init
   page = 1;
-  pageSize = 20;
+  pageSize: 10 | 20 | 50 | 100 = 20;
 
   //constants
-  sortBy: 'title' | 'year' | 'director' | 'star' = 'title';
+  sortBy: "Title" | "Rating" = 'Title';
   order: 'asc' | 'desc' = 'asc';
 
   // Dummy Data
@@ -78,7 +78,7 @@ export class BrowseMoviesComponent implements OnInit {
       totalPages: 1,
       hasPrev: false,
       hasNext: false,
-      movies: this.movies
+      movies: movies
     };
   }
 
@@ -142,6 +142,17 @@ export class BrowseMoviesComponent implements OnInit {
         .subscribe(state => this.updateState(state));
       return;
     }
+
+    //DEFAULT Search All
+    this.contextTitle = 'Browsing';
+    this.movieService
+      .searchMovies('',
+        0,
+        '',
+        '',
+        this.page,
+        this.pageSize)
+      .subscribe(state => this.updateState(state));
   }
 
   private updateState(state: MoviesPageStateDto): void {
@@ -152,7 +163,7 @@ export class BrowseMoviesComponent implements OnInit {
 
   onSortChange(event: Event): void {
     this.sortBy = (event.target as HTMLSelectElement)
-      .value as 'title' | 'year' | 'director' | 'star';
+      .value as 'Title' | 'Rating';
     this.applySorting();
   }
 
@@ -162,45 +173,31 @@ export class BrowseMoviesComponent implements OnInit {
     this.applySorting();
   }
 
+  onPageSizeChange(event: Event): void {
+    this.pageSize = Number(
+      (event.target as HTMLSelectElement).value
+    ) as 10 | 20 | 50 | 100;
+
+    this.page = 1; // reset to first page, as the current page might not exist after the new page size
+    this.loadMovies(this.route.snapshot.queryParams);
+  }
+
   nextPage(): void {
     if (this.pageState.hasNext) {
-      this.pageState.page++;
+      this.page++;
       this.loadMovies(this.route.snapshot.queryParams);
     }
   }
 
   previousPage(): void {
     if (this.pageState.hasPrev) {
-      this.pageState.page--;
+      this.page--;
       this.loadMovies(this.route.snapshot.queryParams);
     }
   }
 
   public applySorting(): void {
     this.sortedMovies = [...this.movies];
-    //this.sortedMovies = [...this.movies].sort((a, b) => {
-    // const aVal = this.getSortValue(a);
-    // const bVal = this.getSortValue(b);
-    // if (aVal < bVal) return this.order === 'asc' ? -1 : 1;
-    // if (aVal > bVal) return this.order === 'asc' ? 1 : -1;
-    // return 0; //});
   }
 
-  //private getSortValue(movie: MovieDto): string | number {
-   // switch (this.sortBy) {
-   //   case 'title':
-    //    return movie.title.toLowerCase();
-    //  case 'year':
-     //   return movie.year;
-     // case 'director':
-     //   return movie.director.toLowerCase();
-     // case 'star':
-      //  if (!movie.stars || movie.stars.length === 0) return '';
-      //  return movie.stars
-       //   .slice()
-       //   .sort((a, b) => a.name.localeCompare(b.name))[0]
-        //  .name
-        //  .toLowerCase();
-   // }
- // }
 }
