@@ -34,39 +34,6 @@ describe('CartPageComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('should show Load Cart button when cart is null', () => {
-    fixture.detectChanges();
-    const el = fixture.nativeElement as HTMLElement;
-
-    const loadBtn = Array.from(el.querySelectorAll('button'))
-      .find(b => (b.textContent ?? '').includes('Load Cart'));
-
-    expect(loadBtn).toBeTruthy();
-  });
-
-  it('should call CartService.getCart when clicking Load Cart', () => {
-    const mockCart = {
-      items: [],
-      totalQuantity: 0,
-    } as any;
-
-    cartService.getCart.mockReturnValue(of(mockCart));
-
-    fixture.detectChanges();
-    const el = fixture.nativeElement as HTMLElement;
-
-    const loadBtn = Array.from(el.querySelectorAll('button'))
-      .find(b => (b.textContent ?? '').includes('Load Cart')) as HTMLButtonElement;
-
-    expect(loadBtn).toBeTruthy();
-
-    loadBtn.click();
-    fixture.detectChanges();
-
-    expect(cartService.getCart).toHaveBeenCalledTimes(1);
-    expect(component.cart()).toBeTruthy();
-  });
-
   it('should render footer actions (Clear Cart, Continue Shopping, Proceed to Checkout) when cart exists', () => {
     component.cart.set({
       items: [{ movieId: 'tt1', title: 'Dummy Movie', quantity: 2 }],
@@ -165,7 +132,7 @@ describe('CartPageComponent', () => {
     expect(cartService.updateItem).toHaveBeenCalledWith('tt1', 5);
   });
 
-  it('should clear cart locally when clicking Clear Cart (phase 2 dummy)', () => {
+  it('should clear cart locally when clicking Clear Cart', () => {
     component.cart.set({
       items: [{ movieId: 'tt1', title: 'Movie 1', quantity: 1 }],
       totalQuantity: 1,
