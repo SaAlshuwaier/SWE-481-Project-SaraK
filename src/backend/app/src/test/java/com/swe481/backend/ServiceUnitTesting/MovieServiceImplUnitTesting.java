@@ -7,22 +7,22 @@ import org.junit.jupiter.api.Test;
 import com.swe481.backend.model.Movie;
 import com.swe481.backend.service.serviceImp.MovieServiceImpl;
 
-public class MovieServiceImplUnitTest {
+public class MovieServiceImplUnitTesting {
 
     private final MovieServiceImpl movieService = new MovieServiceImpl();
 
     @Test
     void getMovieByIdReturnsMovieDetails() {
 
-        String movieId = "tt999";
+        String movieId = "tt0422896";
 
         Movie result = movieService.getMovieById(movieId);
 
         assertNotNull(result);
         assertEquals(movieId, result.getId());
-        assertEquals("Study", result.getTitle());
+        assertEquals("The Other America", result.getTitle());
         assertEquals(2004, result.getYear());
-        assertEquals("Layan", result.getDirector());
+        assertEquals("Eugene Martin", result.getDirector());
 
         // check genres and stars exist
         assertFalse(result.getGenres().isEmpty());

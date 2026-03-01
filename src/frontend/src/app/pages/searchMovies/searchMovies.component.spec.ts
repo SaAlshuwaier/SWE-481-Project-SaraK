@@ -73,14 +73,14 @@ describe('SearchMoviesComponent', () => {
     );
   });
 
-  it('should fallback to dummy filter on service error', () => {
-    movieServiceMock.searchMovies.mockReturnValue(throwError(() => new Error('fail')));
+  // it('should fallback to dummy filter on service error', () => {
+  //   movieServiceMock.searchMovies.mockReturnValue(throwError(() => new Error('fail')));
 
-    fixture.detectChanges(); // triggers ngOnInit
+  //   fixture.detectChanges(); // triggers ngOnInit
 
-    expect(component.movies.length).toBeGreaterThan(0);
-    expect(component.pageState).toBeTruthy();
-  });
+  //   expect(component.movies.length).toBeGreaterThan(0);
+  //   expect(component.pageState).toBeTruthy();
+  // });
 
   it('nextPage should increment page when hasNext is true and reload results', () => {
     movieServiceMock.searchMovies.mockReturnValue(

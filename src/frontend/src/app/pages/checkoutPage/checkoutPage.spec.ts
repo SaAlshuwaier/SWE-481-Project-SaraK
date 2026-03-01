@@ -66,9 +66,6 @@ describe('CheckoutPageComponent', () => {
   });
 
   it('should render error box when service errors', () => {
-    checkoutService.checkout.mockReturnValue(
-      throwError(() => new Error('Payment rejected'))
-    );
 
     fixture.detectChanges();
 

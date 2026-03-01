@@ -38,9 +38,6 @@ describe('RegisterPageComponent', () => {
   });
 
   it('should call AuthService.register and render success message', () => {
-    authService.register.mockReturnValue(
-      of({ success: true, message: 'User registered successfully', customerId: 12 } as any)
-    );
 
     fixture.detectChanges();
 

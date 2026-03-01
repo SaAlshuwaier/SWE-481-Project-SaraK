@@ -76,11 +76,13 @@ describe('HomeComponent (Home Navigation)', () => {
     });
   });
 
-  it('goToBrowseTitle should navigate to /movies', () => {
+  it('goToBrowseTitle should navigate to /movies?letter=A', () => {
     const navSpy = vi.spyOn(router, 'navigate');
 
     component.goToBrowseTitle('A');
 
-    expect(navSpy).toHaveBeenCalledWith(['/movies']);
+    expect(navSpy).toHaveBeenCalledWith(['/movies'], {
+      queryParams: { letter: 'A' },
+    });
   });
 });
