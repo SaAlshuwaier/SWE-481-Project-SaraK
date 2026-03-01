@@ -18,6 +18,10 @@ export class SearchMoviesComponent implements OnInit {
 
   // Movies returned from backend (or dummy if service not ready)
   movies: MovieDto[] = [];
+  
+  loading = false;
+  errorMessage = '';
+
 
   // Pagination
   page = 1;
@@ -26,27 +30,9 @@ export class SearchMoviesComponent implements OnInit {
   // Search query (from URL)
   query: { title?: string; year?: string; director?: string; star?: string } = {};
 
-  // Dummy fallback (if service not connected yet)
-  private dummyMovies: MovieDto[] = [
-    {
-      id: 'tt2',
-      title: 'Alpha Movie',
-      year: 2005,
-      director: 'David Clark',
-      rating: 8.1,
-      genres: [{ id: 2, name: 'Action' }],
-      stars: [{ id: 'nm1', name: 'Tom Hardy', birthYear: 1993 }],
-    },
-    {
-      id: 'tt4',
-      title: 'Another Tale',
-      year: 2022,
-      director: 'Aaron Smith',
-      rating: 7.9,
-      genres: [{ id: 1, name: 'Drama' }],
-      stars: [{ id: 'nm4', name: 'Brad Pitt', birthYear: 1963 }],
-    },
-  ];
+
+
+  
 
   constructor(
     private route: ActivatedRoute,
@@ -70,12 +56,14 @@ export class SearchMoviesComponent implements OnInit {
     });
   }
 
-  // ===== Load results =====
-private loadSearchResults(): void {
+  private loadSearchResults(): void {
   const yearNumber =
     this.query.year && this.query.year.trim() !== ''
       ? Number(this.query.year)
       : undefined;
+
+  this.loading = true;
+  this.errorMessage = '';
 
   this.movieService
     .searchMovies(
@@ -90,41 +78,28 @@ private loadSearchResults(): void {
       next: (state) => {
         this.pageState = state;
         this.movies = state.movies ?? [];
+        this.loading = false;
       },
       error: () => {
-        const filtered = this.filterDummyMovies();
+        // On error, clear movies and pageState but show error message
+        this.movies = [];
         this.pageState = {
-          page: 1,
+          page: this.page,
           pageSize: this.pageSize,
-          totalResults: filtered.length,
+          totalResults: 0,
           totalPages: 1,
           hasPrev: false,
           hasNext: false,
-          movies: filtered,
+          movies: [],
         } as any;
-        this.movies = filtered;
+
+        this.errorMessage = 'Something went wrong while loading results.';
+        this.loading = false;
       },
     });
 }
 
-  // ===== Dummy filter (fallback only) =====
-  private filterDummyMovies(): MovieDto[] {
-    const title = (this.query.title || '').toLowerCase();
-    const director = (this.query.director || '').toLowerCase();
-    const year = (this.query.year || '').trim();
-    const star = (this.query.star || '').toLowerCase();
-
-    return this.dummyMovies.filter((m) => {
-      const okTitle = !title || m.title.toLowerCase().includes(title);
-      const okDirector = !director || m.director.toLowerCase().includes(director);
-      const okYear = !year || String(m.year) === year;
-      const okStar =
-        !star ||
-        (m.stars ?? []).some((s) => s.name.toLowerCase().includes(star));
-
-      return okTitle && okDirector && okYear && okStar;
-    });
-  }
+  
 
   // ===== Pagination =====
   nextPage(): void {

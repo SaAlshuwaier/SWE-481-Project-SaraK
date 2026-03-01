@@ -142,6 +142,54 @@ test('E2E(browse movies): Browse works for Genre', async ({ page }) => {
 
 });
 
+test('E2E(Home): Home page loads and navigation to Search / Cart / Browse works', async ({ page }) => {
+  await page.goto(`${FRONTEND_URL}/home`);
+
+  // Basic assertion that home is loaded (adjust selector to what exists)
+  await expect(page.getByTestId('home-title')).toBeVisible(); 
+  // or: await expect(page.locator('h2')).toContainText('IMDB Movie Store');
+
+  // Go to Search (from home)
+  await page.getByTestId('home-go-search').click();
+  await expect(page).toHaveURL(/\/movies\/search(\?.*)?$/);
+
+  // Go back home
+  await page.goto(`${FRONTEND_URL}/home`);
+
+  // Go to Browse
+  await page.getByTestId('home-go-browse').click();
+  await expect(page).toHaveURL(/\/movies(\?.*)?$/);
+
+  // Go back home
+  await page.goto(`${FRONTEND_URL}/home`);
+
+  // Go to Cart
+  await page.getByTestId('home-go-cart').click();
+  await expect(page).toHaveURL(/\/cart(\?.*)?$/);
+});
+
+test('E2E(Search): Search results page loads from query params and Back to Home works', async ({ page }) => {
+  await page.goto(`${FRONTEND_URL}/movies/search?title=inception&year=2010`);
+
+  // Page header exists
+  await expect(page.getByRole('heading', { name: 'Search Results' })).toBeVisible();
+
+  // Context line shows filters (your HTML has it)
+  await expect(page.locator('.context')).toContainText('Title:');
+  await expect(page.locator('.context')).toContainText('inception');
+  await expect(page.locator('.context')).toContainText('2010');
+
+  // Either movies appear OR empty state appears (DB-dependent)
+  const hasMovies = await page.locator('.movie-card').first().isVisible().catch(() => false);
+  if (!hasMovies) {
+    await expect(page.locator('.empty')).toBeVisible();
+  }
+
+  // Back to Home
+  await page.getByRole('button', { name: /Back to Home/i }).click();
+  await expect(page).toHaveURL(/\/home$/);
+});
+
 test('E2E(browse movies): Browse all movies works, Pagination works', async ({ page }) => {
   // Browse all
   await page.goto(`${FRONTEND_URL}/movies`);

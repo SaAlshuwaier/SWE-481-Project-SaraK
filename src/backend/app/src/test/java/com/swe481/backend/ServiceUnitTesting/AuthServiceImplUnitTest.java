@@ -1,6 +1,7 @@
 package com.swe481.backend.ServiceUnitTesting;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
@@ -77,8 +78,8 @@ public class AuthServiceImplUnitTest {
                 "Saad",
                 "hailah@email.com",
                 "1234",
-                "Riyadh",
-                "1234567890123456"
+                "",
+                ""
         );
 
         RegisterResponse response = authService.register(request);
@@ -87,4 +88,21 @@ public class AuthServiceImplUnitTest {
         assertEquals("User registered successfully", response.getMessage());
         assertTrue(response.isSuccess());
     }
+
+    @Test
+void register_withEmptyEmail_shouldReturnFailure() {
+    RegisterRequest request = new RegisterRequest(
+            "Hailah",
+            "Saad",
+            "",   // ← email empty
+            "1234",
+            "",
+            ""
+    );
+
+    RegisterResponse response = authService.register(request);
+
+    // Expect failure (logic not yet implemented, so this will FAIL)
+    assertFalse(response.isSuccess());
+}
 }

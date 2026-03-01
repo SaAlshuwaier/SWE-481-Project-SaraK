@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -96,6 +99,20 @@ public class MovieControllerIntegrationTest {
                 .andExpect(jsonPath("$.genres").isArray())
                 .andExpect(jsonPath("$.stars").isArray());
     }
+
+    @Test
+    void getMovieById_withDifferentId() throws Exception {
+
+        // Since getMovieById currently returns a dummy movie for any id
+        String movieId = "tt1234567";
+
+        MvcResult result = mockMvc.perform(
+                get("/api/movies/{id}", movieId)
+        ).andReturn();
+
+        assertEquals(401, result.getResponse().getStatus());
+    }
+
 }
 
 
