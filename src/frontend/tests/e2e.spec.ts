@@ -221,3 +221,153 @@ test('E2E(browse movies): Navigation Movie, Star, and Genre links work', async (
   await expect(page.getByTestId('star-name')).toBeVisible();
 
 });
+
+test('E2E: Cart page loads, Load Cart works, update/delete work, clear local works, navigation works', async ({ page }) => {
+  // Go to Cart page
+  await page.goto(`${FRONTEND_URL}/cart`);
+
+  // Initially, cart should NOT be loaded yet
+  await expect(page.getByTestId('cart-not-loaded')).toBeVisible();
+  await expect(page.getByTestId('load-cart')).toBeVisible();
+
+  // Click "Load Cart" to fetch cart from backend
+  await page.getByTestId('load-cart').click();
+
+  // There should be no cart error after loading
+  await expect(page.getByTestId('cart-error')).toHaveCount(0);
+
+  // Cart should now be visible + total quantity rendered
+  await expect(page.getByTestId('cart-loaded')).toBeVisible();
+
+  // NOTE for future implementation:
+// This test currently assumes the cart starts empty (total quantity = 0).
+// If the backend later returns cart items by default, this assertion may fail because it expects '0'. In that case, the test should be updated to match the real backend behavior.
+// In that case, the test should be updated to match the real backend behavior, so we delete : await expect(page.getByTestId('cart-total-qty')).toHaveText('0');
+ await expect(page.getByTestId('cart-total-qty')).toHaveText('0');
+await expect(page.getByTestId('cart-empty')).toBeVisible();
+
+  // If cart has items, test update and delete behaviors
+  const rows = page.getByTestId('cart-row');
+  const rowCount = await rows.count();
+
+  if (rowCount > 0) {
+    //  Update quantity for the first item 
+    const firstQtyInput = page.getByTestId('cart-qty-input').first();
+
+    // Read current input value
+    const oldVal = await firstQtyInput.inputValue();
+
+    // Choose a new value different from the old value
+    const newVal = oldVal === '2' ? '3' : '2';
+
+    // Fill new value (triggers Angular (input) handler)
+    await firstQtyInput.fill(newVal);
+
+    // Blur helps stability across browsers and ensures events settle
+    await firstQtyInput.blur();
+
+    // No error after update
+    await expect(page.getByTestId('cart-error')).toHaveCount(0);
+
+    // --- Delete the first item ---
+    await page.getByTestId('remove-item').first().click();
+
+    // No error after delete
+    await expect(page.getByTestId('cart-error')).toHaveCount(0);
+  }
+
+  // Clear cart locally 
+  await page.getByTestId('clear-cart').click();
+
+  // After local clear, empty cart message should appear
+  await expect(page.getByTestId('cart-empty')).toBeVisible();
+
+  // Footer navigation should exist
+   // Continue Shopping should route to /movies
+  await page.getByTestId('continue-shopping').click();
+  await expect(page).toHaveURL(/\/movies(\?.*)?$/);
+
+  // Proceed to Checkout should route to /checkout
+  // We navigate back to /cart, so we MUST load the cart again because the footer
+  // (continue-shopping / proceed-checkout) is rendered only when cart() exists.
+  await page.goto(`${FRONTEND_URL}/cart`);
+
+  await expect(page.getByTestId('load-cart')).toBeVisible();
+  await page.getByTestId('load-cart').click();
+
+  await expect(page.getByTestId('cart-loaded')).toBeVisible();
+  await expect(page.getByTestId('proceed-checkout')).toBeVisible();
+
+  await page.getByTestId('proceed-checkout').click();
+  await expect(page).toHaveURL(/\/checkout(\?.*)?$/);
+});
+
+
+// E2E Auth Tests:
+// These tests validate the full user authentication flow from the UI.
+// I generate a unique email on each run to avoid dependency on "seed" data
+// and to prevent "user already exists" errors.
+// The tests verify that:
+// 1) Registration succeeds and shows the success response.
+// 2) Login succeeds using the newly created account.
+// Note: This approach keeps the tests stable even if the database state changes.
+test('E2E: Register works and shows success response', async ({ page }) => {
+  // Use unique email each run to avoid "already exists"
+  const email = `e2e_${Date.now()}@test.com`;
+  const password = 'test123';
+
+  await page.goto(`${FRONTEND_URL}/register`);
+
+  await expect(page.getByTestId('register-title')).toBeVisible();
+
+  await page.getByTestId('reg-firstname').fill('Jana');
+  await page.getByTestId('reg-lastname').fill('Alshreef');
+  await page.getByTestId('reg-email').fill(email);
+  await page.getByTestId('reg-password').fill(password);
+  await page.getByTestId('reg-address').fill('Riyadh');
+  await page.getByTestId('reg-ccid').fill('1111222233334444');
+
+  await page.getByTestId('reg-submit').click();
+
+  // Assert no error box is shown
+  await expect(page.getByTestId('reg-error')).toHaveCount(0);
+
+  // Assert success response is shown
+  await expect(page.getByTestId('reg-success')).toBeVisible();
+  await expect(page.getByTestId('reg-success-message')).toContainText('User registered successfully');
+});
+
+test('E2E: Login works and shows success response', async ({ page }) => {
+  // Create a new user first (so we do not rely on seed data)
+  const email = `e2e_${Date.now()}@test.com`;
+  const password = 'test123';
+
+  // Register
+  await page.goto(`${FRONTEND_URL}/register`);
+  await page.getByTestId('reg-firstname').fill('Jana');
+  await page.getByTestId('reg-lastname').fill('Alshreef');
+  await page.getByTestId('reg-email').fill(email);
+  await page.getByTestId('reg-password').fill(password);
+  await page.getByTestId('reg-address').fill('Riyadh');
+  await page.getByTestId('reg-ccid').fill('1111222233334444');
+  await page.getByTestId('reg-submit').click();
+
+  await expect(page.getByTestId('reg-error')).toHaveCount(0);
+  await expect(page.getByTestId('reg-success')).toBeVisible();
+
+  // Login with the same credentials
+  await page.goto(`${FRONTEND_URL}/login`);
+
+  await expect(page.getByTestId('login-title')).toBeVisible();
+
+  await page.getByTestId('login-email').fill(email);
+  await page.getByTestId('login-password').fill(password);
+  await page.getByTestId('login-submit').click();
+
+  // Assert no error
+  await expect(page.getByTestId('login-error')).toHaveCount(0);
+
+  // Assert success response box appears
+  await expect(page.getByTestId('login-success')).toBeVisible();
+  await expect(page.getByTestId('login-success-message')).toContainText('Login successful');
+});

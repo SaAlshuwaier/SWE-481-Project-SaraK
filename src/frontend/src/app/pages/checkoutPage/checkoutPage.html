@@ -1,0 +1,72 @@
+<header class="app-header">
+  <img class="app-logo" src="/favicon.ico" alt="PLOT BOX logo" />
+
+  <div class="app-title">
+    <h1>PLOT BOX</h1>
+    <p>Checkout</p>
+  </div>
+</header>
+
+<section class="page-wrap">
+  <div class="card">
+    <h2 class="title" data-testid="checkout-title">Checkout</h2>
+
+    <div class="form">
+      <label class="label">First Name</label>
+      <input
+        class="input"
+        data-testid="checkout-firstname"
+        [value]="firstName()"
+        (input)="setFirstName(($any($event.target).value))"
+        placeholder="First name"
+      />
+
+      <label class="label">Last Name</label>
+      <input
+        class="input"
+        data-testid="checkout-lastname"
+        [value]="lastName()"
+        (input)="setLastName(($any($event.target).value))"
+        placeholder="Last name"
+      />
+
+      <label class="label">Card Number</label>
+      <input
+        class="input"
+        data-testid="checkout-cardnumber"
+        [value]="cardNumber()"
+        (input)="setCardNumber(($any($event.target).value))"
+        placeholder="1234-5678-9012-3456"
+      />
+
+      <label class="label">Expiration</label>
+      <input
+        class="input"
+        data-testid="checkout-expiration"
+        [value]="expiration()"
+        (input)="setExpiration(($any($event.target).value))"
+        placeholder="2008/12/01"
+      />
+
+      <button
+        class="btn"
+        data-testid="checkout-submit"
+        (click)="submit()"
+        [disabled]="isLoading()"
+      >
+        {{ isLoading() ? 'Processing…' : 'Pay Now' }}
+      </button>
+
+      <div *ngIf="error()" class="err-box" data-testid="checkout-error">
+        {{ error() }}
+      </div>
+
+      <div *ngIf="result()" class="ok-box" data-testid="checkout-success">
+        <div class="ok-title">Response</div>
+        <div class="ok-text" data-testid="checkout-success-message">
+          {{ result()?.message }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

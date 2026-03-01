@@ -5,7 +5,10 @@ import { BrowseMoviesComponent } from './pages/browseMovies/browseMovies.compone
 import { SearchMoviesComponent } from './pages/searchMovies/searchMovies.component';
 import { MovieDetailsPageComponent } from './pages/MovieDetailsPage/movieDetailsPage';
 import { StarDetailsPageComponent } from './pages/StarDetailsPage/starDetailsPage';
-
+import { CartPageComponent } from './pages/CartPage/cartPage';
+import { LoginPageComponent } from './pages/LoginPage/loginPage';
+import { RegisterPageComponent } from './pages/RegisterPage/registerPage';
+import { CheckoutPageComponent } from './pages/checkoutPage/checkoutPage';
 export const routes: Routes = [
   // default
   { path: '', pathMatch: 'full', redirectTo: 'home' },
@@ -24,9 +27,13 @@ export const routes: Routes = [
   { path: 'movies', component: BrowseMoviesComponent },
   { path: 'movies/genre/:genreId', component: BrowseMoviesComponent },
   { path: 'movies/star/:starId', component: BrowseMoviesComponent },
-
-
-
+  // cart
+{ path: 'cart', component: CartPageComponent },
+// auth
+ { path: 'login', component: LoginPageComponent },
+  { path: 'register', component: RegisterPageComponent },
+// 
+  { path: 'checkout', component: CheckoutPageComponent },
   // fallback
   { path: '**', redirectTo: 'home' },
 ];

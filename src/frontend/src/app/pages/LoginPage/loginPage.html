@@ -8,9 +8,9 @@
 </header>
 
 <section class="page-wrap">
-  <div class="card">
+  <div class="card" data-testid="login-page">
 
-    <h2 class="title">Sign in</h2>
+    <h2 class="title" data-testid="login-title">Sign in</h2>
 
     <div class="form">
       <label class="label">Email</label>
@@ -20,6 +20,7 @@
         [value]="email()"
         (input)="onEmailInput(($any($event.target).value))"
         placeholder="name@example.com"
+        data-testid="login-email"
       />
 
       <label class="label">Password</label>
@@ -29,17 +30,27 @@
         [value]="password()"
         (input)="onPasswordInput(($any($event.target).value))"
         placeholder="••••••••"
+        data-testid="login-password"
       />
 
-      <button class="btn" (click)="submit()" [disabled]="isLoading()">
+      <button
+        class="btn"
+        (click)="submit()"
+        [disabled]="isLoading()"
+        data-testid="login-submit"
+      >
         {{ isLoading() ? 'Signing in…' : 'Login' }}
       </button>
 
-      <div *ngIf="error()" class="err-box">{{ error() }}</div>
+      <div *ngIf="error()" class="err-box" data-testid="login-error">
+        {{ error() }}
+      </div>
 
-      <div *ngIf="result()" class="ok-box">
+      <div *ngIf="result()" class="ok-box" data-testid="login-success">
         <div class="ok-title">Response</div>
-        <div class="ok-text">{{ result()?.message }}</div>
+        <div class="ok-text" data-testid="login-success-message">
+          {{ result()?.message }}
+        </div>
       </div>
     </div>
 
