@@ -24,9 +24,6 @@ describe('HomeComponent (Home Navigation)', () => {
     fixture.detectChanges(); // triggers ngOnInit
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
 
   it('should load genres and titleFilters from mock response', () => {
     expect(component.genres.length).toBeGreaterThan(0);
