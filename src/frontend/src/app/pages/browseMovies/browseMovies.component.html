@@ -27,9 +27,7 @@
         (change)="onSortChange($event)"
       >
         <option value="title">Title</option>
-        <option value="year">Year</option>
-        <option value="director">Director</option>
-        <option value="star">Star Name</option>
+        <option value="year">Rating</option>
       </select>
 
       <select
@@ -38,6 +36,19 @@
       >
         <option value="asc">Ascending</option>
         <option value="desc">Descending</option>
+      </select>
+
+      <label for="pageSizeSelect">Page Size:</label>
+
+      <select
+        id="pageSizeSelect"
+        data-testid="numOfMoviesPerPage-select"
+        (change)="onPageSizeChange($event)"
+      >
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
       </select>
 
     </div>
@@ -125,7 +136,5 @@
     >
       Next
     </button>
-
   </div>
-
 </div>

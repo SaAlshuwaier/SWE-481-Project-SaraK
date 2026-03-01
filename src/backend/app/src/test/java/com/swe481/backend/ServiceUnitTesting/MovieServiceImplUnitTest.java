@@ -64,9 +64,9 @@ class MovieServiceImplUnitTest {
     }
 
     @Test
-    void shouldRejectInvalidPage_searchMovie() {
+    void shouldRejectInvalidPageSize_searchMovie() {
         assertThrows(IllegalArgumentException.class, () ->
-                movieService.searchMovies(null, null, null, null, 0, 10));
+                movieService.searchMovies(null, null, null, null, 1, 1000));
     }
 
     @Test
@@ -109,9 +109,9 @@ class MovieServiceImplUnitTest {
     }
 
     @Test
-    void shouldRejectInvalidPage_browseMovie() {
+    void shouldRejectInvalidPageSize_browseMovie() {
         assertThrows(IllegalArgumentException.class, () ->
-                movieService.browseMoviesByGenre(1, 0, 10));
+                movieService.browseMoviesByGenre(1, 1, -10));
     }
     // end of test suite for browseMoviesByGenre() method
 
