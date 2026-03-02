@@ -1,15 +1,21 @@
 # Backend Testing
-In this phase, our objective is to prepare the backend automated test suite (unit + integration) and ensure the testing pipeline runs correctly.
+Our objective is to prepare the backend automated test suite (unit + integration) and ensure the testing pipeline runs correctly.
 
 ## Testing Framework: 
-- JUnit 5, executed via Maven Surefire.
+### Controller Integration Tests (REST endpoints)
+- JUnit 5 (testing framework)
+- Spring Boot Test (Spring testing support / context)
+- MockMvc (testing Spring MVC controllers & HTTP endpoints)
+
+### Service Unit Tests (business logic)
+- JUnit 5 (testing framework)
+- Mockito Extension (JUnit 5 integration)
 
 ## Test Location
 All backend tests are located under: 
 - `src/backend/app/src/test/java/com/swe481/backend`
 
 ## Test Structure (Three Levels):
-
 ### Level 1: Application Context Test
 - `BackendApplicationTests`
 Ensures the Spring Boot context loads successfully.
@@ -17,12 +23,11 @@ Ensures the Spring Boot context loads successfully.
 ### Level 2: Controller Integration Tests
 - `AuthControllerTest`
 - `StarControllerIntegrationTesting`
-- `MovieControllerIntegrationTesting`
 - `MovieControllerIntegrationTest`
 - `GenreControllerIntegrationTesting`
 - `CheckoutControllerIntegrationTesting`
 - `CartControllerIntegrationTesting`
-Validate REST endpoints using Spring Test utilities.
+
 
 ### Level 3: Service Unit Tests
 - `AuthServiceImplUnitTest`
@@ -30,50 +35,54 @@ Validate REST endpoints using Spring Test utilities.
 - `CheckoutServiceImplUnitTest`
 - `GenreServiceImplUnitTest`
 - `MovieServiceImplUnitTest`
-- `MovieServiceImplUnitTesting`
 - `StarServiceImplUnitTest`
 
 
-## Executing the Tests:
-Full suite, run from:  
-- `src/backend/app`
-Command:
-- `./mvnw clean test`
-
-### Sample Test Coverage (Auth Example)
-Example test class:
-- `AuthControllerTest.java`
-Covers authentication endpoint integration scenarios such as Successful login and Invalid credentials handling (expected error behavior), also Covers service-level logic for:
-- `login()`
-- `logout()`
-- `register()`
-
-Run a target subset:
-`./mvnw -Dtest="*Auth*Test,*BackendApplicationTests" test`
-
-Console summary sample:
-`[ERROR] Tests run: 8, Failures: 1, Errors: 0, Skipped: 0`
-`[INFO] BUILD FAILURE`
-Note: Failures are acceptable in this phase because the goal is test preparation and ensuring test execution works end-to-end.
-
+## How to Run the Backend Tests
+1) Navigate to: `src/backend/app`
+2) Install Dependencies (if not already installed): `./mvnw clean install`
+3) Run Command: `./mvnw clean test`
+- To run a target subset: `./mvnw -Dtest="YourTestClassName" test`
 
 # Frontend Testing
-Our objective here is to prepare an E2E tests to validate the main user flows.
-
 ## Testing Framework: 
-- Playwright(E2E).
+### TypeScript Component Unit Tests (UI Components)
+- Angular Testing Utilities (TestBed, ComponentFixture)
+- RxJS (testing Observables, e.g., of(), throwError())
+- Vitest mock utilities (vi.fn) for lightweight function mocking
+- Executed via Angular CLI unit test builder: @angular/build:unit-test
 
-## Test Location
-All frontend E2E tests are located under: 
+### TypeScript Service Unit Tests (API / Data Services)
+- Angular Testing Utilities (TestBed)
+- HttpClientTestingModule 
+- HttpTestingController (mocking and verifying HTTP requests)
+- Executed via Angular CLI unit test builder: @angular/build:unit-test
+
+## Test Location 
+- Service tests: `src/frontend/src/app/core/services`
+- Component tests: `src/frontend/src/app/pages`
+
+## How to Run the Frontend Tests
+1) Navigate to: `src/frontend`
+2) Install Dependencies (if not already installed): `npm install`
+3) Run Command: `ng test`
+
+# System Testing
+Our objective is to validate full system behavior across components (frontend + backend + database) and evaluate performance and resilience under load and failure conditions.
+
+## End-to-End (E2E) Testing
+### Testing Tool
+- Playwright (E2E testing framework for full user-flow validation through the UI)
+
+### Test Location
 - `src/frontend/tests/e2e.spec.ts`
 
-## Running the E2E Suite
-Run From:
-`src/frontend`
-Command:
-`npx playwright test`
+### How to Run the Frontend Tests
+1) Navigate to: `src/frontend`
+2) Install Dependencies (if not already installed): `npm install` and `npx playwright install`
+3) Run Command: `npx playwright test`
 
-## Covary Summary of what we test:
+### Covary Summary of what we test:
 The E2E suite validates end-to-end behavior across multiple pages:
 
 1) Movie Details Flow
@@ -107,15 +116,7 @@ The E2E suite validates end-to-end behavior across multiple pages:
 - Login using the registered credentials
 - Validates success response rendering
 
-Execution Result:
-Console output summary:
-`Running 39 tests using 8 workers`
-`21 passed`
-`18 failed`
-`Serving HTML report at http://localhost:9323.`
-Note: Failures are expected in this phase due to non-stable selectors (test ids), and DB seed/value mismatches. These will be stabilized in the next iteration.
-
-# Stress and Roubstness Testing
+## Stress and Roubstness Testing
 **Stress Testing**:
 The goal was to simulate high traffic to test how the system performs under heavy load. The test increased the virtual users (VUs) to simulate real-world usage, gradually ramping up to test the system’s maximum capacity. Once the system hits failure thresholds, the test stops early.
 
