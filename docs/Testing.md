@@ -116,19 +116,24 @@ Console output summary:
 Note: Failures are expected in this phase due to non-stable selectors (test ids), and DB seed/value mismatches. These will be stabilized in the next iteration.
 
 # Stress and Roubstness Testing
-1- **Stress Testing**:
+**Stress Testing**:
 The goal was to simulate high traffic to test how the system performs under heavy load. The test increased the virtual users (VUs) to simulate real-world usage, gradually ramping up to test the system’s maximum capacity. Once the system hits failure thresholds, the test stops early.
-2- **Robustness Testing**:
+
+**Robustness Testing**:
 The robustness test simulates various failure scenarios to ensure that the system behaves as expected under failure conditions
   
 ## How the Testing Was Performed
-**Test Tools**: The tests were conducted using k6, a modern open-source load testing tool.
+**Testing Tool**: The tests were conducted using k6, a modern open-source load testing tool.
+
 **Stress Testing**:
+
 1- Simulating High Traffic:
 The system was stressed with high numbers of virtual users (VUs). We gradually ramped up the number of VUs from a low baseline to a peak of 5000 virtual users over the course of the test.The requests per second (RPS) were increased to simulate real-world traffic spikes, pushing the system to its limits.
+
 2- We defined failure thresholds for the test, such as a 1% failure rate (http_req_failed < 0.01), to measure how the system handles failure conditions like timeouts or errors.If the failure rate exceeded the threshold, the test stopped early, which provided insights into how the system fails under stress and how it recovers or degrades.
 
 **Robustness Testing**:
+
 1- Simulating Failure Conditions:
 Several failure conditions were simulated, including:
 
@@ -143,18 +148,32 @@ Several failure conditions were simulated, including:
 - 404 Errors: We simulated missing resources to check how the system responds to 404 Not Found errors.
 
 2- We defined failure thresholds for the robustness test, such as a 1% failure rate (http_req_failed < 0.01) for the normal operation scenario, to measure how the system handles failure conditions like timeouts, database issues, or missing resources.
-If the failure rate exceeded the threshold, the test stopped early, providing valuable insights into how the system fails under certain failure conditions ( and how well it recovers or degrades in those scenarios.
+If the failure rate exceeded the threshold, the test stopped early, providing valuable insights into how the system fails under certain failure conditions.
 
 ## How to Run the Tests
 To run the stress and robustness tests, follow the steps below:
+
 1- install k6.
-**For Windows**: choco install k6
-**For Mac**: brew install k6
-2- Navigate to the Test Folder
+
+**For Windows**: Run choco install k6
+
+**For Mac**: Run brew install k6
+
+2- Navigate to the Test Folder 
+
+for the stress test: `src/backend/app/tests/stress`
+
+for the roubstness test: `src/backend/app/tests/robustness`
+
+
 3- Run the Tests
+
 To run the stress test, use the following command:
+
 **k6 run stress.js**
+
 To run the robustness test, use the following command:
+
 **k6 run robustness.js**
 
 
