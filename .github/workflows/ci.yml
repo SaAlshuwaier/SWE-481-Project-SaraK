@@ -62,7 +62,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Install dependencies
         working-directory: ./src/frontend
@@ -86,9 +86,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
-      # 1) Start backend
       - name: Make mvnw executable
         run: chmod +x ./src/backend/app/mvnw
 
@@ -96,10 +95,9 @@ jobs:
         working-directory: ./src/backend/app
         run: nohup ./mvnw spring-boot:run > backend.log 2>&1 &
 
-      # 2) Start frontend
       - name: Install frontend deps
         working-directory: ./src/frontend
-        run: npm ci
+        run: npm install
 
       - name: Install Playwright browsers
         working-directory: ./src/frontend
@@ -109,11 +107,9 @@ jobs:
         working-directory: ./src/frontend
         run: nohup npm start -- --host 0.0.0.0 --port 4200 > frontend.log 2>&1 &
 
-      # 3) Wait for servers to be ready
       - name: Wait for servers
         run: npx wait-on http://localhost:8080 http://localhost:4200 --timeout 60000
 
-      # 4) Run Playwright
       - name: Run E2E tests
         working-directory: ./src/frontend
         run: npx playwright test
@@ -126,12 +122,13 @@ jobs:
 
       - name: Install k6
         run: |
-          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg \
-            --keyserver hkp://keyserver.ubuntu.com:80 \
-            --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          sudo apt-get update
+          sudo apt-get install -y gnupg2
+          mkdir -p /root/.gnupg && chmod 700 /root/.gnupg
+          curl -s https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/k6-archive-keyring.gpg
           echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" \
             | sudo tee /etc/apt/sources.list.d/k6.list
-          sudo apt-get update && sudo apt-get install k6
+          sudo apt-get update && sudo apt-get install -y k6
 
       - name: Run Stress Test
         working-directory: ./src/backend/app/tests/stress
@@ -145,12 +142,13 @@ jobs:
 
       - name: Install k6
         run: |
-          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg \
-            --keyserver hkp://keyserver.ubuntu.com:80 \
-            --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          sudo apt-get update
+          sudo apt-get install -y gnupg2
+          mkdir -p /root/.gnupg && chmod 700 /root/.gnupg
+          curl -s https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/k6-archive-keyring.gpg
           echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" \
             | sudo tee /etc/apt/sources.list.d/k6.list
-          sudo apt-get update && sudo apt-get install k6
+          sudo apt-get update && sudo apt-get install -y k6
 
       - name: Run Robustness Test
         working-directory: ./src/backend/app/tests/robustness
