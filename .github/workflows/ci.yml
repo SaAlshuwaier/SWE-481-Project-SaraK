@@ -115,10 +115,25 @@ jobs:
         run: npx playwright test
 
   # Stress Test
-  stress-test:
+  sstress-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Make mvnw executable
+        run: chmod +x ./src/backend/app/mvnw
+
+      - name: Start backend
+        working-directory: ./src/backend/app
+        run: nohup ./mvnw spring-boot:run > backend.log 2>&1 &
+
+      - name: Wait for backend
+        run: sleep 60
 
       - name: Install k6
         run: |
