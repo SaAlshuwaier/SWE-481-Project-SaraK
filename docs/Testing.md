@@ -9,7 +9,6 @@ Our objective is to prepare the backend automated test suite (unit + integration
 
 ### Service Unit Tests (business logic)
 - JUnit 5 (testing framework)
-- Mockito (mocking dependencies)
 - Mockito Extension (JUnit 5 integration)
 
 ## Test Location
