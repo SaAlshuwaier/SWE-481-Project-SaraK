@@ -7,8 +7,7 @@ on:
 
 jobs:
 
-
-  # Simple sanity check (قديمك)
+  # Simple sanity check
   check:
     runs-on: ubuntu-latest
     steps:
@@ -35,11 +34,9 @@ jobs:
           [ -z "$DB_PASS" ] && echo "DB_PASS missing" && exit 1
           echo "DB secrets OK"
 
- 
   # Backend Tests (Spring Boot)
   backend-tests:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -49,13 +46,16 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Make mvnw executable
+        run: chmod +x ./src/backend/app/mvnw
+
       - name: Build and Run Tests
+        working-directory: ./src/backend/app
         run: ./mvnw clean test
 
   # Frontend Tests (Angular)
   frontend-tests:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -65,11 +65,11 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        working-directory: ./frontend       
+        working-directory: ./src/frontend
         run: npm install
 
       - name: Run Angular tests
-        working-directory: ./frontend
+        working-directory: ./src/frontend
         run: npm run test -- --watch=false --browsers=ChromeHeadless
 
   # E2E Tests (Playwright)
@@ -89,25 +89,69 @@ jobs:
           node-version: 18
 
       # 1) Start backend
+      - name: Make mvnw executable
+        run: chmod +x ./src/backend/app/mvnw
+
       - name: Start backend
-        run: |
-          nohup ./mvnw spring-boot:run > backend.log 2>&1 &
+        working-directory: ./src/backend/app
+        run: nohup ./mvnw spring-boot:run > backend.log 2>&1 &
 
       # 2) Start frontend
       - name: Install frontend deps
-        working-directory: ./frontend
+        working-directory: ./src/frontend
         run: npm ci
 
       - name: Install Playwright browsers
-        working-directory: ./frontend
+        working-directory: ./src/frontend
         run: npx playwright install --with-deps
 
       - name: Start frontend
-        working-directory: ./frontend
-        run: |
-          nohup npm start -- --host 0.0.0.0 --port 4200 > frontend.log 2>&1 &
+        working-directory: ./src/frontend
+        run: nohup npm start -- --host 0.0.0.0 --port 4200 > frontend.log 2>&1 &
 
-      # 3) Run Playwright
+      # 3) Wait for servers to be ready
+      - name: Wait for servers
+        run: npx wait-on http://localhost:8080 http://localhost:4200 --timeout 60000
+
+      # 4) Run Playwright
       - name: Run E2E tests
-        working-directory: ./frontend
+        working-directory: ./src/frontend
         run: npx playwright test
+
+  # Stress Test
+  stress-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install k6
+        run: |
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg \
+            --keyserver hkp://keyserver.ubuntu.com:80 \
+            --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" \
+            | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update && sudo apt-get install k6
+
+      - name: Run Stress Test
+        working-directory: ./src/backend/app/tests/stress
+        run: k6 run stress.js
+
+  # Robustness Test
+  robustness-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install k6
+        run: |
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg \
+            --keyserver hkp://keyserver.ubuntu.com:80 \
+            --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" \
+            | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update && sudo apt-get install k6
+
+      - name: Run Robustness Test
+        working-directory: ./src/backend/app/tests/robustness
+        run: k6 run robustness.js
