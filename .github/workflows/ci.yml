@@ -111,3 +111,37 @@ jobs:
       - name: Run E2E tests
         working-directory: ./frontend
         run: npx playwright test
+
+
+  # Stress Test
+  stress-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Node.js for Stress Testing
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install Stress Test Dependencies
+        working-directory: ./src/backend/app/tests/stress
+        run: npm install
+      - name: Run Stress Test
+        working-directory: ./src/backend/app/tests/stress
+        run: node stress.js
+
+
+  # Robustness Test
+  robustness-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Node.js for Robustness Testing
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install Robustness Test Dependencies
+        working-directory: ./src/backend/app/tests/robustness
+        run: npm install
+      - name: Run Robustness Test
+        working-directory: ./src/backend/app/tests/robustness
+        run: node robustness.js
