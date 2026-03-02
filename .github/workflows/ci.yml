@@ -70,7 +70,7 @@ jobs:
 
       - name: Run Angular tests
         working-directory: ./src/frontend
-        run: npm run test -- --watch=false --browsers=ChromeHeadless
+        run: npm run test -- --watch=false
 
   # E2E Tests (Playwright)
   playwright-e2e:
@@ -108,7 +108,7 @@ jobs:
         run: nohup npm start -- --host 0.0.0.0 --port 4200 > frontend.log 2>&1 &
 
       - name: Wait for servers
-        run: npx wait-on http://localhost:8080 http://localhost:4200 --timeout 60000
+        run: sleep 60
 
       - name: Run E2E tests
         working-directory: ./src/frontend
