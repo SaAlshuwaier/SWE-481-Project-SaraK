@@ -6,88 +6,122 @@ const FRONTEND_URL = 'http://localhost:4200';
 const MOVIE_ID = 'tt0378947';
 const STAR_ID  = 'nm0591555';
 
-test('E2E: Movie Details loads from DB, renders fields, star links look correct, cart works, back works', async ({ page }) => {
-  await page.goto(`${FRONTEND_URL}/movies/${MOVIE_ID}`);
+// E2E Auth Tests:
+// These tests validate the full user authentication flow from the UI.
+// I generate a unique email on each run to avoid dependency on "seed" data
+// and to prevent "user already exists" errors.
+// The tests verify that:
+// 1) Registration succeeds and shows the success response.
+// 2) Login succeeds using the newly created account.
+// Note: This approach keeps the tests stable even if the database state changes.
+test('E2E: Register works and shows success response', async ({ page }) => {
+  // Use unique email each run to avoid "already exists"
+  const email = `e2e_${Date.now()}@test.com`;
+  const password = 'test123';
 
-  // Assert real DB values
-  await expect(page.getByTestId('movie-title')).toHaveText('Melinda and Melinda');
-  await expect(page.getByTestId('movie-year')).toHaveText('2004');
-  await expect(page.getByTestId('movie-director')).toHaveText('Woody Allen');
-  await expect(page.getByTestId('movie-rating')).toHaveText('6.5');
-  await expect(page.getByTestId('movie-genres')).toContainText('Drama');
-  await expect(page.getByTestId('movie-genres')).toContainText('Comedy');
-  await expect(page.getByTestId('movie-genres')).toContainText('Romance');
+  await page.goto(`${FRONTEND_URL}/register`);
 
-  // quantity: click + twice -> 3
-  await page.getByTestId('qty-inc').click();
-  await page.getByTestId('qty-inc').click();
-  await expect(page.getByTestId('qty-input')).toHaveValue('3');
+  await expect(page.getByTestId('register-title')).toBeVisible();
 
-  await page.getByTestId('add-to-cart').click();
-  await expect(page.getByTestId('cart-error')).toHaveCount(0);
+  await page.getByTestId('reg-firstname').fill('Jana');
+  await page.getByTestId('reg-lastname').fill('Alshreef');
+  await page.getByTestId('reg-email').fill(email);
+  await page.getByTestId('reg-password').fill(password);
+  await page.getByTestId('reg-address').fill('Riyadh');
+  await page.getByTestId('reg-ccid').fill('1111222233334444');
 
-  // Stars list should be visible and contain stars
-  const starsList = page.getByTestId('stars-list');
-  await expect(starsList).toBeVisible();
-  await expect(starsList).toContainText('Wallace Shawn');
-  await expect(starsList).toContainText('Chiwetel Ejiofor');
-  await expect(starsList).toContainText('Woody Allen');
+  await page.getByTestId('reg-submit').click();
 
-  // Star links point to correct route
-  const firstStarLink = page.getByTestId('star-link').first();
-  await expect(firstStarLink).toHaveAttribute('href', new RegExp(`.*/stars/[^/]+$`));
+  // Assert no error box is shown
+  await expect(page.getByTestId('reg-error')).toHaveCount(0);
 
-  // Back to Movies works
-  await page.getByTestId('back-to-movies').click();
-  await expect(page).toHaveURL(/\/movies(\?.*)?$/);
+  // Assert success response is shown
+  await expect(page.getByTestId('reg-success')).toBeVisible();
+  await expect(page.getByTestId('reg-success-message')).toContainText('User registered successfully');
 });
 
-test('E2E: Star Details loads from DB, renders fields, and has valid movie links', async ({ page }) => {
-  await page.goto(`${FRONTEND_URL}/stars/${STAR_ID}`);
+test('E2E: Login works and shows success response', async ({ page }) => {
+  // Create a new user first (so we do not rely on seed data)
+  const email = `e2e_${Date.now()}@test.com`;
+  const password = 'test123';
 
-  // Assert real DB values
-  await expect(page.getByTestId('star-name')).toHaveText('Lorenzo Minoli');
-  // No birthYear in DB, so assert it's not shown OR shows a fallback
-  await expect(page.getByTestId('star-birthyear')).toHaveText('-'); // adjust to whatever your UI shows for null
+  // Register
+  await page.goto(`${FRONTEND_URL}/register`);
+  await page.getByTestId('reg-firstname').fill('Jana');
+  await page.getByTestId('reg-lastname').fill('Alshreef');
+  await page.getByTestId('reg-email').fill(email);
+  await page.getByTestId('reg-password').fill(password);
+  await page.getByTestId('reg-address').fill('Riyadh');
+  await page.getByTestId('reg-ccid').fill('1111222233334444');
+  await page.getByTestId('reg-submit').click();
 
-  // Movies list should be visible and contain his one known movie
-  const moviesList = page.getByTestId('movies-list');
-  await expect(moviesList).toBeVisible();
-  await expect(moviesList).toContainText('An Italian Affair'); 
+  await expect(page.getByTestId('reg-error')).toHaveCount(0);
+  await expect(page.getByTestId('reg-success')).toBeVisible();
 
-  // Movie link points to correct route
-  const firstMovieLink = page.getByTestId('movie-link').first();
-  await expect(firstMovieLink).toBeVisible();
-  await expect(firstMovieLink).toHaveAttribute('href', /.*\/movies\/tt0400548$/);
+  // Login with the same credentials
+  await page.goto(`${FRONTEND_URL}/login`);
 
-  // Back to Movies works
-  await page.getByTestId('back-to-movies').click();
-  await expect(page).toHaveURL(/\/movies(\?.*)?$/);
+  await expect(page.getByTestId('login-title')).toBeVisible();
+
+  await page.getByTestId('login-email').fill(email);
+  await page.getByTestId('login-password').fill(password);
+  await page.getByTestId('login-submit').click();
+
+  // Assert no error
+  await expect(page.getByTestId('login-error')).toHaveCount(0);
+
+  // Assert success response box appears
+  await expect(page.getByTestId('login-success')).toBeVisible();
+  await expect(page.getByTestId('login-success-message')).toContainText('Login successful');
 });
 
-test('E2E: Navigation flow Movie -> Star -> Movie works', async ({ page }) => {
-  await page.goto(`${FRONTEND_URL}/movies/${MOVIE_ID}`);
 
-  const starsList = page.getByTestId('stars-list');
-  await expect(starsList).toBeVisible();
+test('E2E(Home): Home page loads and navigation to Search / Cart / Browse works', async ({ page }) => {
+  await page.goto(`${FRONTEND_URL}/home`);
 
-  const firstStarLink = page.getByTestId('star-link').first();
-  await expect(firstStarLink).toBeVisible();
-  await firstStarLink.click();
+  // Basic assertion that home is loaded (adjust selector to what exists)
+  await expect(page.getByTestId('home-title')).toBeVisible(); 
+  // or: await expect(page.locator('h2')).toContainText('IMDB Movie Store');
 
-  await expect(page).toHaveURL(/\/stars\/[^/]+$/);
-  await expect(page.getByTestId('star-name')).toBeVisible();
+  // Go to Search (from home)
+  await page.getByTestId('home-go-search').click();
+  await expect(page).toHaveURL(/\/movies\/search(\?.*)?$/);
 
-  const moviesList = page.getByTestId('movies-list');
-  await expect(moviesList).toBeVisible();
+  // Go back home
+  await page.goto(`${FRONTEND_URL}/home`);
 
-  const firstMovieLink = page.getByTestId('movie-link').first();
-  await expect(firstMovieLink).toBeVisible();
-  await firstMovieLink.click();
+  // Go to Browse
+  await page.getByTestId('home-go-browse').click();
+  await expect(page).toHaveURL(/\/movies(\?.*)?$/);
 
-  await expect(page).toHaveURL(/\/movies\/[^/]+$/);
-  await expect(page.getByTestId('movie-title')).toBeVisible();
+  // Go back home
+  await page.goto(`${FRONTEND_URL}/home`);
 
+  // Go to Cart
+  await page.getByTestId('home-go-cart').click();
+  await expect(page).toHaveURL(/\/cart(\?.*)?$/);
+});
+
+test('E2E(Search): Search results page loads from query params and Back to Home works', async ({ page }) => {
+  await page.goto(`${FRONTEND_URL}/movies/search?title=inception&year=2010`);
+
+  // Page header exists
+  await expect(page.getByRole('heading', { name: 'Search Results' })).toBeVisible();
+
+  // Context line shows filters (your HTML has it)
+  await expect(page.locator('.context')).toContainText('Title:');
+  await expect(page.locator('.context')).toContainText('inception');
+  await expect(page.locator('.context')).toContainText('2010');
+
+  // Either movies appear OR empty state appears (DB-dependent)
+  const hasMovies = await page.locator('.movie-card').first().isVisible().catch(() => false);
+  if (!hasMovies) {
+    await expect(page.locator('.empty')).toBeVisible();
+  }
+
+  // Back to Home
+  await page.getByRole('button', { name: /Back to Home/i }).click();
+  await expect(page).toHaveURL(/\/home$/);
 });
 
 test('E2E(browse movies): Browse works for first letter or number', async ({ page }) => {
@@ -140,54 +174,6 @@ test('E2E(browse movies): Browse works for Genre', async ({ page }) => {
   const genreLinks = page.getByTestId('genre-link');
   await expect(genreLinks).toContainText('Action');
 
-});
-
-test('E2E(Home): Home page loads and navigation to Search / Cart / Browse works', async ({ page }) => {
-  await page.goto(`${FRONTEND_URL}/home`);
-
-  // Basic assertion that home is loaded (adjust selector to what exists)
-  await expect(page.getByTestId('home-title')).toBeVisible(); 
-  // or: await expect(page.locator('h2')).toContainText('IMDB Movie Store');
-
-  // Go to Search (from home)
-  await page.getByTestId('home-go-search').click();
-  await expect(page).toHaveURL(/\/movies\/search(\?.*)?$/);
-
-  // Go back home
-  await page.goto(`${FRONTEND_URL}/home`);
-
-  // Go to Browse
-  await page.getByTestId('home-go-browse').click();
-  await expect(page).toHaveURL(/\/movies(\?.*)?$/);
-
-  // Go back home
-  await page.goto(`${FRONTEND_URL}/home`);
-
-  // Go to Cart
-  await page.getByTestId('home-go-cart').click();
-  await expect(page).toHaveURL(/\/cart(\?.*)?$/);
-});
-
-test('E2E(Search): Search results page loads from query params and Back to Home works', async ({ page }) => {
-  await page.goto(`${FRONTEND_URL}/movies/search?title=inception&year=2010`);
-
-  // Page header exists
-  await expect(page.getByRole('heading', { name: 'Search Results' })).toBeVisible();
-
-  // Context line shows filters (your HTML has it)
-  await expect(page.locator('.context')).toContainText('Title:');
-  await expect(page.locator('.context')).toContainText('inception');
-  await expect(page.locator('.context')).toContainText('2010');
-
-  // Either movies appear OR empty state appears (DB-dependent)
-  const hasMovies = await page.locator('.movie-card').first().isVisible().catch(() => false);
-  if (!hasMovies) {
-    await expect(page.locator('.empty')).toBeVisible();
-  }
-
-  // Back to Home
-  await page.getByRole('button', { name: /Back to Home/i }).click();
-  await expect(page).toHaveURL(/\/home$/);
 });
 
 test('E2E(browse movies): Browse all movies works, Pagination works', async ({ page }) => {
@@ -270,6 +256,92 @@ test('E2E(browse movies): Navigation Movie, Star, and Genre links work', async (
 
 });
 
+
+test('E2E: Movie Details loads from DB, renders fields,  and has valid star links', async ({ page }) => {
+  await page.goto(`${FRONTEND_URL}/movies/${MOVIE_ID}`);
+
+  // Assert real DB values
+  await expect(page.getByTestId('movie-title')).toHaveText('Melinda and Melinda');
+  await expect(page.getByTestId('movie-year')).toHaveText('2004');
+  await expect(page.getByTestId('movie-director')).toHaveText('Woody Allen');
+  await expect(page.getByTestId('movie-rating')).toHaveText('6.5');
+  await expect(page.getByTestId('movie-genres')).toContainText('Drama');
+  await expect(page.getByTestId('movie-genres')).toContainText('Comedy');
+  await expect(page.getByTestId('movie-genres')).toContainText('Romance');
+
+  // quantity: click + twice -> 3
+  await page.getByTestId('qty-inc').click();
+  await page.getByTestId('qty-inc').click();
+  await expect(page.getByTestId('qty-input')).toHaveValue('3');
+
+  await page.getByTestId('add-to-cart').click();
+  await expect(page.getByTestId('cart-error')).toHaveCount(0);
+
+  // Stars list should be visible and contain stars
+  const starsList = page.getByTestId('stars-list');
+  await expect(starsList).toBeVisible();
+  await expect(starsList).toContainText('Wallace Shawn');
+  await expect(starsList).toContainText('Chiwetel Ejiofor');
+  await expect(starsList).toContainText('Woody Allen');
+
+  // Star links point to correct route
+  const firstStarLink = page.getByTestId('star-link').first();
+  await expect(firstStarLink).toHaveAttribute('href', new RegExp(`.*/stars/[^/]+$`));
+
+  // Back to Movies works
+  await page.getByTestId('back-to-movies').click();
+  await expect(page).toHaveURL(/\/movies(\?.*)?$/);
+});
+
+test('E2E: Navigation flow Movie -> Star -> Movie works', async ({ page }) => {
+  await page.goto(`${FRONTEND_URL}/movies/${MOVIE_ID}`);
+
+  const starsList = page.getByTestId('stars-list');
+  await expect(starsList).toBeVisible();
+
+  const firstStarLink = page.getByTestId('star-link').first();
+  await expect(firstStarLink).toBeVisible();
+  await firstStarLink.click();
+
+  await expect(page).toHaveURL(/\/stars\/[^/]+$/);
+  await expect(page.getByTestId('star-name')).toBeVisible();
+
+  const moviesList = page.getByTestId('movies-list');
+  await expect(moviesList).toBeVisible();
+
+  const firstMovieLink = page.getByTestId('movie-link').first();
+  await expect(firstMovieLink).toBeVisible();
+  await firstMovieLink.click();
+
+  await expect(page).toHaveURL(/\/movies\/[^/]+$/);
+  await expect(page.getByTestId('movie-title')).toBeVisible();
+
+});
+
+test('E2E: Star Details loads from DB, renders fields, and has valid movie links', async ({ page }) => {
+  await page.goto(`${FRONTEND_URL}/stars/${STAR_ID}`);
+
+  // Assert real DB values
+  await expect(page.getByTestId('star-name')).toHaveText('Lorenzo Minoli');
+  // No birthYear in DB, so assert it's not shown OR shows a fallback
+  await expect(page.getByTestId('star-birthyear')).toHaveText('-'); // adjust to whatever your UI shows for null
+
+  // Movies list should be visible and contain his one known movie
+  const moviesList = page.getByTestId('movies-list');
+  await expect(moviesList).toBeVisible();
+  await expect(moviesList).toContainText('An Italian Affair'); 
+
+  // Movie link points to correct route
+  const firstMovieLink = page.getByTestId('movie-link').first();
+  await expect(firstMovieLink).toBeVisible();
+  await expect(firstMovieLink).toHaveAttribute('href', /.*\/movies\/tt0400548$/);
+
+  // Back to Movies works
+  await page.getByTestId('back-to-movies').click();
+  await expect(page).toHaveURL(/\/movies(\?.*)?$/);
+});
+
+
 test('E2E: Cart page loads, Load Cart works, update/delete work, clear local works, navigation works', async ({ page }) => {
   // Go to Cart page
   await page.goto(`${FRONTEND_URL}/cart`);
@@ -348,74 +420,4 @@ await expect(page.getByTestId('cart-empty')).toBeVisible();
 
   await page.getByTestId('proceed-checkout').click();
   await expect(page).toHaveURL(/\/checkout(\?.*)?$/);
-});
-
-
-// E2E Auth Tests:
-// These tests validate the full user authentication flow from the UI.
-// I generate a unique email on each run to avoid dependency on "seed" data
-// and to prevent "user already exists" errors.
-// The tests verify that:
-// 1) Registration succeeds and shows the success response.
-// 2) Login succeeds using the newly created account.
-// Note: This approach keeps the tests stable even if the database state changes.
-test('E2E: Register works and shows success response', async ({ page }) => {
-  // Use unique email each run to avoid "already exists"
-  const email = `e2e_${Date.now()}@test.com`;
-  const password = 'test123';
-
-  await page.goto(`${FRONTEND_URL}/register`);
-
-  await expect(page.getByTestId('register-title')).toBeVisible();
-
-  await page.getByTestId('reg-firstname').fill('Jana');
-  await page.getByTestId('reg-lastname').fill('Alshreef');
-  await page.getByTestId('reg-email').fill(email);
-  await page.getByTestId('reg-password').fill(password);
-  await page.getByTestId('reg-address').fill('Riyadh');
-  await page.getByTestId('reg-ccid').fill('1111222233334444');
-
-  await page.getByTestId('reg-submit').click();
-
-  // Assert no error box is shown
-  await expect(page.getByTestId('reg-error')).toHaveCount(0);
-
-  // Assert success response is shown
-  await expect(page.getByTestId('reg-success')).toBeVisible();
-  await expect(page.getByTestId('reg-success-message')).toContainText('User registered successfully');
-});
-
-test('E2E: Login works and shows success response', async ({ page }) => {
-  // Create a new user first (so we do not rely on seed data)
-  const email = `e2e_${Date.now()}@test.com`;
-  const password = 'test123';
-
-  // Register
-  await page.goto(`${FRONTEND_URL}/register`);
-  await page.getByTestId('reg-firstname').fill('Jana');
-  await page.getByTestId('reg-lastname').fill('Alshreef');
-  await page.getByTestId('reg-email').fill(email);
-  await page.getByTestId('reg-password').fill(password);
-  await page.getByTestId('reg-address').fill('Riyadh');
-  await page.getByTestId('reg-ccid').fill('1111222233334444');
-  await page.getByTestId('reg-submit').click();
-
-  await expect(page.getByTestId('reg-error')).toHaveCount(0);
-  await expect(page.getByTestId('reg-success')).toBeVisible();
-
-  // Login with the same credentials
-  await page.goto(`${FRONTEND_URL}/login`);
-
-  await expect(page.getByTestId('login-title')).toBeVisible();
-
-  await page.getByTestId('login-email').fill(email);
-  await page.getByTestId('login-password').fill(password);
-  await page.getByTestId('login-submit').click();
-
-  // Assert no error
-  await expect(page.getByTestId('login-error')).toHaveCount(0);
-
-  // Assert success response box appears
-  await expect(page.getByTestId('login-success')).toBeVisible();
-  await expect(page.getByTestId('login-success-message')).toContainText('Login successful');
 });
