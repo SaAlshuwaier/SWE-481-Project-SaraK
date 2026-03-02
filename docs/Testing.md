@@ -60,7 +60,7 @@ Ensures the Spring Boot context loads successfully.
 
 ## Test Location 
 - Service tests: `src/frontend/src/app/core/services`
-- Component testt: `src/frontend/src/app/pages`
+- Component tests: `src/frontend/src/app/pages`
 
 ## How to Run the Frontend Tests
 1) Navigate to: `src/frontend`

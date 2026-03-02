@@ -51,7 +51,7 @@ In this phase, we focused on developing  comprehensive test cases across backend
 - End-to-End (E2E) tests implemented using Playwright to validate complete user workflows.
 - Stress testing implemented using k6 to evaluate system performance under high load.
 - Robustness testing implemented using k6 to evaluate system behavior under failure conditions.
-- ### Testing execution instructions documented in the README.
+- **Testing detailed explination and execution instructions are are defind under the '/docs' directory in Testing.md**
 
 ## Team Members
 - Layan Alhugbani
