@@ -5,11 +5,12 @@ import { finalize } from 'rxjs';
 import { AuthService } from '../../core/services/AuthService';
 import { RegisterRequestDto } from '../../core/models/Auth/RegisterRequestDto';
 import { RegisterResponseDto } from '../../core/models/Auth/RegisterResponseDto';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-register-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './registerPage.html',
   styleUrls: ['./registerPage.css'],
 })

@@ -40,7 +40,18 @@ their expected format.
 Developers must create a local `.env` file (not committed) to store
 their values for reference.
 
+## Phase 3 Status
+In this phase, we focused on developing  comprehensive test cases across backend, frontend, and full system levels.
 
+### Comleted in Phase 3:
+- Backend unit tests implemented (service-level logic testing).
+- Backend integration tests implemented (controller-level REST endpoint validation).
+- Frontend component unit tests implemented using Angular TestBed.
+- Frontend service tests implemented using HttpClientTestingModule and HttpTestingController.
+- End-to-End (E2E) tests implemented using Playwright to validate complete user workflows.
+- Stress testing implemented using k6 to evaluate system performance under high load.
+- Robustness testing implemented using k6 to evaluate system behavior under failure conditions.
+- **Testing detailed explanation and execution instructions are defind under the '/docs' directory in Testing.md**
 
 ## Team Members
 - Layan Alhugbani

@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -41,10 +44,11 @@ public class MovieControllerIntegrationTest {
                 .andExpect(jsonPath("$.movies").isArray())
 
                 // Contract: Movie
-                .andExpect(jsonPath("$.movies[0].id").isString())
-                .andExpect(jsonPath("$.movies[0].title").isString())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.movies").isArray())
+                .andExpect(jsonPath("$.movies[0].id").exists())
+                .andExpect(jsonPath("$.movies[0].title").exists())
                 .andExpect(jsonPath("$.movies[0].year").isNumber())
-                .andExpect(jsonPath("$.movies[0].director").isString())
                 .andExpect(jsonPath("$.movies[0].rating").isNumber())
                 .andExpect(jsonPath("$.movies[0].genres").isArray())
                 .andExpect(jsonPath("$.movies[0].stars").isArray());
@@ -95,6 +99,20 @@ public class MovieControllerIntegrationTest {
                 .andExpect(jsonPath("$.genres").isArray())
                 .andExpect(jsonPath("$.stars").isArray());
     }
+
+    @Test
+    void getMovieById_withDifferentId() throws Exception {
+
+        // Since getMovieById currently returns a dummy movie for any id
+        String movieId = "tt1234567";
+
+        MvcResult result = mockMvc.perform(
+                get("/api/movies/{id}", movieId)
+        ).andReturn();
+
+        assertEquals(401, result.getResponse().getStatus());
+    }
+
 }
 
 

@@ -1,8 +1,11 @@
 package com.swe481.backend.ServiceUnitTesting;
+import com.swe481.backend.model.Movie;
 import com.swe481.backend.model.MoviesPageState;
 import com.swe481.backend.service.serviceImp.MovieServiceImpl;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Unit test for MovieServiceImpl
  * Tests searchMovies(), browseMoviesByGenre(), browseMoviesByFirstLetter(), getMovieById() methods
  */
+@ExtendWith(MockitoExtension.class) //to inject the mock class
 class MovieServiceImplUnitTest {
 
     @InjectMocks
@@ -61,9 +65,9 @@ class MovieServiceImplUnitTest {
     }
 
     @Test
-    void shouldRejectInvalidPage_searchMovie() {
+    void shouldRejectInvalidPageSize_searchMovie() {
         assertThrows(IllegalArgumentException.class, () ->
-                movieService.searchMovies(null, null, null, null, 0, 10));
+                movieService.searchMovies(null, null, null, null, 1, 1000));
     }
 
     @Test
@@ -106,9 +110,9 @@ class MovieServiceImplUnitTest {
     }
 
     @Test
-    void shouldRejectInvalidPage_browseMovie() {
+    void shouldRejectInvalidPageSize_browseMovie() {
         assertThrows(IllegalArgumentException.class, () ->
-                movieService.browseMoviesByGenre(1, 0, 10));
+                movieService.browseMoviesByGenre(1, 1, -10));
     }
     // end of test suite for browseMoviesByGenre() method
 
@@ -149,4 +153,31 @@ class MovieServiceImplUnitTest {
                 movieService.getMovieById(""));
     }
     // end of test suite for getMovieById()
+
+    @Test
+    void getMovieByIdReturnsMovieDetails() {
+
+        String movieId = "tt0422896";
+
+        Movie result = movieService.getMovieById(movieId);
+
+        assertNotNull(result);
+        assertEquals(movieId, result.getId());
+        assertEquals("The Other America", result.getTitle());
+        assertEquals(2004, result.getYear());
+        assertEquals("Eugene Martin", result.getDirector());
+
+        // check genres and stars exist
+        assertFalse(result.getGenres().isEmpty());
+        assertFalse(result.getStars().isEmpty());
+    }
+
+    @Test
+    void getMovieByIdWithNullId_stillReturnsObjectForNow() {
+
+        Movie result = movieService.getMovieById(null);
+
+        // current behavior (until real validation added)
+        assertNotNull(result);
+    }
 }

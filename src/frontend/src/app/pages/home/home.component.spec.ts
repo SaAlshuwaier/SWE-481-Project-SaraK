@@ -24,9 +24,6 @@ describe('HomeComponent (Home Navigation)', () => {
     fixture.detectChanges(); // triggers ngOnInit
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
 
   it('should load genres and titleFilters from mock response', () => {
     expect(component.genres.length).toBeGreaterThan(0);
@@ -76,11 +73,13 @@ describe('HomeComponent (Home Navigation)', () => {
     });
   });
 
-  it('goToBrowseTitle should navigate to /movies', () => {
+  it('goToBrowseTitle should navigate to /movies?letter=A', () => {
     const navSpy = vi.spyOn(router, 'navigate');
 
     component.goToBrowseTitle('A');
 
-    expect(navSpy).toHaveBeenCalledWith(['/movies']);
+    expect(navSpy).toHaveBeenCalledWith(['/movies'], {
+      queryParams: { letter: 'A' },
+    });
   });
 });

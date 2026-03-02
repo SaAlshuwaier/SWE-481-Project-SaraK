@@ -35,6 +35,7 @@ public class CartServiceImplUnitTest {
         CartItem item = new CartItem("tt0421974", "Fighters", 1);
         Cart cart = cartService.addItem(item);
         assertNotNull(cart);
+        assertEquals(1, cart.getTotalQuantity());
     }
 
     @Test
@@ -72,6 +73,7 @@ public class CartServiceImplUnitTest {
     public void testUpdateItem_withZeroQuantity_returnsCart() {
         Cart result = cartService.updateItem("tt0264464", 0);
         assertNotNull(result);
+        assertEquals(0, result.getTotalQuantity());
     }
 
     @Test
@@ -92,7 +94,7 @@ public class CartServiceImplUnitTest {
         assertEquals(0, result.getItems().size()); // item removed
         assertEquals(0, result.getTotalQuantity()); // total is 0
     }
-    
+
     @Test
     void deleteItemWhenQuantityIsOne_removesItemCompletely() {
 

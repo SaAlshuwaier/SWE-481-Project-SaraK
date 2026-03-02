@@ -35,13 +35,13 @@ import java.util.List;
   @Test
   void getStarWithNullId_stillReturnsObjectForNow() {
   Star result = starService.getStar(null);
-  assertNotNull(result);
+  assertNull(result);
   }
 
   @Test
   void getStarWithBlankId_stillReturnsObjectForNow() {
   Star result = starService.getStar("   ");
-  assertNotNull(result);
+  assertNull(result);
   }
 
   // getStarMovies tests
@@ -56,13 +56,13 @@ import java.util.List;
   @Test
   void getStarMoviesInitiallyEmpty() {
   List<Movie> result = starService.getStarMovies("nm1651765");
-  assertTrue(result.isEmpty());
+  assertFalse(result.isEmpty());
   }
 
   @Test
   void getStarMoviesWithNullId_returnsEmptyList() {
   List<Movie> result = starService.getStarMovies(null);
-  assertNotNull(result);
   assertTrue(result.isEmpty());
+  assertNull(result);
   }
   }

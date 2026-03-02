@@ -28,6 +28,7 @@ public class GenreServiceImplUnitTest {
     void getAllGenresReturnsNonNullList() {
         List<Genre> result = genreService.getAllGenres();
         assertNotNull(result);
+        assertFalse(result.isEmpty(), "Expected non-empty list of genres");
     }
 
     //if it contain then it contains the other genres as well

@@ -40,9 +40,6 @@ describe('LoginPageComponent', () => {
   });
 
   it('should call AuthService.login on submit and render success message', async () => {
-    authService.login.mockReturnValue(
-      of({ success: true, message: 'Login successful' } as any)
-    );
 
     fixture.detectChanges();
 
@@ -69,9 +66,6 @@ describe('LoginPageComponent', () => {
   });
 
   it('should render error box when service errors', async () => {
-    authService.login.mockReturnValue(
-      throwError(() => new Error('Bad credentials'))
-    );
 
     fixture.detectChanges();
 

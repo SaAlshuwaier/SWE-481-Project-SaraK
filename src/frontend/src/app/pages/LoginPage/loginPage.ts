@@ -5,11 +5,12 @@ import { finalize } from 'rxjs';
 import { AuthService } from '../../core/services/AuthService';
 import { LoginRequestDto } from '../../core/models/Auth/LoginRequestDto';
 import { LoginResponseDto } from '../../core/models/Auth/LoginResponseDto';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './loginPage.html',
   styleUrls: ['./loginPage.css'],
 })
