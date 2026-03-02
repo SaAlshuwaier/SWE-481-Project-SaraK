@@ -24,8 +24,13 @@ const movieErrors = new Rate('movie_errors');
 const authTrend = new Trend('auth_duration');
 const cartTrend = new Trend('cart_duration');
 const checkoutTrend = new Trend('checkout_duration');
-const movieTrend = new Trend('movie_duration');
 const searchTrend = new Trend('search_duration');
+
+//  Missing helper (was causing runtime crash)
+function recordError(rateMetric, isError) {
+    rateMetric.add(isError ? 1 : 0);
+    errorRate.add(isError ? 1 : 0);
+}
 
 // ============================================
 // STRESS TEST CONFIGURATION
@@ -38,22 +43,22 @@ export const options = {
                 { duration: '2m', target: 50 },
                 { duration: '2m', target: 100 },
                 { duration: '2m', target: 200 },
-                { duration: '2m', target: 500 },  // Ramp up rapidly to a high load
+                { duration: '2m', target: 500 },   // Ramp up rapidly to a high load
                 { duration: '2m', target: 1000 },  // Overwhelm the system further
                 { duration: '5m', target: 2000 },  // Maintain high load
                 { duration: '5m', target: 5000 },  // Heavy traffic to force failure
-                { duration: '2m', target: 0 },    // Ramp down and check recovery
+                { duration: '2m', target: 0 },     // Ramp down and check recovery
             ],
             gracefulRampDown: '30s',
         },
     },
     thresholds: {
-        http_req_failed: [{ threshold: 'rate<0.05', abortOnFail: true, delayAbortEval: '1m' }],
+        http_req_failed: ['rate<0.05'],
         http_req_duration: [
-            'p(95)<2000',  // Set tight limits on request duration
-            'p(99)<5000',  // Force the system to fail when response time exceeds 5 seconds
+            'p(95)<2000',
+            'p(99)<5000',
         ],
-        errors: ['rate<0.05'],  // Force failure if the error rate is more than 5%
+        errors: ['rate<0.05'],
     },
     tags: {
         test_type: 'stress-test',
@@ -78,27 +83,27 @@ export function setup() {
 // TEST DATA
 // ============================================
 const movieIds = ['tt0012345', 'tt0067890', 'tt0135792', 'tt0246801', 'tt0357913'];
-const starIds = ['nm0000123', 'nm0000456', 'nm0000789', 'nm0001011', 'nm0001213'];
-const genreIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 // Generate large payloads to simulate heavy requests
 function generateHeavyPayload() {
-    const payload = {
+    return {
         username: 'testuser_' + Math.random().toString(36).substr(2, 9),
         password: 'Test@123456',
         email: `testuser_${Math.random().toString(36).substr(2, 9)}@example.com`,
         firstName: 'Heavy',
         lastName: 'Load',
-        cart: new Array(1000).fill({ movieId: movieIds[Math.floor(Math.random() * movieIds.length)], quantity: 5 }),  // Large cart with 1000 items
+        cart: new Array(1000).fill({
+            movieId: movieIds[Math.floor(Math.random() * movieIds.length)],
+            quantity: 5,
+        }),
     };
-    return payload;
 }
 
 // ============================================
 // AUTH
 // ============================================
 function testAuth() {
-    const userData = generateHeavyPayload();  // Generate heavy request payload
+    const userData = generateHeavyPayload();
 
     // Register
     const registerRes = http.post(`${BASE_URL}/auth/register`, JSON.stringify(userData), {
@@ -130,12 +135,11 @@ function testAuth() {
 }
 
 // ============================================
-// CART
+// CART 
 // ============================================
 function testCart() {
-    // Get cart
+    // Get cart (no auth header)
     const getCartRes = http.get(`${BASE_URL}/cart`, {
-        headers: { 'Authorization': `Bearer ${vuSession.token}` },
         tags: { type: 'cart', operation: 'getCart' },
     });
 
@@ -146,7 +150,7 @@ function testCart() {
     const cartItem = generateHeavyPayload().cart[Math.floor(Math.random() * 1000)];
 
     const addItemRes = http.post(`${BASE_URL}/cart/addItem`, JSON.stringify(cartItem), {
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${vuSession.token}` },
+        headers: { 'Content-Type': 'application/json' }, // no Authorization
         tags: { type: 'cart', operation: 'addItem' },
     });
 
@@ -156,11 +160,11 @@ function testCart() {
 }
 
 // ============================================
-// CHECKOUT
+// CHECKOUT 
 // ============================================
 function testCheckout() {
     const checkoutRes = http.post(`${BASE_URL}/checkout`, JSON.stringify(generateHeavyPayload()), {
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${vuSession.token}` },
+        headers: { 'Content-Type': 'application/json' }, // no Authorization
         tags: { type: 'checkout', operation: 'process' },
     });
 
@@ -178,8 +182,7 @@ function testCheckout() {
 // MOVIES
 // ============================================
 function testMovies() {
-    // Simulate searching for a movie with a very heavy payload
-    const searchUrl = `${BASE_URL}/movies/search?title=The+Matrix&year=1999&director=The+Wachowskis&page=1&pageSize=5000`;  // Search with large result set
+    const searchUrl = `${BASE_URL}/movies/search?title=The+Matrix&year=1999&director=The+Wachowskis&page=1&pageSize=5000`;
     const searchRes = http.get(searchUrl, {
         tags: { type: 'movie', operation: 'search' },
     });
@@ -194,7 +197,6 @@ function testMovies() {
 // ============================================
 export default function () {
     try {
-        // Each VU will make a very heavy request by sending a large payload or triggering large responses
         testAuth();
         testCart();
         testCheckout();
@@ -204,7 +206,6 @@ export default function () {
         errorRate.add(1);
     }
 
-    // Introduce some random short sleep time to simulate "thinking time" between requests
     sleep(Math.random() * 0.4 + 0.1);
 }
 
