@@ -39,9 +39,9 @@ Ensures the Spring Boot context loads successfully.
 
 
 ## How to Run the Backend Tests
-1- Navigate to: `src/backend/app`
-2- Install Dependencies (if not already installed): `./mvnw clean install`
-3- Run Command: `./mvnw clean test`
+1) Navigate to: `src/backend/app`
+2) Install Dependencies (if not already installed): `./mvnw clean install`
+3) Run Command: `./mvnw clean test`
 - To run a target subset: `./mvnw -Dtest="YourTestClassName" test`
 
 # Frontend Testing
@@ -63,9 +63,9 @@ Ensures the Spring Boot context loads successfully.
 - Component testt: `src/frontend/src/app/pages`
 
 ## How to Run the Frontend Tests
-1- Navigate to: `src/frontend`
-2- Install Dependencies (if not already installed): `npm install`
-3- Run Command: `ng test`
+1) Navigate to: `src/frontend`
+2) Install Dependencies (if not already installed): `npm install`
+3) Run Command: `ng test`
 
 # System Testing
 Our objective is to validate full system behavior across components (frontend + backend + database) and evaluate performance and resilience under load and failure conditions.
@@ -78,9 +78,9 @@ Our objective is to validate full system behavior across components (frontend + 
 - `src/frontend/tests/e2e.spec.ts`
 
 ### How to Run the Frontend Tests
-1- Navigate to: `src/frontend`
-2- Install Dependencies (if not already installed): `npm install` and `npx playwright install`
-3- Run Command: `npx playwright test`
+1) Navigate to: `src/frontend`
+2) Install Dependencies (if not already installed): `npm install` and `npx playwright install`
+3) Run Command: `npx playwright test`
 
 ### Covary Summary of what we test:
 The E2E suite validates end-to-end behavior across multiple pages:
