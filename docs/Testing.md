@@ -28,7 +28,7 @@ Ensures the Spring Boot context loads successfully.
 - `GenreControllerIntegrationTesting`
 - `CheckoutControllerIntegrationTesting`
 - `CartControllerIntegrationTesting`
-Validate REST endpoints using Spring Test utilities.
+
 
 ### Level 3: Service Unit Tests
 - `AuthServiceImplUnitTest`
@@ -39,11 +39,10 @@ Validate REST endpoints using Spring Test utilities.
 - `StarServiceImplUnitTest`
 
 
-## Executing the Tests:
-Full suite, run from:  
-- `src/backend/app`
-Command:
-- `./mvnw clean test`
+## How to Run the Backend Tests
+1- Navigate to: `src/backend/app`
+2- Install Dependencies (if not already installed): `./mvnw clean install`
+3- Run Command: `./mvnw clean test`
 - To run a target subset: `./mvnw -Dtest="YourTestClassName" test`
 
 # Frontend Testing
@@ -56,20 +55,18 @@ Command:
 
 ### TypeScript Service Unit Tests (API / Data Services)
 - Angular Testing Utilities (TestBed)
-- HttpClientTestingModule + HttpTestingController (mocking and verifying HTTP requests)
-- Vitest mock utilities (vi.fn) for mocking service methods
+- HttpClientTestingModule 
+- HttpTestingController (mocking and verifying HTTP requests)
 - Executed via Angular CLI unit test builder: @angular/build:unit-test
 
 ## Test Location 
 - Service tests: `src/frontend/src/app/core/services`
 - Component testt: `src/frontend/src/app/pages`
 
-## Executing the Tests:
-Full suite, run from:  
-- `src/frontend`
-Command:
-- `ng test`
-
+## How to Run the Frontend Tests
+1- Navigate to: `src/frontend`
+2- Install Dependencies (if not already installed): `npm install`
+3- Run Command: `ng test`
 
 # System Testing
 Our objective is to validate full system behavior across components (frontend + backend + database) and evaluate performance and resilience under load and failure conditions.
@@ -77,16 +74,14 @@ Our objective is to validate full system behavior across components (frontend + 
 ## End-to-End (E2E) Testing
 ### Testing Tool
 - Playwright (E2E testing framework for full user-flow validation through the UI)
-k6 (failure/resilience testing by simulating degraded and error conditions)
 
 ### Test Location
 - `src/frontend/tests/e2e.spec.ts`
 
-### Running the E2E Suite
-Run From:
-`src/frontend`
-Command:
-`npx playwright test`
+### How to Run the Frontend Tests
+1- Navigate to: `src/frontend`
+2- Install Dependencies (if not already installed): `npm install` and `npx playwright install`
+3- Run Command: `npx playwright test`
 
 ### Covary Summary of what we test:
 The E2E suite validates end-to-end behavior across multiple pages:
