@@ -1,4 +1,4 @@
-package com.swe481.backend.model.Auth;
+package com.swe481.backend.Dto.Auth;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

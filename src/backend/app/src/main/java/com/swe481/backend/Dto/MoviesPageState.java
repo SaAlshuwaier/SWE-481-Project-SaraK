@@ -1,4 +1,4 @@
-package com.swe481.backend.model;
+package com.swe481.backend.Dto;
 
 import java.util.List;
 

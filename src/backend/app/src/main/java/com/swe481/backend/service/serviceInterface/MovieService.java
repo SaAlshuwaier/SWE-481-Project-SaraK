@@ -1,7 +1,7 @@
 package com.swe481.backend.service.serviceInterface;
 
-import com.swe481.backend.model.Movie;
-import com.swe481.backend.model.MoviesPageState;
+import com.swe481.backend.Dto.Movie;
+import com.swe481.backend.Dto.MoviesPageState;
 
 public interface MovieService {
 

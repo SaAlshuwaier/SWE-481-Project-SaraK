@@ -1,14 +1,14 @@
-package com.swe481.backend.model.Auth;
+package com.swe481.backend.Dto.Auth;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 /**
- * LoginResponse represents the response returned after login attempt.
+ * LogoutResponse represents the response returned after logout.
  *
- * Example:
+ * Example JSON:
  * {
- *   "message": "Login successful",
+ *   "message": "Logout successful",
  *   "success": true
  * }
  */
@@ -16,7 +16,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginResponse {
+public class LogoutResponse {
     private String message;
     private boolean success;
+
 }

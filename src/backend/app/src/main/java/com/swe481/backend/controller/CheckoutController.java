@@ -1,6 +1,6 @@
 package com.swe481.backend.controller;
 
-import com.swe481.backend.model.CheckoutModel;
+import com.swe481.backend.Dto.CheckoutModel;
 import com.swe481.backend.service.serviceInterface.CheckoutService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
