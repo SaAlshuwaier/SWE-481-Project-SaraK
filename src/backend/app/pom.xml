@@ -83,12 +83,18 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<plugin>
-    <groupId>org.jooq</groupId>
-    <artifactId>jooq-codegen-maven</artifactId>
-    <version>${jooq.version}</version>
 
-    <executions>
+			<plugin>
+           <groupId>org.jooq</groupId>
+           <artifactId>jooq-codegen-maven</artifactId>
+            <version>${jooq.version}</version>
+	 	<dependency>
+       <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+        <version>42.7.3</version>
+
+           </dependency>
+        <executions>
         <execution>
             <id>jooq-codegen</id>
             <phase>generate-sources</phase>
@@ -97,7 +103,6 @@
             </goals>
 
             <configuration>
-
                 <jdbc>
                     <driver>org.postgresql.Driver</driver>
                     <url>${DB_URL}</url>
@@ -111,8 +116,7 @@
                         <name>org.jooq.meta.postgres.PostgresDatabase</name>
                         <includes>.*</includes>
                         <excludes></excludes>
-                        <inputSchema>moviedb</inputSchema>
-
+                        <inputSchema>public</inputSchema>
                     </database>
 
                     <generate>
@@ -123,7 +127,7 @@
                     </generate>
 
                     <target>
-                        <packageName>com.swe481.jooq.generated</packageName>
+                        <packageName>com.jooq.swe481.generated</packageName>
                         <directory>target/generated-sources/jooq</directory>
                     </target>
 

@@ -1,12 +1,11 @@
 package com.swe481.backend.controller;
 
+import com.swe481.backend.Dto.Cart;
+import com.swe481.backend.Dto.Cart.CartItem;
 import com.swe481.backend.service.serviceInterface.CartService;
 import org.springframework.beans.factory.annotation.Autowired; // Allows automatic injection of CartService.
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*; // Contains all Spring web annotations like @RestController, @GetMapping, etc.
-
-import com.swe481.backend.model.Cart;
-import com.swe481.backend.model.Cart.CartItem;
 
 /**
  * CartController

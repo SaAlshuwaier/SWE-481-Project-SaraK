@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import com.swe481.backend.model.Movie;
-import com.swe481.backend.model.Star;
+import com.swe481.backend.Dto.Movie;
+import com.swe481.backend.Dto.Star;
 import com.swe481.backend.service.serviceImp.StarServiceImpl;
 
 import java.util.List;

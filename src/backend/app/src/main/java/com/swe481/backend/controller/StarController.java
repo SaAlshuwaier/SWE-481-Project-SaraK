@@ -1,6 +1,6 @@
 package com.swe481.backend.controller;
-import com.swe481.backend.model.Movie;
-import com.swe481.backend.model.Star;
+import com.swe481.backend.Dto.Movie;
+import com.swe481.backend.Dto.Star;
 import com.swe481.backend.service.serviceInterface.StarService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

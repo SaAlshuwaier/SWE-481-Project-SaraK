@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
-import com.swe481.backend.model.Cart;
-import com.swe481.backend.model.Cart.CartItem;
+import com.swe481.backend.Dto.Cart;
+import com.swe481.backend.Dto.Cart.CartItem;
 import com.swe481.backend.service.serviceImp.CartServiceImpl;
 
 public class CartServiceImplUnitTest {
