@@ -1,4 +1,5 @@
 package com.swe481.backend.ServiceUnitTesting;
+import com.swe481.backend.model.Movie;
 import com.swe481.backend.model.MoviesPageState;
 import com.swe481.backend.service.serviceImp.MovieServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -152,4 +153,31 @@ class MovieServiceImplUnitTest {
                 movieService.getMovieById(""));
     }
     // end of test suite for getMovieById()
+
+    @Test
+    void getMovieByIdReturnsMovieDetails() {
+
+        String movieId = "tt0422896";
+
+        Movie result = movieService.getMovieById(movieId);
+
+        assertNotNull(result);
+        assertEquals(movieId, result.getId());
+        assertEquals("The Other America", result.getTitle());
+        assertEquals(2004, result.getYear());
+        assertEquals("Eugene Martin", result.getDirector());
+
+        // check genres and stars exist
+        assertFalse(result.getGenres().isEmpty());
+        assertFalse(result.getStars().isEmpty());
+    }
+
+    @Test
+    void getMovieByIdWithNullId_stillReturnsObjectForNow() {
+
+        Movie result = movieService.getMovieById(null);
+
+        // current behavior (until real validation added)
+        assertNotNull(result);
+    }
 }

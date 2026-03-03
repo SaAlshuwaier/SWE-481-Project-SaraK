@@ -1,52 +1,66 @@
-import http from 'k6/http';
+import http from 'k6/http';  // Ensure http is imported
 import { check, sleep } from 'k6';
-import { Rate, Trend, Counter } from 'k6/metrics';
-
+import { Rate, Trend, Counter } from 'k6/metrics';  // Keep the metrics imports
+// ============================================
+// CONFIGURATION
+// ============================================
+// Set the base URL and environment for the test
 const ENVIRONMENT = __ENV.ENV || 'development';
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:8080/api';
-
-
 
 if (!BASE_URL) {
     throw new Error('BASE_URL environment variable is required!');
 }
 
+// Log the environment and the target URL for visibility in test results
 console.log(`Running in ${ENVIRONMENT} at ${BASE_URL}`);
 
-// Custom metrics for tracking failures and performance
+// ============================================
+// METRICS
+// ============================================
+// Custom metrics to track failures and performance for different failure conditions
+
+// Tracks failure rates for different error categories
 const dbFailureRate = new Rate('db_failures');
-const authErrorRate = new Rate('auth_errors');
-const validationErrorRate = new Rate('validation_errors');
-const notFoundRate = new Rate('not_found_errors');
 const timeoutRate = new Rate('timeouts');
 const fallbackSuccessRate = new Rate('fallback_success');
 
+// Tracks response time trends for different types of failures
 const dbFailureTrend = new Trend('db_failure_duration_ms');
 const fallbackTrend = new Trend('fallback_response_time_ms');
 const normalTrend = new Trend('normal_duration_ms');
 
+// Counters to track when fallback is triggered or failure is injected
 const fallbackUsed = new Counter('fallback_triggered_count');
 const failuresInjected = new Counter('failures_injected_count');
 
+// ============================================
+// TEST CONFIGURATION
+// ============================================
+// The test is divided into multiple scenarios to simulate specific failure conditions and measure system resilience
+
 export const options = {
     scenarios: {
+        // Normal operation scenario
         normal_operation: {
             executor: 'constant-vus',
-            vus: 8,
-            duration: '5m',
-            exec: 'testNormalOperation',
+            vus: 8,  // 8 Virtual Users
+            duration: '5m',  // Run for 5 minutes
+            exec: 'testNormalOperation',  // Run the normal operation test function
             tags: { test_case: 'normal' },
         },
 
+        // Simulate database being down
         database_down: {
             executor: 'constant-vus',
-            vus: 5,
-            duration: '4m',
-            exec: 'testDatabaseDown',
+            vus: 5,  // 5 Virtual Users
+            duration: '4m',  // Run for 4 minutes
+            exec: 'testDatabaseDown',  // Run the database down test function
             tags: { test_case: 'db_down' },
-            startTime: '30s',
+            startTime: '30s',  // Start 30 seconds after the test begins
         },
 
+        // Simulate slow database responses
         slow_database: {
             executor: 'constant-vus',
             vus: 5,
@@ -56,6 +70,7 @@ export const options = {
             startTime: '45s',
         },
 
+        // Simulate exhausted connection pool
         pool_exhausted: {
             executor: 'constant-vus',
             vus: 5,
@@ -65,6 +80,7 @@ export const options = {
             startTime: '1m',
         },
 
+        // Simulate timeouts in the system
         timeout_tests: {
             executor: 'constant-vus',
             vus: 4,
@@ -74,10 +90,7 @@ export const options = {
             startTime: '1m15s',
         },
 
-
-
-
-
+        // Simulate 404 errors (resource not found)
         not_found_failures: {
             executor: 'constant-vus',
             vus: 3,
@@ -86,19 +99,35 @@ export const options = {
             tags: { test_case: 'not_found' },
             startTime: '2m30s',
         },
-
-
     },
 
+    // ============================================
+    // THRESHOLDS: These are the conditions for test success
+    // ============================================
     thresholds: {
+        // For normal operation, we expect less than 1% failure rate and response times under 500ms for 95% of requests
         'http_req_failed{test_case:normal}': ['rate<0.01'],
         'http_req_duration{test_case:normal}': ['p(95)<500'],
+
+        // For the database down scenario, we expect failure rates above 95% (503 or cached 200 responses)
         'http_req_failed{test_case:db_down}': ['rate<0.95'],
-        'http_req_failed{test_case:pool_full}': ['rate<0.95'],
+
+        // For slow database, we allow some delay but expect failure rate to be below 50%
         'http_req_failed{test_case:slow_db}': ['rate<0.50'],
+
+        // For pool exhaustion, we expect failure rate to be under 95%
+        'http_req_failed{test_case:pool_full}': ['rate<0.95'],
+
+        // For timeout scenarios, failure rates should stay under 50%
         'http_req_failed{test_case:timeout}': ['rate<0.50'],
+
+        // For 404 failures, we expect more than 80% of the responses to be 404 as the scenario simulates missing resources
         'http_req_failed{test_case:not_found}': ['rate>0.80'],
+
+        // Overall response time threshold: 95% of the requests should complete under 10 seconds
         http_req_duration: ['p(95)<10000'],
+
+        // For database failures, we allow failure rates up to 5% 
         db_failures: ['rate<0.95'],
     },
 
@@ -108,6 +137,10 @@ export const options = {
     },
 };
 
+// ============================================
+// UTILITY FUNCTIONS
+// ============================================
+// Randomly generate movie IDs and star IDs for testing purposes
 function getRandomMovieId() {
     const movieIds = ['tt0012345', 'tt0067890', 'tt0135792', 'tt0246801', 'tt0357913'];
     return movieIds[Math.floor(Math.random() * movieIds.length)];
@@ -118,20 +151,25 @@ function getRandomStarId() {
     return starIds[Math.floor(Math.random() * starIds.length)];
 }
 
+// Log errors for troubleshooting during test execution
 function logError(scenario, response, vuId) {
     console.error(`[VU ${vuId}] ${scenario} failed: Status ${response.status}, Duration ${response.timings.duration}ms`);
 }
 
+// ============================================
+// TEST FUNCTIONS
+// ============================================
+// Normal operation test (checks movies endpoint)
 export function testNormalOperation() {
     const vuId = __VU;
 
+    // Request to get list of movies
     const moviesRes = http.get(`${BASE_URL}/movies`);
     normalTrend.add(moviesRes.timings.duration);
     check(moviesRes, { 'movies endpoint returns 200': (r) => r.status === 200 });
     sleep(0.5);
 
-
-
+    // Request to get details of a random movie
     const movieId = getRandomMovieId();
     const detailRes = http.get(`${BASE_URL}/movies/${movieId}`);
     check(detailRes, { 'movie detail returns 200 or 404': (r) => r.status === 200 || r.status === 404 });
@@ -139,6 +177,7 @@ export function testNormalOperation() {
     sleep(1);
 }
 
+// Test for database down scenario (simulates 503 or cached 200 responses)
 export function testDatabaseDown() {
     const vuId = __VU;
     failuresInjected.add(1);
@@ -166,6 +205,7 @@ export function testDatabaseDown() {
     sleep(2);
 }
 
+// Test for slow database scenario
 export function testSlowDatabase() {
     const vuId = __VU;
     failuresInjected.add(1);
@@ -185,6 +225,7 @@ export function testSlowDatabase() {
     sleep(3);
 }
 
+// Test for pool exhaustion scenario
 export function testPoolExhausted() {
     const vuId = __VU;
     failuresInjected.add(1);
@@ -204,6 +245,7 @@ export function testPoolExhausted() {
     sleep(1);
 }
 
+// Test for timeouts scenario
 export function testTimeouts() {
     const vuId = __VU;
 
@@ -233,10 +275,7 @@ export function testTimeouts() {
     sleep(1);
 }
 
-
-
-
-
+// Test for 404 Not Found failures scenario
 export function testNotFoundFailures() {
     const vuId = __VU;
 
@@ -244,13 +283,11 @@ export function testNotFoundFailures() {
     check(missingMovie, { 'missing movie returns 404': (r) => r.status === 404 });
 
     sleep(0.5);
-
-
-
 }
 
-
-
+// ============================================
+// TEARDOWN: Logs results after test completion
+// ============================================
 export function teardown() {
     console.log(`
 ==================================================

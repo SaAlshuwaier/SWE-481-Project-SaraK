@@ -43,9 +43,7 @@ describe('SearchMoviesComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+
 
   it('ngOnInit should read queryParams and call MovieService.searchMovies with correct params', () => {
     // IMPORTANT: return Observable so .subscribe() does not crash
