@@ -1,5 +1,5 @@
 package com.swe481.backend.service.serviceImp;
-import com.swe481.backend.model.Genre;
+import com.swe481.backend.Dto.Genre;
 import com.swe481.backend.service.serviceInterface.GenreService;
 import org.springframework.stereotype.Service;
 import java.util.List;

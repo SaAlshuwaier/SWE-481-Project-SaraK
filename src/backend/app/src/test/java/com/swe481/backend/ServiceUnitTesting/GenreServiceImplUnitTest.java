@@ -3,7 +3,7 @@ import static org.junit.jupiter.api.Assertions.*;
     
 import org.junit.jupiter.api.Test;
 
-import com.swe481.backend.model.Genre;
+import com.swe481.backend.Dto.Genre;
 import com.swe481.backend.service.serviceImp.GenreServiceImpl;
 
 import java.util.HashSet;

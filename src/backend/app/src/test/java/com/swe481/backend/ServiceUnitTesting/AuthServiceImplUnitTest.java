@@ -6,11 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
-import com.swe481.backend.model.Auth.LoginRequest;
-import com.swe481.backend.model.Auth.LoginResponse;
-import com.swe481.backend.model.Auth.LogoutResponse;
-import com.swe481.backend.model.Auth.RegisterRequest;
-import com.swe481.backend.model.Auth.RegisterResponse;
+import com.swe481.backend.Dto.Auth.LoginRequest;
+import com.swe481.backend.Dto.Auth.LoginResponse;
+import com.swe481.backend.Dto.Auth.LogoutResponse;
+import com.swe481.backend.Dto.Auth.RegisterRequest;
+import com.swe481.backend.Dto.Auth.RegisterResponse;
 import com.swe481.backend.service.serviceImp.AuthServiceImpl;
 
 /**

@@ -1,6 +1,6 @@
 package com.swe481.backend.service.serviceImp;
-import com.swe481.backend.model.Movie;
-import com.swe481.backend.model.Star;
+import com.swe481.backend.Dto.Movie;
+import com.swe481.backend.Dto.Star;
 import com.swe481.backend.service.serviceInterface.StarService;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -11,7 +11,6 @@ import java.util.List;
 public class StarServiceImpl implements StarService {
 
     private final Star star = new Star();
-    private final List<Star> stars = List.of();
     private final List<Movie> movies = List.of();
 
 

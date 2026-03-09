@@ -1,4 +1,4 @@
-package com.swe481.backend.model; // This defines the package (folder) where this class belongs (it is the path)
+package com.swe481.backend.Dto; // This defines the package (folder) where this class belongs (it is the path)
 import java.util.ArrayList;  // Used to create an empty list of cart items.
 import java.util.List;  // List is the interface used to store multiple CartItem objects.
 

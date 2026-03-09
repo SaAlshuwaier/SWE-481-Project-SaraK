@@ -1,6 +1,6 @@
 package com.swe481.backend.service.serviceInterface;
-import com.swe481.backend.model.Cart;
-import com.swe481.backend.model.Cart.CartItem;
+import com.swe481.backend.Dto.Cart;
+import com.swe481.backend.Dto.Cart.CartItem;
 
 /**
  * CartService defines the operations that the cart must support.

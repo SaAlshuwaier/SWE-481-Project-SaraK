@@ -1,6 +1,6 @@
 package com.swe481.backend.ServiceUnitTesting;
-import com.swe481.backend.model.Movie;
-import com.swe481.backend.model.MoviesPageState;
+import com.swe481.backend.Dto.Movie;
+import com.swe481.backend.Dto.MoviesPageState;
 import com.swe481.backend.service.serviceImp.MovieServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

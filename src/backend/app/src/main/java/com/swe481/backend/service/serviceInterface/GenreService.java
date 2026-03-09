@@ -1,7 +1,7 @@
 package com.swe481.backend.service.serviceInterface;
-import com.swe481.backend.model.Genre;
-
 import java.util.List;
+
+import com.swe481.backend.Dto.Genre;
 
 public interface GenreService {
     public List<Genre> getAllGenres();

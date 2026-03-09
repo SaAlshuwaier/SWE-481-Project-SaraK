@@ -2,13 +2,12 @@ package com.swe481.backend.service.serviceImp;
 
 import java.util.List;
 
+import com.swe481.backend.Dto.Genre;
+import com.swe481.backend.Dto.Movie;
+import com.swe481.backend.Dto.MoviesPageState;
+import com.swe481.backend.Dto.Star;
 import com.swe481.backend.service.serviceInterface.MovieService;
 import org.springframework.stereotype.Service;
-
-import com.swe481.backend.model.Genre;
-import com.swe481.backend.model.Movie;
-import com.swe481.backend.model.MoviesPageState;
-import com.swe481.backend.model.Star;
 
 @Service
 public class MovieServiceImpl implements MovieService {
