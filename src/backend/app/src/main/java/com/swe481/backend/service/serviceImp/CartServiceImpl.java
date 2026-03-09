@@ -1,8 +1,13 @@
 package com.swe481.backend.service.serviceImp;
-
+import jakarta.servlet.http.HttpSession;   // Used to manage user sessions and store the cart data.
 import com.swe481.backend.Dto.Cart;
 import com.swe481.backend.Dto.Cart.CartItem;
 import com.swe481.backend.service.serviceInterface.CartService;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service; // Marks this class as a Service so Spring can inject it automatically.
 
 /**
@@ -11,8 +16,35 @@ import org.springframework.stereotype.Service; // Marks this class as a Service 
 @Service
 public class CartServiceImpl implements CartService {
     
-    //dummy for phase 2
-    private final Cart cart = new Cart();
+    private static final String CART_SESSION_KEY = "cart"; // Key used to store/retrieve cart from session
+
+    @Autowired
+    private HttpSession httpSession; // Spring gives us the current user's session automatically
+
+
+    //These helpers are used to manage the cart in the session. 
+    //They are not part of the other methods because they will create redundancy if we put them inside each method. 
+    // Instead, we can call these helpers inside the main methods to keep the code clean and avoid repetition.
+    // HELPER: Get cart from session, or create a fresh one if it doesn't exist yet
+    private Cart getCartFromSession() {
+        Cart cart = (Cart) httpSession.getAttribute(CART_SESSION_KEY);
+        if (cart == null) {
+            // First time this user visits —> no cart exists yet, so we create one
+            cart = new Cart(new ArrayList<>(), 0);
+            httpSession.setAttribute(CART_SESSION_KEY, cart);
+        }
+        return cart;
+    }
+
+    // HELPER: Recalculate total quantity and save cart back into the session 
+    private Cart saveCart(Cart cart) {
+        int total = cart.getItems().stream()
+                .mapToInt(CartItem::getQuantity)
+                .sum();
+        cart.setTotalQuantity(total);
+        httpSession.setAttribute(CART_SESSION_KEY, cart); // Write updated cart back into session
+        return cart;
+    }
 
     /**
      * Get the current cart
@@ -35,8 +67,8 @@ public class CartServiceImpl implements CartService {
     */
     @Override
     public Cart getCart() {
-        // Will later return cart stored in session
-        return cart;
+        // Return whatever is in the user's session
+        return getCartFromSession();
     }
 
 
@@ -69,10 +101,21 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public Cart addItem(CartItem request) {
-        // Will later:
-        // 1. Check if item exists
-        // 2. Add or increase (update) quantity
-        return cart;
+        Cart cart = getCartFromSession();
+        List<CartItem> items = cart.getItems();
+
+        // Check if this movie is already in the cart
+        for (CartItem item : items) {
+            if (item.getMovieId().equals(request.getMovieId())) {
+                // Movie found — just increase the quantity
+                item.setQuantity(item.getQuantity() + request.getQuantity());
+                return saveCart(cart);  // Save and exit early, no need to keep looping
+            }
+        }
+
+        // Movie not found in cart —> add it as a brand new entry
+        items.add(new CartItem(request.getMovieId(), request.getTitle(), request.getQuantity()));
+        return saveCart(cart);
     }
 
     /**
@@ -103,10 +146,23 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     public Cart updateItem(String movieId, int quantity) {
-        // Will later:
-        // 1. If quantity == 0 then remove
-        // 2. Otherwise update quantity
-        return cart;
+        Cart cart = getCartFromSession();
+        List<CartItem> items = cart.getItems();
+
+        if (quantity == 0) {
+            // Quantity 0 means the user wants to remove it completely
+                return deleteItem(movieId);
+        } else {
+            // Otherwise find the item and set the new quantity
+            for (CartItem item : items) {
+                if (item.getMovieId().equals(movieId)) {
+                    item.setQuantity(quantity);
+                    break; // Found and updated, no need to keep looping
+                }
+            }
+        }
+
+        return saveCart(cart);
     }
 
 
@@ -130,6 +186,6 @@ public class CartServiceImpl implements CartService {
     @Override
     public Cart deleteItem(String movieId) {
         // Will later remove item completely
-        return cart;
+        return getCartFromSession(); // Placeholder: just return the cart for now, no actual deletion logic yet (sprint 2 we will implement it)
     }
 }

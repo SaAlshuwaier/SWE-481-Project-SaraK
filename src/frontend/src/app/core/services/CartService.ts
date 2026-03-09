@@ -38,7 +38,7 @@ export class CartService {
   getCart(): Observable<CartDto> {
     return this.http.get<CartDto>(
       `${environment.backendUrl}/api/cart`,
-      //{ withCredentials: true }
+      { withCredentials: true }
     );
   }
 
@@ -77,7 +77,7 @@ export class CartService {
     return this.http.post<CartDto>(
       `${environment.backendUrl}/api/cart/addItem`,
       item,                        // body sent to backend
-      //{ withCredentials: true }    // send session cookie
+      { withCredentials: true }    // send session cookie
     );
   }
 
@@ -110,7 +110,7 @@ export class CartService {
     return this.http.patch<CartDto>(
       `${environment.backendUrl}/api/cart/updateItem/${movieId}`,
       { quantity },                // request body
-      //{ withCredentials: true }
+      { withCredentials: true }
     );
   }
 
@@ -135,7 +135,7 @@ export class CartService {
   deleteItem(movieId: string): Observable<CartDto> {
     return this.http.delete<CartDto>(
       `${environment.backendUrl}/api/cart/deleteItem/${movieId}`,
-      //{ withCredentials: true }
+      { withCredentials: true }
     );
   }
 }
