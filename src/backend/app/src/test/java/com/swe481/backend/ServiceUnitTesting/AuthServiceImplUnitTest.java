@@ -4,11 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.jooq.DSLContext;
 import org.junit.jupiter.api.Test;
 
 import com.swe481.backend.Dto.Auth.LoginRequest;
 import com.swe481.backend.Dto.Auth.LoginResponse;
-import com.swe481.backend.Dto.Auth.LogoutResponse;
+/*import com.swe481.backend.Dto.Auth.LogoutResponse;*/
 import com.swe481.backend.Dto.Auth.RegisterRequest;
 import com.swe481.backend.Dto.Auth.RegisterResponse;
 import com.swe481.backend.service.serviceImp.AuthServiceImpl;
@@ -24,7 +26,8 @@ import com.swe481.backend.service.serviceImp.AuthServiceImpl;
  */
 public class AuthServiceImplUnitTest {
 
-    private final AuthServiceImpl authService = new AuthServiceImpl();
+    private DSLContext dls;
+    private final AuthServiceImpl authService = new AuthServiceImpl(dls);
 
 
     /** Tests that login(...) returns a LoginResponse with success=true and the correct message for a valid request.
@@ -54,14 +57,14 @@ public class AuthServiceImplUnitTest {
      * Expected Output: A LogoutResponse object with success=true and message="Logout successful".
      * 
      */
-    @Test
+    /*@Test
     void logout_returnsSuccessTrueAndCorrectMessage() {
         LogoutResponse response = authService.logout();
 
         assertNotNull(response);
         assertEquals("Logout successful", response.getMessage());
         assertTrue(response.isSuccess());
-    }
+    }*/
 
 
     /** Tests that register(...) returns a RegisterResponse with success=true and the correct message for a valid request.

@@ -10,6 +10,7 @@ import lombok.Setter;
  * {
  *   "message": "Login successful",
  *   "success": true
+ *   "customerId": 135001
  * }
  */
 @Getter
@@ -19,4 +20,6 @@ import lombok.Setter;
 public class LoginResponse {
     private String message;
     private boolean success;
+    private Integer customerId;
+
 }

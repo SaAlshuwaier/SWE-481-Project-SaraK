@@ -19,7 +19,7 @@ public interface AuthService {
      * - Accepts: nothing
      * - Returns: LogoutResponse  
      */
-    LogoutResponse logout();
+   /*  LogoutResponse logout(); */
 
      /**
      * Register action:
