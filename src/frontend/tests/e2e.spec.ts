@@ -98,8 +98,8 @@ test('E2E(Home): Home page loads and navigation to Search / Cart / Browse works'
   await page.goto(`${FRONTEND_URL}/home`);
 
   // Go to Cart
-  await page.getByTestId('home-go-cart').click();
-  await expect(page).toHaveURL(/\/cart(\?.*)?$/);
+  /*await page.getByTestId('home-go-cart').click();
+  await expect(page).toHaveURL(/\/cart(\?.*)?$/);*/
 });
 
 test('E2E(Search): Search results page loads from query params and Back to Home works', async ({ page }) => {

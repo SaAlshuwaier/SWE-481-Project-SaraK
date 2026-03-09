@@ -10,30 +10,30 @@ import { LoginPageComponent } from './pages/LoginPage/loginPage';
 import { RegisterPageComponent } from './pages/RegisterPage/registerPage';
 import { CheckoutPageComponent } from './pages/checkoutPage/checkoutPage';
 export const routes: Routes = [
+
   // default
-  { path: '', pathMatch: 'full', redirectTo: 'home' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
 
   // home
   { path: 'home', component: HomeComponent },
 
-  // search page (separate)
-  { path: 'movies/search', component: SearchMoviesComponent },
+  // authentication
+  { path: 'login', component: LoginPageComponent },
+  { path: 'register', component: RegisterPageComponent },
 
-  // details
+  // movies
+  { path: 'movies', component: BrowseMoviesComponent },
+  { path: 'movies/search', component: SearchMoviesComponent },
+  { path: 'movies/genre/:genreId', component: BrowseMoviesComponent },
   { path: 'movies/:movieId', component: MovieDetailsPageComponent },
+
+  // stars
   { path: 'stars/:starId', component: StarDetailsPageComponent },
 
-  // browse pages
-  { path: 'movies', component: BrowseMoviesComponent },
-  { path: 'movies/genre/:genreId', component: BrowseMoviesComponent },
-  { path: 'movies/star/:starId', component: BrowseMoviesComponent },
-  // cart
-{ path: 'cart', component: CartPageComponent },
-// auth
- { path: 'login', component: LoginPageComponent },
-  { path: 'register', component: RegisterPageComponent },
-// 
+  // cart & checkout
+  { path: 'cart', component: CartPageComponent },
   { path: 'checkout', component: CheckoutPageComponent },
+
   // fallback
-  { path: '**', redirectTo: 'home' },
+  { path: '**', redirectTo: 'login' }
 ];

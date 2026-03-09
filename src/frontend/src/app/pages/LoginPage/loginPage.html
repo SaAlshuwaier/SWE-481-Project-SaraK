@@ -19,9 +19,17 @@
         type="email"
         [value]="email()"
         (input)="onEmailInput(($any($event.target).value))"
+        (blur)="emailTouched.set(true)"
         placeholder="name@example.com"
         data-testid="login-email"
       />
+
+      <div
+      *ngIf="emailTouched() && !isValidEmail(email())"
+      class="err-box"
+        >
+         Invalid email format
+         </div>
 
       <label class="label">Password</label>
       <input
@@ -36,11 +44,12 @@
       <button
         class="btn"
         (click)="submit()"
-        [disabled]="isLoading()"
+        [disabled]="isLoading() || !isValidEmail(email()) || !password()"
         data-testid="login-submit"
       >
         {{ isLoading() ? 'Signing in…' : 'Login' }}
       </button>
+
 
       <div *ngIf="error()" class="err-box" data-testid="login-error">
         {{ error() }}

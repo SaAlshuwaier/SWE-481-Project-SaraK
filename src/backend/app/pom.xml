@@ -36,6 +36,11 @@
             <scope>runtime</scope>
         </dependency>
 		<dependency>
+    <groupId>me.paulschwarz</groupId>
+    <artifactId>spring-dotenv</artifactId>
+    <version>4.0.0</version>
+       </dependency>
+		<dependency>
          <groupId>org.springframework.boot</groupId>
          <artifactId>spring-boot-starter-jooq</artifactId>
         </dependency>
@@ -88,12 +93,13 @@
            <groupId>org.jooq</groupId>
            <artifactId>jooq-codegen-maven</artifactId>
             <version>${jooq.version}</version>
+		<dependencies>
 	 	<dependency>
        <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
         <version>42.7.3</version>
-
            </dependency>
+		  </dependencies>
         <executions>
         <execution>
             <id>jooq-codegen</id>
@@ -109,7 +115,6 @@
                     <user>${DB_USER}</user>
                     <password>${DB_PASS}</password>
                 </jdbc>
-
                 <generator>
                     <database>
                         <!-- POSTGRES -->
