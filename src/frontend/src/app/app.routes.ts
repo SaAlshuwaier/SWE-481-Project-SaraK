@@ -25,7 +25,6 @@ export const routes: Routes = [
   { path: 'movies', component: BrowseMoviesComponent },
   { path: 'movies/search', component: SearchMoviesComponent },
   { path: 'movies/genre/:genreId', component: BrowseMoviesComponent },
-  { path: 'movies/star/:starId', component: BrowseMoviesComponent },
   { path: 'movies/:movieId', component: MovieDetailsPageComponent },
 
   // stars
