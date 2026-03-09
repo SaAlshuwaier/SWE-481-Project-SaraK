@@ -1,11 +1,11 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
-
 import { AuthService } from '../../core/services/AuthService';
 import { LoginRequestDto } from '../../core/models/Auth/LoginRequestDto';
 import { LoginResponseDto } from '../../core/models/Auth/LoginResponseDto';
 import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
@@ -18,12 +18,19 @@ export class LoginPageComponent {
 
   email = signal<string>('');
   password = signal<string>('');
+  emailTouched = signal(false);
 
   isLoading = signal<boolean>(false);
   error = signal<string | null>(null);
   result = signal<LoginResponseDto | null>(null);
 
-  constructor(private auth: AuthService) {}
+  //router needed to navigate locally to home
+  constructor(private auth: AuthService, private router: Router) { }
+
+isValidEmail(email: string): boolean {
+  const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  return pattern.test(email);
+}
 
   onEmailInput(v: string) {
     this.email.set(v);
@@ -33,22 +40,47 @@ export class LoginPageComponent {
     this.password.set(v);
   }
 
-  submit() {
-    this.result.set(null);
-    this.error.set(null);
+submit() {
+  this.result.set(null);
+  this.error.set(null);
 
-    const body: LoginRequestDto = {
-      email: this.email(),
-      password: this.password(),
-    };
+  const email = this.email();
+  const password = this.password();
 
-    this.isLoading.set(true);
-
-    this.auth.login(body)
-      .pipe(finalize(() => this.isLoading.set(false)))
-      .subscribe({
-        next: (res) => this.result.set(res),
-        error: (err) => this.error.set(err?.message ?? 'Login failed'),
-      });
+  if (!this.isValidEmail(email)) {
+    this.error.set('Invalid email format');
+    return;
   }
+
+  if (!password) {
+    this.error.set('Password required');
+    return;
+  }
+
+  const body: LoginRequestDto = {
+    email,
+    password
+  };
+
+  this.isLoading.set(true);
+
+  this.auth.login(body)
+    .pipe(finalize(() => this.isLoading.set(false)))
+    .subscribe({
+      next: (res) => {
+
+        if (res.success) {
+          this.result.set(res);
+          this.router.navigate(['/home']);
+        } else {
+          this.error.set(res.message);
+        }
+
+      },
+      error: (err) => {
+        const message = err?.error?.message ?? 'Login failed';
+        this.error.set(message);
+      }
+    });
+}
 }

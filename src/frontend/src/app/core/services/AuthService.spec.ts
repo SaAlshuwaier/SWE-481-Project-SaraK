@@ -28,13 +28,14 @@ describe('AuthService (HTTP Mock Tests)', () => {
 
   it('should POST /api/auth/login', () => {
     const body: LoginRequestDto = {
-      email: 'test@uci.edu',
-      password: 'test123',
+      email: 'Kdoll@mail.com',
+      password: 'password20',
     };
 
     const mockRes: LoginResponseDto = {
       message: 'Login successful',
       success: true,
+      customerId: 872020,
     };
 
     service.login(body).subscribe((res) => {
