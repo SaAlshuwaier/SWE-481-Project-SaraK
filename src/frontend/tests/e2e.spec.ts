@@ -346,13 +346,6 @@ test('E2E: Cart page loads, Load Cart works, update/delete work, clear local wor
   // Go to Cart page
   await page.goto(`${FRONTEND_URL}/cart`);
 
-  // Initially, cart should NOT be loaded yet
-  await expect(page.getByTestId('cart-not-loaded')).toBeVisible();
-  await expect(page.getByTestId('load-cart')).toBeVisible();
-
-  // Click "Load Cart" to fetch cart from backend
-  await page.getByTestId('load-cart').click();
-
   // There should be no cart error after loading
   await expect(page.getByTestId('cart-error')).toHaveCount(0);
 
@@ -411,9 +404,6 @@ await expect(page.getByTestId('cart-empty')).toBeVisible();
   // We navigate back to /cart, so we MUST load the cart again because the footer
   // (continue-shopping / proceed-checkout) is rendered only when cart() exists.
   await page.goto(`${FRONTEND_URL}/cart`);
-
-  await expect(page.getByTestId('load-cart')).toBeVisible();
-  await page.getByTestId('load-cart').click();
 
   await expect(page.getByTestId('cart-loaded')).toBeVisible();
   await expect(page.getByTestId('proceed-checkout')).toBeVisible();

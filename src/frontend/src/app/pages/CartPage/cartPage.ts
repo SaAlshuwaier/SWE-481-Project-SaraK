@@ -29,6 +29,11 @@ export class CartPageComponent {
   setTitle(v: string) { this.title.set(v); }
   setQuantity(v: number) { this.quantity.set(v); }
 
+  ngOnInit(): void {
+    this.loadCart();
+  } //ADDED THIS
+
+
   loadCart() {
     this.error.set(null);
     this.isLoading.set(true);
@@ -81,15 +86,21 @@ export class CartPageComponent {
       });
   }
 
-  // Phase 2 (dummy): local clear فقط للـ UI
+  // CHANGED THIS
   clearCartLocal() {
     const current = this.cart();
     if (!current) return;
 
+    current.items.forEach(item => {
+    const result = this.cartService.deleteItem(item.movieId);
+    if (result) result.subscribe();
+    });
+
     this.cart.set({
-      ...current,
-      items: [],
-      totalQuantity: 0,
+        ...current,
+        items: [],
+        totalQuantity: 0,
     } as any);
+
   }
 }

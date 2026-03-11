@@ -18,9 +18,12 @@ public class CartServiceImpl implements CartService {
     
     private static final String CART_SESSION_KEY = "cart"; // Key used to store/retrieve cart from session
 
-    @Autowired
     private HttpSession httpSession; // Spring gives us the current user's session automatically
 
+    @Autowired
+    public CartServiceImpl(HttpSession httpSession) {
+        this.httpSession = httpSession;
+    }
 
     //These helpers are used to manage the cart in the session. 
     //They are not part of the other methods because they will create redundancy if we put them inside each method. 
