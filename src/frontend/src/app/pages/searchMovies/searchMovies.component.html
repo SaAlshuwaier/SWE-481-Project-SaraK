@@ -17,20 +17,20 @@
     <span><b>Star:</b> {{ query.star || '-' }}</span>
   </div>
 
-  <div class="loading" *ngIf="loading">
+  <div class="loading" *ngIf="loading()">
     Loading...
   </div>
 
-  <div class="error" *ngIf="!loading && errorMessage">
-    {{ errorMessage }}
+  <div class="error" *ngIf="!loading() && errorMessage()">
+    {{ errorMessage() }}
   </div>
 
-  <div class="empty" *ngIf="!loading && !errorMessage && pageState && movies.length === 0">
+  <div class="empty" *ngIf="!loading() && !errorMessage() && pageState() && movies().length === 0">
     No movies found.
   </div>
 
-  <div class="movies" *ngIf="!loading && movies.length > 0">
-    <div class="movie-card" *ngFor="let movie of movies">
+  <div class="movies" *ngIf="!loading() && movies().length > 0">
+    <div class="movie-card" *ngFor="let movie of movies()">
       <h3>
         <a [routerLink]="['/movies', movie.id]">
           {{ movie.title }}
@@ -59,14 +59,13 @@
     </div>
   </div>
 
-  <div class="pagination" *ngIf="!loading && pageState">
-    <button (click)="previousPage()" [disabled]="!pageState.hasPrev">
+  <div class="pagination" *ngIf="!loading() && pageState()">
+    <button (click)="previousPage()" [disabled]="!pageState()?.hasPrev">
       Previous
     </button>
 
-    <span>Page {{ pageState.page }}</span>
-
-    <button (click)="nextPage()" [disabled]="!pageState.hasNext">
+    <span>Page {{ pageState()?.page }}</span>
+    <button (click)="nextPage()" [disabled]="!pageState()?.hasNext">
       Next
     </button>
   </div>
