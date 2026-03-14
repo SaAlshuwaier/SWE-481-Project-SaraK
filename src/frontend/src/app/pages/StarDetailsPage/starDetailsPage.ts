@@ -26,53 +26,9 @@ import { MovieDto } from '../../core/models/MovieDto';
 })
 export class StarDetailsPageComponent implements OnDestroy {
 
-  // DELETE THIS LATER WHEN WE CONNECT TO THE DATABASE.
-  private readonly MOCK_STAR: StarDto = {
-    id: 'nm1719697',
-    name: 'Jason Noto',
-    birthYear: 1978,
-  };
 
 
-  private readonly MOCK_MOVIES: MovieDto[] = [
-    {
-      id: 'tt0476024',
-      title: 'Straight Forward',
-      year: 2005,
-      director: 'Jason Noto',
-      rating: 0,
-      genres: [{ id: 9, name: 'Drama' }],
-      stars: [
-        { id: 'nm1719697', name: 'Jason Noto', birthYear: 1978 },
-        { id: 'nm2057434', name: 'Gabe Fazio' },
-        { id: 'nm2183354', name: 'Sean Duhame' },
-        { id: 'nm0894448', name: 'Kristen Vermilyea', birthYear: 1969 },
-        { id: 'nm2965023', name: 'Terence Ziegler'},
-        { id: 'nm1164862', name: 'Lev Gorn' },
-        { id: 'nm0186963', name: 'Stacia Crawford' },
-      ],
-    },
-    {
-      id: 'tt0490839',
-      title: 'Charlie',
-      year: 2007,
-      director: 'Salvatore Interlandi',
-      rating: 7.8,
-      genres: [{ id: 9, name: 'Drama' }],
-      stars: [
-        { id: 'nm1118462', name: 'Salvatore Interlandi' },
-        { id: 'nm1719697', name: 'Jason Noto', birthYear: 1978 },
-        { id: 'nm1710833', name: 'Daniel Sharnoff' },
-        { id: 'nm4405403', name: 'Matty Charles'},
-        { id: 'nm1749019', name: 'Erik S. Weigel', birthYear: 1978 },
-        { id: 'nm1496657', name: 'Adam Mcclelland' },
-        { id: 'nm1651044', name: 'Tim Donovan Jr.' },
-        { id: 'nm2138831', name: 'Gabriela Crocco' },
-        { id: 'nm1132361', name: 'Denise Greber' },
-        { id: 'nm0578815', name: 'D.J. Mendel' },
-    ],
-    },
-  ];
+
 
   star = signal<StarDto | null>(null);
   movies = signal<MovieDto[]>([]);
@@ -89,30 +45,22 @@ export class StarDetailsPageComponent implements OnDestroy {
   }
 
   ngOnInit(): void {
-    //DELETE THIS, REMOVE COMMENT, AND IMPLEMENT LATER WHEN WE CONNECT TO THE DATABASE. THIS IS ONLY FOR DEMO PURPOSES UNTIL THEN.
-    this.star.set(this.MOCK_STAR);
-    this.movies.set(this.MOCK_MOVIES);
-    this.isLoading.set(false);
-    // Reactive subscription:
-    // - Runs once immediately
-    // - Runs again whenever :starId changes while component stays alive
-    // this.sub.add(
-    //   this.route.paramMap.subscribe((params) => {
-    //     const starId = params.get('starId');
+    this.sub.add(
+      this.route.paramMap.subscribe((params) => {
+        const starId = params.get('starId');
 
-    //     if (!starId) {
-    //       this.star.set(null);
-    //       this.movies.set([]);
-    //       this.isLoading.set(false);
-    //       this.error.set('Missing starId in route.');
-    //       return;
-    //     }
+        if (!starId) {
+          this.star.set(null);
+          this.movies.set([]);
+          this.isLoading.set(false);
+          this.error.set('Missing starId in route.');
+          return;
+        }
 
-    //     // Load star details from backend whenever starId changes
-    //     this.loadStar(starId);
-    //   })
-    // );
-}
+        this.loadStar(starId);
+      })
+    );
+  }
 
   /**
    * Loads the star by id from backend using StarService.
