@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { finalize, take } from 'rxjs/operators';
@@ -15,11 +15,10 @@ import { MovieDto } from '../../core/models/MovieDto';
   styleUrls: ['./searchMovies.component.css'],
 })
 export class SearchMoviesComponent implements OnInit {
-  pageState: MoviesPageStateDto | null = null;
-  movies: MovieDto[] = [];
-
-  loading = false;
-  errorMessage = '';
+  pageState = signal<MoviesPageStateDto | null>(null);
+  movies = signal<MovieDto[]>([]);
+  loading = signal(false);
+  errorMessage = signal('');
 
   page = 1;
   pageSize = 20;
@@ -50,9 +49,8 @@ export class SearchMoviesComponent implements OnInit {
       this.query.year && this.query.year.trim() !== ''
         ? Number(this.query.year)
         : undefined;
-
-    this.loading = true;
-    this.errorMessage = '';
+    this.loading.set(true);
+    this.errorMessage.set('');
 
     this.movieService
       .searchMovies(
@@ -66,18 +64,18 @@ export class SearchMoviesComponent implements OnInit {
       .pipe(
         take(1),
         finalize(() => {
-          this.loading = false;
+          this.loading.set(false);
         })
       )
       .subscribe({
         next: (state) => {
-          this.pageState = state;
-          this.movies = state.movies ?? [];
+          this.pageState.set(state);
+          this.movies.set(state.movies ?? []);
         },
         error: (err) => {
           console.error('SEARCH ERROR:', err);
-          this.movies = [];
-          this.pageState = {
+          this.movies.set([]);
+          this.pageState.set({
             page: this.page,
             pageSize: this.pageSize,
             totalResults: 0,
@@ -85,21 +83,21 @@ export class SearchMoviesComponent implements OnInit {
             hasPrev: false,
             hasNext: false,
             movies: [],
-          };
-          this.errorMessage = 'Something went wrong while loading results.';
+          });
+          this.errorMessage.set('Something went wrong while loading results.');
         },
       });
   }
 
   nextPage(): void {
-    if (this.pageState?.hasNext) {
+    if (this.pageState()?.hasNext) {
       this.page++;
       this.loadSearchResults();
     }
   }
 
   previousPage(): void {
-    if (this.pageState?.hasPrev) {
+    if (this.pageState()?.hasPrev) {
       this.page--;
       this.loadSearchResults();
     }
