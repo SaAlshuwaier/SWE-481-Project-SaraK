@@ -16,9 +16,9 @@ describe('StarDetailsPageComponent', () => {
   let fixture: ComponentFixture<StarDetailsPageComponent>;
 
   let starService: {
-      getStar: ReturnType<typeof vi.fn>;
-      getMoviesOfStar: ReturnType<typeof vi.fn>;
-    };
+    getStar: ReturnType<typeof vi.fn>;
+    getMoviesOfStar: ReturnType<typeof vi.fn>;
+  };
 
   // mocks created in beforeEach
   let mockStar: StarDto;
