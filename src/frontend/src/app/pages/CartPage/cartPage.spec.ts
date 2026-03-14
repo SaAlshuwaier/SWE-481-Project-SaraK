@@ -19,7 +19,7 @@ describe('CartPageComponent', () => {
 
   beforeEach(async () => {
     cartService = {
-    getCart: vi.fn().mockReturnValue(of({ items: [], totalQuantity: 0 })), //added this
+    getCart: vi.fn().mockReturnValue(of({ items: [], totalQuantity: 0 })), 
       addItem: vi.fn(),
       updateItem: vi.fn(),
       deleteItem: vi.fn(),
@@ -34,7 +34,6 @@ describe('CartPageComponent', () => {
     component = fixture.componentInstance;
   });
 
-//IN ALL THE FOLLOWING TEST CASES, INSTEAD OF CART.SET I USED THE GET
 it('should render footer actions (Clear Cart, Continue Shopping, Proceed to Checkout) when cart exists', () => {
   cartService.getCart.mockReturnValue(of({
         items: [{ movieId: 'tt1', title: 'Dummy Movie', quantity: 2 }],
@@ -142,52 +141,3 @@ it('should render footer actions (Clear Cart, Continue Shopping, Proceed to Chec
     expect((c as any).totalQuantity).toBe(0);
   });
 });
-
-//REMOVE IT BECAUSE I LET IT IN THE COMPONENET CALL DELETE ITEM
-// describe('CartPageComponent (future behavior)', () => {
-//   let component: CartPageComponent;
-//   let fixture: ComponentFixture<CartPageComponent>;
-//   let cartService: any;
-
-//   beforeEach(async () => {
-//     cartService = {
-//       getCart: vi.fn(),
-//       addItem: vi.fn(),
-//       updateItem: vi.fn(),
-//       deleteItem: vi.fn(),
-//       // clearCart is intentionally expected but not implemented in the component yet
-//       clearCart: vi.fn().mockReturnValue(of({
-//         items: [],
-//         totalQuantity: 0,
-//       })),
-//     };
-
-//     await TestBed.configureTestingModule({
-//       imports: [CartPageComponent, RouterTestingModule],
-//       providers: [{ provide: CartService, useValue: cartService }],
-//     }).compileComponents();
-
-//     fixture = TestBed.createComponent(CartPageComponent);
-//     component = fixture.componentInstance;
-//   });
-
-//   it('should call CartService.clearCart when clicking Clear Cart ', () => {
-//     // Arrange: cart exists
-//     cartService.getCart.mockReturnValue(of({
-//         items: [{ movieId: 'tt1', title: 'Dummy Movie', quantity: 2 }],
-//         totalQuantity: 2,
-//     }));
-//     fixture.detectChanges();
-//     const el = fixture.nativeElement as HTMLElement;
-
-//     const clearBtn = el.querySelector('[data-testid="clear-cart"]') as HTMLButtonElement;
-//     expect(clearBtn).toBeTruthy();
-
-//     // Act
-//     clearBtn.click();
-//     fixture.detectChanges();
-
-//     //  (EXPECTED FUTURE BEHAVIOR — should FAIL for now)
-//     expect(cartService.clearCart).toHaveBeenCalledTimes(1);
-//   });
-// });

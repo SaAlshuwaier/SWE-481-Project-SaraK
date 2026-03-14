@@ -21,9 +21,8 @@ class CartControllerIntegrationTesting {
 
     @Autowired
     private MockMvc mockMvc;
-    private MockHttpSession session; //ADDED THIS
+    private MockHttpSession session;
 
-    //ADDED THIS
         @BeforeEach
         public void setup() throws Exception {
         session = new MockHttpSession();
@@ -50,7 +49,6 @@ class CartControllerIntegrationTesting {
                 return request;
         };
         }
-    //UNTIL HERE 
 
     // ─── getCart ───────────────────────────────────────────────
 
@@ -58,7 +56,7 @@ class CartControllerIntegrationTesting {
     public void testGetCart_shouldReturn200() throws Exception {
         mockMvc.perform(
                 get("/api/cart")
-                .with(withSession())) // ADD THIS IN ALL THE ONES BELOW
+                .with(withSession())) 
 
                 // 1. CONNECTION
                 .andExpect(status().isOk())
@@ -84,7 +82,7 @@ class CartControllerIntegrationTesting {
                     "title": "Sky Fighters",
                     "quantity": 1
                 }
-                """; //changed the name and ID because I want to add a new one not like the one in the before each
+                """; 
 
         mockMvc.perform(
                 post("/api/cart/addItem")
@@ -106,7 +104,7 @@ class CartControllerIntegrationTesting {
                 .andExpect(jsonPath("$.items[1].title").exists())
                 .andExpect(jsonPath("$.items[1].quantity").exists())
 
-                // 4. VALUES (CHANGED THESE TO 1 BECAUSE WE ALREADY ADDED THE ONE AT INDEX ZERO IN THE BEFOREEACH)
+                // 4. VALUES 
                 .andExpect(jsonPath("$.items[1].movieId").value("tt1234"))
                 .andExpect(jsonPath("$.items[1].title").value("Sky Fighters"))
                 .andExpect(jsonPath("$.items[1].quantity").value(1))
@@ -184,14 +182,9 @@ class CartControllerIntegrationTesting {
                 .andExpect(jsonPath("$.items").exists())
                 .andExpect(jsonPath("$.totalQuantity").exists())
 
-                // 4. VALUES - quantity should be 0
-                //.andExpect(jsonPath("$.items[0].quantity").value(0))
-
-                // 5. TYPES
+                // 4. TYPES
                 .andExpect(jsonPath("$.items").isArray())
                 .andExpect(jsonPath("$.totalQuantity").isNumber());
-                //.andExpect(jsonPath("$.items[0].quantity").isNumber());    
-                //I commented these out because there is not more item, we remove it, so I cannot check at the index
         }
 
     // ─── deleteItem ────────────────────────────────────────────

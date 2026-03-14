@@ -31,7 +31,7 @@ export class CartPageComponent {
 
   ngOnInit(): void {
     this.loadCart();
-  } //ADDED THIS
+  } 
 
 
   loadCart() {
@@ -86,7 +86,6 @@ export class CartPageComponent {
       });
   }
 
-  // CHANGED THIS
   clearCartLocal() {
     const current = this.cart();
     if (!current) return;

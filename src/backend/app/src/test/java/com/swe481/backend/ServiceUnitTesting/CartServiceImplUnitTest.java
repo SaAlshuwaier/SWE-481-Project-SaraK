@@ -19,7 +19,6 @@ import jakarta.servlet.http.HttpSession;
 
 public class CartServiceImplUnitTest {
 
-    //ADDED THIS 
     private CartServiceImpl cartService;
     private HttpSession mockSession;
     private Map<String, Object> sessionStore;
@@ -39,7 +38,6 @@ public class CartServiceImplUnitTest {
 
         cartService = new CartServiceImpl(mockSession);
     }
-    //UNTIL HERE
      
 
     // ─── getCart ───────────────────────────────────────────────
