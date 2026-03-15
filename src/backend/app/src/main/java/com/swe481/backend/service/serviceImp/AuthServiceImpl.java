@@ -3,7 +3,6 @@ package com.swe481.backend.service.serviceImp;
 import com.jooq.swe481.generated.tables.records.CustomersRecord;
 import com.swe481.backend.Dto.Auth.LoginRequest;
 import com.swe481.backend.Dto.Auth.LoginResponse;
-import com.swe481.backend.Dto.Auth.LogoutResponse;
 import com.swe481.backend.Dto.Auth.RegisterRequest;
 import com.swe481.backend.Dto.Auth.RegisterResponse;
 import com.swe481.backend.service.serviceInterface.AuthService;
@@ -70,25 +69,6 @@ public class AuthServiceImpl implements AuthService {
         System.out.println("[logging in. . . with user:]" + user.getId());
         return new LoginResponse("Login successful", true, user.getId());
     }
-
-    /**
-     * Logout user
-     *
-     * Logic:
-     * - Receives: nothing (logout current session)
-     * 
-     * 1) Invalidate session / clear authentication context
-     * 2) Return logout confirmation message
-     *
-     ** @return {
-     *         "message": "Logout successful",
-     *         "success": true
-     *         }
-     */
-   /*  @Override
-    public LogoutResponse logout() {
-         return new LogoutResponse("Login successful", true);
-    } */
 
     /**
      * Register new user account

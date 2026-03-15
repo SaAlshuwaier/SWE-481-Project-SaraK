@@ -8,7 +8,7 @@ import com.swe481.backend.Dto.Auth.RegisterResponse;
 import com.swe481.backend.service.serviceInterface.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
  * AuthController
  *
  * Handles all authentication-related HTTP requests:
+ * - session
  * - Login
  * - Logout
  * - Register
@@ -29,6 +30,18 @@ public class AuthController {
 
     public AuthController(AuthService authService) {
         this.authService = authService;
+    }
+
+    @GetMapping("/session")
+    public ResponseEntity<?> checkSession(HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+
+        if (session == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")
@@ -64,17 +77,6 @@ public class AuthController {
 
         return ResponseEntity.status(401)
                 .body(new LogoutResponse("No active session", false));
-    }
-
-    // for testing if session is set, call on the browser <delete later>
-    @GetMapping("/me")
-    public ResponseEntity<?> currentUser(HttpSession session) {
-
-        Object customerId = session.getAttribute("customerId");
-        if (customerId == null) {
-            return ResponseEntity.status(401).body("No session");
-        }
-        return ResponseEntity.ok("Logged user id: " + customerId);
     }
 
     @PostMapping("/register")

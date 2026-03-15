@@ -9,30 +9,31 @@ import { CartPageComponent } from './pages/CartPage/cartPage';
 import { LoginPageComponent } from './pages/LoginPage/loginPage';
 import { RegisterPageComponent } from './pages/RegisterPage/registerPage';
 import { CheckoutPageComponent } from './pages/checkoutPage/checkoutPage';
+import { authGuard } from './guards/auth-guard';
 export const routes: Routes = [
 
   // default
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 
-  // home
-  { path: 'home', component: HomeComponent },
-
   // authentication
   { path: 'login', component: LoginPageComponent },
   { path: 'register', component: RegisterPageComponent },
 
+  // home
+  { path: 'home', component: HomeComponent, canActivate: [authGuard] },
+
   // movies
-  { path: 'movies', component: BrowseMoviesComponent },
-  { path: 'movies/search', component: SearchMoviesComponent },
-  { path: 'movies/genre/:genreId', component: BrowseMoviesComponent },
-  { path: 'movies/:movieId', component: MovieDetailsPageComponent },
+  { path: 'movies', component: BrowseMoviesComponent, canActivate: [authGuard]  },
+  { path: 'movies/search', component: SearchMoviesComponent, canActivate: [authGuard]  },
+  { path: 'movies/genre/:genreId', component: BrowseMoviesComponent, canActivate: [authGuard]  },
+  { path: 'movies/:movieId', component: MovieDetailsPageComponent, canActivate: [authGuard]  },
 
   // stars
-  { path: 'stars/:starId', component: StarDetailsPageComponent },
+  { path: 'stars/:starId', component: StarDetailsPageComponent, canActivate: [authGuard]  },
 
   // cart & checkout
-  { path: 'cart', component: CartPageComponent },
-  { path: 'checkout', component: CheckoutPageComponent },
+  { path: 'cart', component: CartPageComponent, canActivate: [authGuard]  },
+  { path: 'checkout', component: CheckoutPageComponent, canActivate: [authGuard]  },
 
   // fallback
   { path: '**', redirectTo: 'login' }
