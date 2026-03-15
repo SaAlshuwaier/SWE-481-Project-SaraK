@@ -1,35 +1,32 @@
 package com.swe481.backend.service.serviceImp;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.swe481.backend.Dto.Genre;
 import com.swe481.backend.Dto.Movie;
 import com.swe481.backend.Dto.MoviesPageState;
 import com.swe481.backend.Dto.Star;
+import com.swe481.backend.Dto.Repo.MovieRepository;
 import com.swe481.backend.service.serviceInterface.MovieService;
 import org.springframework.stereotype.Service;
-import org.jooq.DSLContext;
 import org.jooq.Record5;
 import org.jooq.impl.DSL;
 import org.jooq.Condition;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.jooq.swe481.generated.tables.Movies.MOVIES;
-import static com.jooq.swe481.generated.tables.Ratings.RATINGS;
 import static com.jooq.swe481.generated.tables.Stars.STARS;
 import static com.jooq.swe481.generated.tables.StarsInMovies.STARS_IN_MOVIES;
-import static com.jooq.swe481.generated.tables.Genres.GENRES;
-import static com.jooq.swe481.generated.tables.GenresInMovies.GENRES_IN_MOVIES;
-@Service
 
+@Service
 public class MovieServiceImpl implements MovieService {
 
-    private final DSLContext dsl;
+    private final MovieRepository movieRepository;
 
-    public MovieServiceImpl(DSLContext dsl) {
-        this.dsl = dsl;
+    public MovieServiceImpl(MovieRepository movieRepository) {
+        this.movieRepository = movieRepository;
     }
+
     /**
      * Search movies.
      *
@@ -62,113 +59,82 @@ public class MovieServiceImpl implements MovieService {
      *         }
      *         ]
      *         }
-     * 
+     *
      */
- @Override
-public MoviesPageState searchMovies(String title, Integer year, String director, String starName, int page, int pageSize) {
+    @Override
+    public MoviesPageState searchMovies(String title, Integer year, String director, String starName, int page, int pageSize) {
 
-    System.out.println("=== searchMovies called ===");
-    System.out.println("title = " + title);
-    System.out.println("year = " + year);
-    System.out.println("director = " + director);
-    System.out.println("starName = " + starName);
+        validatePaging(page, pageSize);
 
-    Integer count = dsl.selectCount().from(MOVIES).fetchOne(0, int.class);
-    System.out.println("movies count from backend db = " + count);
+        String normalizedTitle = normalize(title);
+        String normalizedDirector = normalize(director);
+        String normalizedStarName = normalize(starName);
 
-    validatePaging(page, pageSize);
+        Condition condition = DSL.trueCondition();
 
-    String normalizedTitle = normalize(title);
-    String normalizedDirector = normalize(director);
-    String normalizedStarName = normalize(starName);
-
-    Condition condition = DSL.trueCondition();
-
-    if (normalizedTitle != null) {
-        condition = condition.and(MOVIES.TITLE.containsIgnoreCase(normalizedTitle));
-    }
-
-    if (year != null) {
-        condition = condition.and(MOVIES.YEAR.eq(year));
-    }
-
-    if (normalizedDirector != null) {
-        condition = condition.and(MOVIES.DIRECTOR.containsIgnoreCase(normalizedDirector));
-    }
-
-    if (normalizedStarName != null) {
-        condition = condition.and(
-                DSL.exists(
-                        dsl.selectOne()
-                                .from(STARS_IN_MOVIES)
-                                .join(STARS).on(STARS.ID.eq(STARS_IN_MOVIES.STARID))
-                                .where(STARS_IN_MOVIES.MOVIEID.eq(MOVIES.ID))
-                                .and(STARS.NAME.containsIgnoreCase(normalizedStarName))
-                )
-        );
-    }
-
-    int totalResults = dsl
-            .selectCount()
-            .from(MOVIES)
-            .where(condition)
-            .fetchOne(0, int.class);
-
-    if (totalResults == 0) {
-        return new MoviesPageState(page, pageSize, 0, List.of());
-    }
-
-    int offset = (page - 1) * pageSize;
-
-    List<String> movieIds = dsl
-            .select(MOVIES.ID)
-            .from(MOVIES)
-            .where(condition)
-            .orderBy(MOVIES.TITLE.asc(), MOVIES.ID.asc())
-            .limit(pageSize)
-            .offset(offset)
-            .fetch(MOVIES.ID);
-
-    if (movieIds.isEmpty()) {
-        return new MoviesPageState(page, pageSize, totalResults, List.of());
-    }
-
-    List<Record5<String, String, Integer, String, Double>> rows = dsl
-            .select(
-                    MOVIES.ID,
-                    MOVIES.TITLE,
-                    MOVIES.YEAR,
-                    MOVIES.DIRECTOR,
-                    DSL.coalesce(RATINGS.RATING.cast(Double.class), DSL.inline(0.0)).as("rating")
-            )
-            .from(MOVIES)
-            .leftJoin(RATINGS).on(RATINGS.MOVIEID.eq(MOVIES.ID))
-            .where(MOVIES.ID.in(movieIds))
-            .fetch();
-
-    List<Movie> movies = new ArrayList<>();
-
-    for (String movieId : movieIds) {
-        Record5<String, String, Integer, String, Double> row = rows.stream()
-                .filter(r -> r.get(MOVIES.ID).equals(movieId))
-                .findFirst()
-                .orElse(null);
-
-        if (row != null) {
-            movies.add(new Movie(
-                    row.get(MOVIES.ID),
-                    row.get(MOVIES.TITLE),
-                    row.get(MOVIES.YEAR),
-                    row.get(MOVIES.DIRECTOR),
-                    row.get("rating", Double.class),
-                    fetchGenresByMovieId(movieId),
-                    fetchStarsByMovieId(movieId)
-            ));
+        if (normalizedTitle != null) {
+            condition = condition.and(MOVIES.TITLE.containsIgnoreCase(normalizedTitle));
         }
-    }
 
-    return new MoviesPageState(page, pageSize, totalResults, movies);
-}
+        if (year != null) {
+            condition = condition.and(MOVIES.YEAR.eq(year));
+        }
+
+        if (normalizedDirector != null) {
+            condition = condition.and(MOVIES.DIRECTOR.containsIgnoreCase(normalizedDirector));
+        }
+
+        if (normalizedStarName != null) {
+            condition = condition.and(
+                    DSL.exists(
+                            DSL.selectOne()
+                                    .from(STARS_IN_MOVIES)
+                                    .join(STARS).on(STARS.ID.eq(STARS_IN_MOVIES.STARID))
+                                    .where(STARS_IN_MOVIES.MOVIEID.eq(MOVIES.ID))
+                                    .and(STARS.NAME.containsIgnoreCase(normalizedStarName))
+                    )
+            );
+        }
+
+        int totalResults = movieRepository.countMovies(condition);
+
+        if (totalResults == 0) {
+            return new MoviesPageState(page, pageSize, 0, List.of());
+        }
+
+        List<String> movieIds = movieRepository.findMovieIds(condition, page, pageSize);
+
+        if (movieIds.isEmpty()) {
+            return new MoviesPageState(page, pageSize, totalResults, List.of());
+        }
+
+        List<Record5<String, String, Integer, String, Double>> rows = movieRepository.findMovieRows(movieIds);
+
+        List<Movie> movies = new ArrayList<>();
+
+       for (String movieId : movieIds) {
+    Record5<String, String, Integer, String, Double> row = rows.stream()
+            .filter(r -> movieId.equals(r.get(0, String.class)))
+            .findFirst()
+            .orElse(null);
+
+
+            if (row != null) {
+           movies.add(new Movie(
+        row.get(0, String.class),
+        row.get(1, String.class),
+        row.get(2, Integer.class),
+        row.get(3, String.class),
+        row.get(4, Double.class),
+        movieRepository.findGenresByMovieId(movieId),
+        movieRepository.findStarsByMovieId(movieId)
+));
+;
+            }
+        }
+
+        return new MoviesPageState(page, pageSize, totalResults, movies);
+    }
 
     /**
      * Browse movies by genre.
@@ -285,47 +251,21 @@ public MoviesPageState searchMovies(String title, Integer year, String director,
 
         return new Movie(movieId, "Study", 2004, "Layan", 4.5, genres, stars);
     }
+
     private void validatePaging(int page, int pageSize) {
-    if (page < 1) {
-        throw new IllegalArgumentException("Page must be greater than or equal to 1.");
+        if (page < 1) {
+            throw new IllegalArgumentException("Page must be greater than or equal to 1.");
+        }
+
+        if (pageSize < 1 || pageSize > 100) {
+            throw new IllegalArgumentException("Page size must be between 1 and 100.");
+        }
     }
 
-    if (pageSize < 1 || pageSize > 100) {
-        throw new IllegalArgumentException("Page size must be between 1 and 100.");
+    private String normalize(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return value.trim();
     }
-}
-
-private String normalize(String value) {
-    if (value == null || value.isBlank()) {
-        return null;
-    }
-    return value.trim();
-}
-
-private List<Genre> fetchGenresByMovieId(String movieId) {
-    return dsl
-            .select(GENRES.ID, GENRES.NAME)
-            .from(GENRES)
-            .join(GENRES_IN_MOVIES).on(GENRES.ID.eq(GENRES_IN_MOVIES.GENREID))
-            .where(GENRES_IN_MOVIES.MOVIEID.eq(movieId))
-            .orderBy(GENRES.NAME.asc())
-            .fetch(record -> new Genre(
-                    record.get(GENRES.ID).longValue(),
-                    record.get(GENRES.NAME)
-            ));
-}
-
-private List<Star> fetchStarsByMovieId(String movieId) {
-    return dsl
-            .select(STARS.ID, STARS.NAME, STARS.BIRTHYEAR)
-            .from(STARS)
-            .join(STARS_IN_MOVIES).on(STARS.ID.eq(STARS_IN_MOVIES.STARID))
-            .where(STARS_IN_MOVIES.MOVIEID.eq(movieId))
-            .orderBy(STARS.NAME.asc())
-            .fetch(record -> new Star(
-                    record.get(STARS.ID),
-                    record.get(STARS.NAME),
-                    record.get(STARS.BIRTHYEAR) == null ? 0 : record.get(STARS.BIRTHYEAR)
-            ));
-}
 }
