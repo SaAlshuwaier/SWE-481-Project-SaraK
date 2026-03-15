@@ -1,14 +1,20 @@
 package com.swe481.backend.controller;
 
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.swe481.backend.Dto.Movie;
 import com.swe481.backend.Dto.MoviesPageState;
 import com.swe481.backend.service.serviceInterface.MovieService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpStatus;
-import java.util.Map;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/movies")
 
@@ -93,6 +99,8 @@ public class MovieController {
      * @param pageSize - Number of movies per page.
      * @return MoviesPageState containing the list of movies filtered by genre.
      */
+
+    // This endpoint is used by the Home page "Browse by Genre" section. When a user clicks on a genre, it sends a request to this endpoint with the genre ID, and the backend returns a paginated list of movies that belong to that genre.
     @GetMapping("/browseByGenre")
     public ResponseEntity<MoviesPageState> browseMoviesByGenre(
             @RequestParam Integer genreId,

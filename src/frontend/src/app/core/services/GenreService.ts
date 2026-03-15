@@ -1,40 +1,22 @@
-import {HttpClient} from '@angular/common/http';
-import {environment} from '../../../environment/environment';
-import {Observable} from 'rxjs';
-import {Inject, Injectable} from '@angular/core';
-import {GenreDto} from '../models/GenreDto';
+// This service is responsible for fetching genre data from the backend API. It uses Angular's HttpClient to make HTTP requests and returns the data as Observables that components can subscribe to.
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { GenreDto } from '../models/GenreDto';
 
+// The @Injectable decorator marks this class as a service that can be injected into components. The providedIn: 'root' means that this service will be a singleton and available throughout the application without needing to add it to the providers array in any module.
 @Injectable({
-  providedIn:'root',
+  providedIn: 'root'
 })
-
 export class GenreService {
+  // The apiUrl is the base URL for the backend API endpoint that provides genre data. In this case, it points to a local server running on port 8080.
+  private apiUrl = 'http://localhost:8080/api/genres';
+
+  // The constructor injects the HttpClient service, which is used to make HTTP requests to the backend API.
   constructor(private http: HttpClient) {}
-  private baseUrl = environment.backendUrl;
 
-
-  /**
-   * Get all genres
-   * Logic:
-   * -Retrieves: all genres information
-   * -Returns: list of GenreDto
-   *
-   * @request GET /api/genres
-   * @return {
-   *   "success": true,
-   *   "data": [
-   *     {
-   *       "id": 10,
-   *       "name": "Family",
-   *     },
-   *     {
-   *       "id": 11,
-   *       "name": "Fantasy",
-   *     }
-   *   ]
-   * }
-   */
   getAllGenres(): Observable<GenreDto[]> {
-    return this.http.get<GenreDto[]>(`${this.baseUrl}/api/genres`);
+    // This method makes a GET request to the backend API to fetch all genres. It returns an Observable that emits an array of GenreDto objects when the data is received.
+    return this.http.get<GenreDto[]>(this.apiUrl);
   }
 }

@@ -11,5 +11,5 @@ import lombok.Setter;
 public class Star {
     private String id;
     private String name;
-    private int birthYear;
+    private Integer birthYear;
 }

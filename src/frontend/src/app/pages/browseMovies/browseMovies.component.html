@@ -26,8 +26,8 @@
         data-testid="sort-select"
         (change)="onSortChange($event)"
       >
-        <option value="title">Title</option>
-        <option value="year">Rating</option>
+        <option value="Title">Title</option>
+        <option value="Rating">Rating</option>
       </select>
 
       <select
@@ -59,7 +59,7 @@
 
     <div
       class="movie-card"
-      *ngFor="let movie of dummyMovies"
+      *ngFor="let movie of sortedMovies"
       data-testid="movie-card"
     >
       <h3>

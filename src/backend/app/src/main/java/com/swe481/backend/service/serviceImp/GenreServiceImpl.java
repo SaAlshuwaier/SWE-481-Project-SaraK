@@ -1,38 +1,35 @@
 package com.swe481.backend.service.serviceImp;
-import com.swe481.backend.Dto.Genre;
-import com.swe481.backend.service.serviceInterface.GenreService;
-import org.springframework.stereotype.Service;
+
 import java.util.List;
 
+import org.jooq.DSLContext;
+import org.springframework.stereotype.Service;
+
+import static com.jooq.swe481.generated.tables.Genres.GENRES;
+import com.swe481.backend.Dto.Genre;
+import com.swe481.backend.service.serviceInterface.GenreService;
+
+
 @Service
-//Declared as a java bean created by SB, Whenever the Interface is called this object is created(easy to change Impl later), so we don't call it in controller
+// This service implementation class provides methods to interact with the genres data in the database. It uses jOOQ's DSLContext to execute SQL queries and map the results to Genre DTOs.
+// used be Home page "Browse by Genre" section and Movie search results to display genre information for movies.
 public class GenreServiceImpl implements GenreService {
 
-    private final List<Genre> genres = List.of();
+    private final DSLContext dsl;
 
-    /**
-     * Get all genres
-     * Logic:
-     * -Retrieves: all genres information
-     * -Returns: list of Genres
-     *
-     * @return {
-     *   "success": true,
-     *   "data": [
-     *     {
-     *       "id": 10,
-     *       "name": "Family",
-     *     },
-     *     {
-     *       "id": 11,
-     *       "name": "Fantasy",
-     *     }
-     *   ]
-     * }
-     */
+    public GenreServiceImpl(DSLContext dsl) {
+        this.dsl = dsl;
+    }
+
     @Override
     public List<Genre> getAllGenres() {
-        // todo : Logic of Service Added here
-        return genres;
+        return dsl
+                .selectFrom(GENRES)
+                .orderBy(GENRES.NAME.asc())
+                .fetch()
+                .map(record -> new Genre(
+                        record.getId().longValue(),
+                        record.getName()
+                ));
     }
 }
