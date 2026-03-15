@@ -44,50 +44,75 @@ export class SearchMoviesComponent implements OnInit {
     this.loadSearchResults();
   }
 
-  private loadSearchResults(): void {
-    const yearNumber =
-      this.query.year && this.query.year.trim() !== ''
-        ? Number(this.query.year)
-        : undefined;
-    this.loading.set(true);
-    this.errorMessage.set('');
+private loadSearchResults(): void {
+  const rawYear = this.query.year?.trim();
+  let yearNumber: number | undefined = undefined;
 
-    this.movieService
-      .searchMovies(
-        this.query.title,
-        yearNumber,
-        this.query.director,
-        this.query.star,
-        this.page,
-        this.pageSize
-      )
-      .pipe(
-        take(1),
-        finalize(() => {
-          this.loading.set(false);
-        })
-      )
-      .subscribe({
-        next: (state) => {
-          this.pageState.set(state);
-          this.movies.set(state.movies ?? []);
-        },
-        error: (err) => {
-          console.error('SEARCH ERROR:', err);
-          this.movies.set([]);
-          this.pageState.set({
-            page: this.page,
-            pageSize: this.pageSize,
-            totalResults: 0,
-            totalPages: 1,
-            hasPrev: false,
-            hasNext: false,
-            movies: [],
-          });
-          this.errorMessage.set('Something went wrong while loading results.');
-        },
+  // Frontend validation before sending request
+  if (rawYear) {
+    const parsed = Number(rawYear);
+const currentYear = new Date().getFullYear();
+    if (!Number.isInteger(parsed) ||
+  parsed < 1800 ||
+  parsed > currentYear) {
+      this.movies.set([]);
+      this.pageState.set({
+        page: this.page,
+        pageSize: this.pageSize,
+        totalResults: 0,
+        totalPages: 0,
+        hasPrev: false,
+        hasNext: false,
+        movies: [],
       });
+      this.errorMessage.set('Year must be a valid number.');
+      this.loading.set(false);
+      return;
+    }
+
+    yearNumber = parsed;
   }
+
+  this.loading.set(true);
+  this.errorMessage.set('');
+
+  this.movieService
+    .searchMovies(
+      this.query.title,
+      yearNumber,
+      this.query.director,
+      this.query.star,
+      this.page,
+      this.pageSize
+    )
+    .pipe(
+      take(1),
+      finalize(() => {
+        this.loading.set(false);
+      })
+    )
+    .subscribe({
+      next: (state) => {
+        this.pageState.set(state);
+        this.movies.set(state.movies ?? []);
+      },
+      error: (err) => {
+        console.error('SEARCH ERROR:', err);
+        this.movies.set([]);
+        this.pageState.set({
+          page: this.page,
+          pageSize: this.pageSize,
+          totalResults: 0,
+          totalPages: 0,
+          hasPrev: false,
+          hasNext: false,
+          movies: [],
+        });
+        this.errorMessage.set('Something went wrong while loading results.');
+      },
+    });
+}
+
 
   nextPage(): void {
     if (this.pageState()?.hasNext) {

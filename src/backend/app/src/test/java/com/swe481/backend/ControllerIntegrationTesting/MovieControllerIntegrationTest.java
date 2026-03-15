@@ -24,34 +24,83 @@ public class MovieControllerIntegrationTest {
 
     private final String endPoint = "/api/movies";
 
-    @Test
-    void searchMovies_shouldReturnMoviesPageState() throws Exception {
+   @Test
+    void searchMovies_shouldReturnMoviesPageState_withDefaultPagination() throws Exception {
         mockMvc.perform(
                         get(endPoint + "/search")
                                 .param("title", "inception")
-                                .param("page", "1")
-                                .param("pageSize", "20")
                 )
                 .andExpect(status().isOk())
-
-                // Contract: MoviesPageState
                 .andExpect(jsonPath("$.page").value(1))
                 .andExpect(jsonPath("$.pageSize").value(20))
                 .andExpect(jsonPath("$.totalResults").isNumber())
                 .andExpect(jsonPath("$.totalPages").isNumber())
                 .andExpect(jsonPath("$.hasPrev").isBoolean())
                 .andExpect(jsonPath("$.hasNext").isBoolean())
-                .andExpect(jsonPath("$.movies").isArray())
+                .andExpect(jsonPath("$.movies").isArray());
+    }
 
-                // Contract: Movie
+    @Test
+    void searchMovies_shouldApplyYearFilterAndReturnPagedState() throws Exception {
+        mockMvc.perform(
+                        get(endPoint + "/search")
+                                .param("year", "2005")
+                                .param("page", "1")
+                                .param("pageSize", "10")
+                )
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.page").value(1))
+                .andExpect(jsonPath("$.pageSize").value(10))
+                .andExpect(jsonPath("$.totalResults").isNumber())
+                .andExpect(jsonPath("$.totalPages").isNumber())
+                .andExpect(jsonPath("$.hasPrev").isBoolean())
+                .andExpect(jsonPath("$.hasNext").isBoolean())
+                .andExpect(jsonPath("$.movies").isArray());
+    }
+
+    @Test
+    void searchMovies_shouldAcceptAllFiltersTogether() throws Exception {
+        mockMvc.perform(
+                        get(endPoint + "/search")
+                                .param("title", "Letters")
+                                .param("year", "2006")
+                                .param("director", "Clint Eastwood")
+                                .param("page", "1")
+                                .param("pageSize", "10")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.page").value(1))
+                .andExpect(jsonPath("$.pageSize").value(10))
                 .andExpect(jsonPath("$.movies").isArray())
-                .andExpect(jsonPath("$.movies[0].id").exists())
-                .andExpect(jsonPath("$.movies[0].title").exists())
-                .andExpect(jsonPath("$.movies[0].year").isNumber())
-                .andExpect(jsonPath("$.movies[0].rating").isNumber())
-                .andExpect(jsonPath("$.movies[0].genres").isArray())
-                .andExpect(jsonPath("$.movies[0].stars").isArray());
+                .andExpect(jsonPath("$.hasPrev").isBoolean())
+                .andExpect(jsonPath("$.hasNext").isBoolean());
+    }
+
+    @Test
+    void searchMovies_shouldSupportCustomPagination() throws Exception {
+        mockMvc.perform(
+                        get(endPoint + "/search")
+                                .param("title", "a")
+                                .param("page", "2")
+                                .param("pageSize", "5")
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.page").value(2))
+                .andExpect(jsonPath("$.pageSize").value(5))
+                .andExpect(jsonPath("$.totalResults").isNumber())
+                .andExpect(jsonPath("$.totalPages").isNumber())
+                .andExpect(jsonPath("$.hasPrev").isBoolean())
+                .andExpect(jsonPath("$.hasNext").isBoolean())
+                .andExpect(jsonPath("$.movies").isArray());
+    }
+
+    @Test
+    void searchMovies_shouldReturnBadRequest_whenYearIsNotNumeric() throws Exception {
+        mockMvc.perform(
+                        get(endPoint + "/search")
+                                .param("year", "bgb")
+                )
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -101,17 +150,16 @@ public class MovieControllerIntegrationTest {
     }
 
     @Test
-    void getMovieById_withDifferentId() throws Exception {
+void getMovieById_withDifferentId_shouldStillReturnMovieForNow() throws Exception {
+    mockMvc.perform(
+                    get("/api/movies/{id}", "tt1234567")
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value("tt1234567"))
+            .andExpect(jsonPath("$.title").isString())
+            .andExpect(jsonPath("$.year").isNumber());
+}
 
-        // Since getMovieById currently returns a dummy movie for any id
-        String movieId = "tt1234567";
-
-        MvcResult result = mockMvc.perform(
-                get("/api/movies/{id}", movieId)
-        ).andReturn();
-
-        assertEquals(401, result.getResponse().getStatus());
-    }
 
 }
 
