@@ -1,4 +1,5 @@
 package com.swe481.backend.Dto;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,4 +13,5 @@ public class Star {
     private String id;
     private String name;
     private Integer birthYear;
+
 }

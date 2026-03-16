@@ -1,6 +1,5 @@
 <div class="container">
 
-  <!-- Header -->
   <div class="page-header">
     <h1>Search Results</h1>
 
@@ -11,7 +10,6 @@
     </div>
   </div>
 
-  <!-- Context line -->
   <div class="context" *ngIf="query.title || query.year || query.director || query.star">
     <span><b>Title:</b> {{ query.title || '-' }}</span>
     <span><b>Year:</b> {{ query.year || '-' }}</span>
@@ -19,14 +17,20 @@
     <span><b>Star:</b> {{ query.star || '-' }}</span>
   </div>
 
-  <!-- Empty -->
-  <div class="empty" *ngIf="movies.length === 0">
+  <div class="loading" *ngIf="loading()">
+    Loading...
+  </div>
+
+  <div class="error" *ngIf="!loading() && errorMessage()">
+    {{ errorMessage() }}
+  </div>
+
+  <div class="empty" *ngIf="!loading() && !errorMessage() && pageState() && movies().length === 0">
     No movies found.
   </div>
 
-  <!-- Movies -->
-  <div class="movies" *ngIf="movies.length > 0">
-    <div class="movie-card" *ngFor="let movie of movies">
+  <div class="movies" *ngIf="!loading() && movies().length > 0">
+    <div class="movie-card" *ngFor="let movie of movies()">
       <h3>
         <a [routerLink]="['/movies', movie.id]">
           {{ movie.title }}
@@ -49,21 +53,19 @@
       <p>
         Stars:
         <ng-container *ngFor="let s of movie.stars; let last = last">
-          <a [routerLink]="['/movies/star', s.id]">{{ s.name }}</a><span *ngIf="!last">, </span>
+          <a [routerLink]="['/stars', s.id]">{{ s.name }}</a><span *ngIf="!last">, </span>
         </ng-container>
       </p>
     </div>
   </div>
 
-  <!-- Pagination -->
-  <div class="pagination" *ngIf="pageState">
-    <button (click)="previousPage()" [disabled]="!pageState.hasPrev">
+  <div class="pagination" *ngIf="!loading() && pageState()">
+    <button (click)="previousPage()" [disabled]="!pageState()?.hasPrev">
       Previous
     </button>
 
-    <span>Page {{ pageState.page }}</span>
-
-    <button (click)="nextPage()" [disabled]="!pageState.hasNext">
+    <span>Page {{ pageState()?.page }}</span>
+    <button (click)="nextPage()" [disabled]="!pageState()?.hasNext">
       Next
     </button>
   </div>

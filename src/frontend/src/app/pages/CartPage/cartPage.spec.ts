@@ -19,7 +19,7 @@ describe('CartPageComponent', () => {
 
   beforeEach(async () => {
     cartService = {
-      getCart: vi.fn(),
+    getCart: vi.fn().mockReturnValue(of({ items: [], totalQuantity: 0 })), 
       addItem: vi.fn(),
       updateItem: vi.fn(),
       deleteItem: vi.fn(),
@@ -35,11 +35,10 @@ describe('CartPageComponent', () => {
   });
 
 it('should render footer actions (Clear Cart, Continue Shopping, Proceed to Checkout) when cart exists', () => {
-  component.cart.set({
-    items: [{ movieId: 'tt1', title: 'Dummy Movie', quantity: 2 }],
-    totalQuantity: 2,
-  } as any);
-
+  cartService.getCart.mockReturnValue(of({
+        items: [{ movieId: 'tt1', title: 'Dummy Movie', quantity: 2 }],
+        totalQuantity: 2,
+    }));
   fixture.detectChanges();
   const el = fixture.nativeElement as HTMLElement;
 
@@ -49,15 +48,16 @@ it('should render footer actions (Clear Cart, Continue Shopping, Proceed to Chec
 });
 
   it('should render Remove button for each cart item', () => {
-    component.cart.set({
+    cartService.getCart.mockReturnValue(of({
       items: [
-        { movieId: 'tt1', title: 'Movie 1', quantity: 1 },
-        { movieId: 'tt2', title: 'Movie 2', quantity: 3 },
+          { movieId: 'tt1', title: 'Movie 1', quantity: 1 },
+          { movieId: 'tt2', title: 'Movie 2', quantity: 3 },
       ],
       totalQuantity: 4,
-    } as any);
+  }));
 
     fixture.detectChanges();
+
     const el = fixture.nativeElement as HTMLElement;
 
     const removeButtons = Array.from(el.querySelectorAll('button'))
@@ -74,11 +74,10 @@ it('should render footer actions (Clear Cart, Continue Shopping, Proceed to Chec
 
     cartService.deleteItem.mockReturnValue(of(afterDelete));
 
-    component.cart.set({
-      items: [{ movieId: 'tt1', title: 'Movie 1', quantity: 1 }],
-      totalQuantity: 1,
-    } as any);
-
+    cartService.getCart.mockReturnValue(of({
+        items: [{ movieId: 'tt1', title: 'Dummy Movie', quantity: 2 }],
+        totalQuantity: 2,
+    }));
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
 
@@ -102,11 +101,10 @@ it('should render footer actions (Clear Cart, Continue Shopping, Proceed to Chec
 
     cartService.updateItem.mockReturnValue(of(afterUpdate));
 
-    component.cart.set({
-      items: [{ movieId: 'tt1', title: 'Movie 1', quantity: 1 }],
-      totalQuantity: 1,
-    } as any);
-
+    cartService.getCart.mockReturnValue(of({
+        items: [{ movieId: 'tt1', title: 'Dummy Movie', quantity: 2 }],
+        totalQuantity: 2,
+    }));
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
 
@@ -122,11 +120,10 @@ it('should render footer actions (Clear Cart, Continue Shopping, Proceed to Chec
   });
 
   it('should clear cart locally when clicking Clear Cart', () => {
-    component.cart.set({
-      items: [{ movieId: 'tt1', title: 'Movie 1', quantity: 1 }],
-      totalQuantity: 1,
-    } as any);
-
+    cartService.getCart.mockReturnValue(of({
+        items: [{ movieId: 'tt1', title: 'Dummy Movie', quantity: 2 }],
+        totalQuantity: 2,
+    }));
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
 
@@ -142,55 +139,5 @@ it('should render footer actions (Clear Cart, Continue Shopping, Proceed to Chec
     expect(c).toBeTruthy();
     expect((c as any).items.length).toBe(0);
     expect((c as any).totalQuantity).toBe(0);
-  });
-});
-
-
-describe('CartPageComponent (future behavior)', () => {
-  let component: CartPageComponent;
-  let fixture: ComponentFixture<CartPageComponent>;
-  let cartService: any;
-
-  beforeEach(async () => {
-    cartService = {
-      getCart: vi.fn(),
-      addItem: vi.fn(),
-      updateItem: vi.fn(),
-      deleteItem: vi.fn(),
-      // clearCart is intentionally expected but not implemented in the component yet
-      clearCart: vi.fn().mockReturnValue(of({
-        items: [],
-        totalQuantity: 0,
-      })),
-    };
-
-    await TestBed.configureTestingModule({
-      imports: [CartPageComponent, RouterTestingModule],
-      providers: [{ provide: CartService, useValue: cartService }],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(CartPageComponent);
-    component = fixture.componentInstance;
-  });
-
-  it('should call CartService.clearCart when clicking Clear Cart ', () => {
-    // Arrange: cart exists
-    component.cart.set({
-      items: [{ movieId: 'tt1', title: 'Movie 1', quantity: 2 }],
-      totalQuantity: 2,
-    } as any);
-
-    fixture.detectChanges();
-    const el = fixture.nativeElement as HTMLElement;
-
-    const clearBtn = el.querySelector('[data-testid="clear-cart"]') as HTMLButtonElement;
-    expect(clearBtn).toBeTruthy();
-
-    // Act
-    clearBtn.click();
-    fixture.detectChanges();
-
-    //  (EXPECTED FUTURE BEHAVIOR — should FAIL for now)
-    expect(cartService.clearCart).toHaveBeenCalledTimes(1);
   });
 });

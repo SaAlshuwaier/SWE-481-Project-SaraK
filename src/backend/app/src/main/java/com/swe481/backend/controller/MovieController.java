@@ -14,7 +14,7 @@ import com.swe481.backend.Dto.Movie;
 import com.swe481.backend.Dto.MoviesPageState;
 import com.swe481.backend.service.serviceInterface.MovieService;
 
-//@CrossOrigin(origins = "*", maxAge = 3600)
+
 @RestController
 @RequestMapping("/api/movies")
 

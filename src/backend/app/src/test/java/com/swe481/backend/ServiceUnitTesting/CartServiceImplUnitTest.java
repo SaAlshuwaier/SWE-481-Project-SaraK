@@ -4,17 +4,43 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import com.swe481.backend.Dto.Cart;
 import com.swe481.backend.Dto.Cart.CartItem;
 import com.swe481.backend.service.serviceImp.CartServiceImpl;
 
+import jakarta.servlet.http.HttpSession;
+
 public class CartServiceImplUnitTest {
-    CartServiceImpl cartService = new CartServiceImpl();
+
+    private CartServiceImpl cartService;
+    private HttpSession mockSession;
+    private Map<String, Object> sessionStore;
+
+    @BeforeEach
+    public void setup() {
+        sessionStore = new HashMap<>();
+        mockSession = Mockito.mock(HttpSession.class);
+
+        Mockito.when(mockSession.getAttribute(Mockito.anyString()))
+            .thenAnswer(i -> sessionStore.get(i.getArgument(0)));
+
+        Mockito.doAnswer(i -> {
+            sessionStore.put(i.getArgument(0), i.getArgument(1));
+            return null;
+        }).when(mockSession).setAttribute(Mockito.anyString(), Mockito.any());
+
+        cartService = new CartServiceImpl(mockSession);
+    }
+     
 
     // ─── getCart ───────────────────────────────────────────────
-
     @Test
     public void testGetCart_returnsCart() {
         Cart cart = cartService.getCart();

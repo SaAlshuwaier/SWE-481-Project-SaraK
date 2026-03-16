@@ -60,7 +60,10 @@ export class MovieService {
             .set('pageSize', pageSize);
 
         if (title) params = params.set('title', title);
-        if (year) params = params.set('year', year);
+        if (year !== undefined && year !== null) {
+  params = params.set('year', year);
+}
+
         if (director) params = params.set('director', director);
         if (starName) params = params.set('starName', starName);
 

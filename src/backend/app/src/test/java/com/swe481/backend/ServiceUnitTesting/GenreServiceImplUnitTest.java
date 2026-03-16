@@ -1,39 +1,58 @@
 package com.swe481.backend.ServiceUnitTesting;
-import static org.junit.jupiter.api.Assertions.*;
-    
-import org.junit.jupiter.api.Test;
 
-import com.swe481.backend.Dto.Genre;
-import com.swe481.backend.service.serviceImp.GenreServiceImpl;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-/**
- * Unit tests for GenreServiceImpl.getAllGenres()
- *
- * Expected behavior (final implementation):
- * - Returns a non-null list
- * - List contains known genres (at least one expected item)
- * - No duplicate IDs
- *
- */
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.swe481.backend.Dto.Genre;
+import com.swe481.backend.Dto.Repo.MovieRepository;
+import com.swe481.backend.service.serviceImp.GenreServiceImpl;
+
+@ExtendWith(MockitoExtension.class)
 public class GenreServiceImplUnitTest {
 
-    private GenreServiceImpl genreService = new GenreServiceImpl();
-    
-   
+    @Mock
+    private MovieRepository movieRepository;
+
+    private GenreServiceImpl genreService;
+
+    @BeforeEach
+    void setUp() {
+        genreService = new GenreServiceImpl(movieRepository);
+    }
+
     @Test
     void getAllGenresReturnsNonNullList() {
+        List<Genre> mockGenres = List.of(
+                new Genre(10L, "Family"),
+                new Genre(2L, "Action")
+        );
+
+        when(movieRepository.findAllGenres()).thenReturn(mockGenres);
+
         List<Genre> result = genreService.getAllGenres();
         assertNotNull(result);
         assertFalse(result.isEmpty(), "Expected non-empty list of genres");
     }
 
-    //if it contain then it contains the other genres as well
     @Test
-    void getAllGenresContainsFamilyGenre() { 
+    void getAllGenresContainsFamilyGenre() {
+        List<Genre> mockGenres = List.of(
+                new Genre(10L, "Family"),
+                new Genre(2L, "Action")
+        );
+
+        when(movieRepository.findAllGenres()).thenReturn(mockGenres);
+
         List<Genre> result = genreService.getAllGenres();
 
         boolean exists = result.stream()
@@ -44,6 +63,14 @@ public class GenreServiceImplUnitTest {
 
     @Test
     void getAllGenresHasNoDuplicateIds() {
+        List<Genre> mockGenres = List.of(
+                new Genre(10L, "Family"),
+                new Genre(2L, "Action"),
+                new Genre(5L, "Drama")
+        );
+
+        when(movieRepository.findAllGenres()).thenReturn(mockGenres);
+
         List<Genre> result = genreService.getAllGenres();
 
         Set<String> seenIds = new HashSet<>();
@@ -52,7 +79,4 @@ public class GenreServiceImplUnitTest {
             assertTrue(seenIds.add(id), "Duplicate genre id found: " + id);
         }
     }
-    
 }
-
-

@@ -1,7 +1,7 @@
 package com.swe481.backend.Dto; // This defines the package (folder) where this class belongs (it is the path)
 import java.util.ArrayList;  // Used to create an empty list of cart items.
 import java.util.List;  // List is the interface used to store multiple CartItem objects.
-
+import java.io.Serializable;
 //Creates setters, getters and constructors 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,7 +20,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Cart {
+public class Cart implements Serializable{
 
     // List that stores all items inside the cart
     private List<CartItem> items = new ArrayList<>();
@@ -35,7 +35,7 @@ public class Cart {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class CartItem {
+    public static class CartItem implements Serializable{
 
         // ID of the movie
         private String movieId;
