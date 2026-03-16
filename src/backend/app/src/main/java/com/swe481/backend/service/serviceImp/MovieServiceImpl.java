@@ -141,7 +141,8 @@ public class MovieServiceImpl implements MovieService {
         return new MoviesPageState(page, pageSize, totalResults, movies);
     }
 
-    private final List<Movie> dummyMovies = List.of(
+    /* 
+   private final List<Movie> dummyMovies = List.of(
             new Movie(
                     "tt1",
                     "Zebra Story",
@@ -178,15 +179,19 @@ public class MovieServiceImpl implements MovieService {
                     List.of(new Genre(1L, "Drama"), new Genre(4L, "Comedy")),
                     List.of(new Star("nm4", "Brad Pitt", 1963))
             )
-    );
+    ); */
 
+    // Retrieves a paginated list of movies that belong to the selected genre.
+    // Used by the frontend "Browse by Genre" page.
     @Override
     public MoviesPageState browseMoviesByGenre(Integer genreId, int page, int pageSize) {
 
+        // // Ensure page and page size are valid before applying pagination.
         int safePage = Math.max(page, 1);
         int safePageSize = Math.max(pageSize, 1);
         int offset = (safePage - 1) * safePageSize;
 
+        // Query movies filtered by genre using the join table between movies and genres.
         var result = dsl
                 .selectDistinct(
                         MOVIES.ID,
@@ -203,6 +208,7 @@ public class MovieServiceImpl implements MovieService {
                 .offset(offset)
                 .fetch();
 
+        // Map the query result into Movie DTOs for the browse page.    
         List<Movie> movies = result.map(r ->
                 new Movie(
                         r.get(MOVIES.ID),
@@ -215,6 +221,7 @@ public class MovieServiceImpl implements MovieService {
                 )
         );
 
+        // // Count total matching movies to support frontend pagination.
         int total = dsl
                 .selectCount()
                 .from(MOVIES)
@@ -226,16 +233,59 @@ public class MovieServiceImpl implements MovieService {
         return new MoviesPageState(safePage, safePageSize, total, movies);
     }
 
+
+
+
+    // Retrieves a paginated list of movies whose titles start with the specified letter(s).
+    // Used by the frontend "Browse by First Letter" page.
     @Override
-    public MoviesPageState browseMoviesByFirstLetter(String startsWith, int page, int pageSize) {
+public MoviesPageState browseMoviesByFirstLetter(String startsWith, int page, int pageSize) {
 
-        List<Movie> filtered = dummyMovies.stream()
-                .filter(m -> startsWith == null || startsWith.isBlank()
-                        || m.getTitle().toUpperCase().startsWith(startsWith.toUpperCase()))
-                .collect(Collectors.toList());
+    // Validate and sanitize input parameters for pagination and filtering.    
+    validatePaging(page, pageSize);
 
-        return paginate(filtered, page, pageSize);
+    if (startsWith == null || startsWith.isBlank()) {
+        return new MoviesPageState(page, pageSize, 0, List.of());
     }
+
+    int totalResults = movieRepository.countMoviesByFirstLetter(startsWith);
+
+    if (totalResults == 0) {
+        return new MoviesPageState(page, pageSize, 0, List.of());
+    }
+
+    // fetch movie IDs that match the first letter filter with pagination applied at the database level for efficiency.
+    List<String> movieIds = movieRepository.findMovieIdsByFirstLetter(startsWith, page, pageSize);
+
+    if (movieIds.isEmpty()) {
+        return new MoviesPageState(page, pageSize, totalResults, List.of());
+    }
+
+    List<Record5<String, String, Integer, String, Double>> rows = movieRepository.findMovieRows(movieIds);
+
+    List<Movie> movies = new ArrayList<>();
+
+    for (String movieId : movieIds) {
+        Record5<String, String, Integer, String, Double> row = rows.stream()
+                .filter(r -> movieId.equals(r.get(0, String.class)))
+                .findFirst()
+                .orElse(null);
+
+        if (row != null) {
+            movies.add(new Movie(
+                    row.get(0, String.class),
+                    row.get(1, String.class),
+                    row.get(2, Integer.class),
+                    row.get(3, String.class),
+                    row.get(4, Double.class),
+                    movieRepository.findGenresByMovieId(movieId),
+                    movieRepository.findStarsByMovieId(movieId)
+            ));
+        }
+    }
+
+    return new MoviesPageState(page, pageSize, totalResults, movies);
+}
 
     @Override
     public Movie getMovieById(String movieId) {

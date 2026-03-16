@@ -62,10 +62,13 @@ public class MovieRepository {
                 .fetch();
     }
 
+    // This method retrieves the genres associated with a specific movie ID by performing a join between the GENRES and GENRES_IN_MOVIES tables 
+    // to retrieve the genre information for the specified movie, and then maps the results to a list of Genre DTOs.
     public List<Genre> findGenresByMovieId(String movieId) {
         return dsl
                 .select(GENRES.ID, GENRES.NAME)
                 .from(GENRES)
+                // Join table used to map movies to their genres (many-to-many relationship)
                 .join(GENRES_IN_MOVIES).on(GENRES.ID.eq(GENRES_IN_MOVIES.GENREID))
                 .where(GENRES_IN_MOVIES.MOVIEID.eq(movieId))
                 .orderBy(GENRES.NAME.asc())
@@ -74,6 +77,8 @@ public class MovieRepository {
                         record.get(GENRES.NAME)
                 ));
     }
+
+
 
     public List<Star> findStarsByMovieId(String movieId) {
         return dsl
@@ -89,16 +94,64 @@ public class MovieRepository {
                 ));
     }
 
+
+    // Retrieves all available genres from the database.
+    // Used to populate the genre browsing menu so users can browse
+    // movies by a selected genre.
     public List<Genre> findAllGenres() {
         return dsl
                 .select(GENRES.ID, GENRES.NAME)
                 .from(GENRES)
+                // Order genres alphabetically by name for better user experience in the genre browsing menu.
                 .orderBy(GENRES.NAME.asc())
                 .fetch(record -> new Genre(
                         record.get(GENRES.ID).longValue(),
                         record.get(GENRES.NAME)
                 ));
     }
+
+
+    
+    // This method counts the total number of movies that start with the given letter (or digit) for pagination purposes.
+    public int countMoviesByFirstLetter(String startsWith) {
+    Condition condition;
+
+    if (startsWith != null && startsWith.matches("\\d")) {
+        condition = MOVIES.TITLE.likeIgnoreCase(startsWith + "%");
+    } else {
+        condition = MOVIES.TITLE.startsWithIgnoreCase(startsWith);
+    }
+
+    return dsl
+            .selectCount()
+            .from(MOVIES)
+            .where(condition)
+            .fetchOne(0, int.class);
+}
+
+// This method retrieves a paginated list of movie IDs for movies whose titles start with the specified letter (or digit).
+public List<String> findMovieIdsByFirstLetter(String startsWith, int page, int pageSize) {
+        // Calculate the offset for pagination based on the current page number and page size.
+    int offset = (page - 1) * pageSize;
+
+    Condition condition;
+
+    // If the startsWith parameter is a digit, we use a case-insensitive like condition. Otherwise, we use a case-insensitive startsWith condition.
+    if (startsWith != null && startsWith.matches("\\d")) {
+        condition = MOVIES.TITLE.likeIgnoreCase(startsWith + "%");
+    } else {
+        condition = MOVIES.TITLE.startsWithIgnoreCase(startsWith);
+    }
+
+    return dsl
+            .select(MOVIES.ID)
+            .from(MOVIES)
+            .where(condition)
+            .orderBy(MOVIES.TITLE.asc(), MOVIES.ID.asc())
+            .limit(pageSize)
+            .offset(offset)
+            .fetch(MOVIES.ID);
+}
 
 
 }
