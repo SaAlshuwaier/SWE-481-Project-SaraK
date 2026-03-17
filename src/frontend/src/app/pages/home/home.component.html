@@ -68,6 +68,7 @@
 
   <!--
        Browse by Genre
+       Genres are loaded dynamically from the backend API via GenreService and rendered using *ngFor
        Navigate to /movies/genre/:id
    -->
   <h6 class="fw-bold mb-2">Browse by Genre</h6>
@@ -75,7 +76,7 @@
     <button *ngFor="let g of genres"
             class="btn btn-sm btn-outline-secondary"
             (click)="goToBrowseGenre(g)">
-      {{ g }}
+      {{ g.name }}
     </button>
   </div>
 

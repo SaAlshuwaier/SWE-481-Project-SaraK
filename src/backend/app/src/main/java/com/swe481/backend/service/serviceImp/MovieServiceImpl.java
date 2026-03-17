@@ -2,28 +2,35 @@ package com.swe481.backend.service.serviceImp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.jooq.Condition;
+import org.jooq.DSLContext;
+import org.jooq.Record5;
+import org.jooq.impl.DSL;
+import org.springframework.stereotype.Service;
+
+import static com.jooq.swe481.generated.tables.Genres.GENRES;
+import com.jooq.swe481.generated.tables.GenresInMovies;
+import static com.jooq.swe481.generated.tables.Movies.MOVIES;
+import static com.jooq.swe481.generated.tables.Ratings.RATINGS;
+import static com.jooq.swe481.generated.tables.Stars.STARS;
+import static com.jooq.swe481.generated.tables.StarsInMovies.STARS_IN_MOVIES;
 import com.swe481.backend.Dto.Genre;
 import com.swe481.backend.Dto.Movie;
 import com.swe481.backend.Dto.MoviesPageState;
-import com.swe481.backend.Dto.Star;
 import com.swe481.backend.Dto.Repo.MovieRepository;
+import com.swe481.backend.Dto.Star;
 import com.swe481.backend.service.serviceInterface.MovieService;
-import org.springframework.stereotype.Service;
-import org.jooq.Record5;
-import org.jooq.impl.DSL;
-import org.jooq.Condition;
-
-import static com.jooq.swe481.generated.tables.Movies.MOVIES;
-import static com.jooq.swe481.generated.tables.Stars.STARS;
-import static com.jooq.swe481.generated.tables.StarsInMovies.STARS_IN_MOVIES;
 
 @Service
 public class MovieServiceImpl implements MovieService {
 
+    private final DSLContext dsl;
     private final MovieRepository movieRepository;
 
-    public MovieServiceImpl(MovieRepository movieRepository) {
+    public MovieServiceImpl(DSLContext dsl, MovieRepository movieRepository) {
+        this.dsl = dsl;
         this.movieRepository = movieRepository;
     }
 
@@ -112,144 +119,248 @@ public class MovieServiceImpl implements MovieService {
 
         List<Movie> movies = new ArrayList<>();
 
-       for (String movieId : movieIds) {
-    Record5<String, String, Integer, String, Double> row = rows.stream()
-            .filter(r -> movieId.equals(r.get(0, String.class)))
-            .findFirst()
-            .orElse(null);
-
+        for (String movieId : movieIds) {
+            Record5<String, String, Integer, String, Double> row = rows.stream()
+                    .filter(r -> movieId.equals(r.get(0, String.class)))
+                    .findFirst()
+                    .orElse(null);
 
             if (row != null) {
-           movies.add(new Movie(
-        row.get(0, String.class),
-        row.get(1, String.class),
-        row.get(2, Integer.class),
-        row.get(3, String.class),
-        row.get(4, Double.class),
-        movieRepository.findGenresByMovieId(movieId),
-        movieRepository.findStarsByMovieId(movieId)
-));
-;
+                movies.add(new Movie(
+                        row.get(0, String.class),
+                        row.get(1, String.class),
+                        row.get(2, Integer.class),
+                        row.get(3, String.class),
+                        row.get(4, Double.class),
+                        movieRepository.findGenresByMovieId(movieId),
+                        movieRepository.findStarsByMovieId(movieId)
+                ));
             }
         }
 
         return new MoviesPageState(page, pageSize, totalResults, movies);
     }
 
-    /**
-     * Browse movies by genre.
-     *
-     * Logic:
-     * - Filters movies by genreId
-     * - Applies pagination (page, pageSize)
-     * - Returns paged movie list with metadata
-     *
-     * @request GET /api/movies/browseByGenre
-     * @return {
-     *         "page": 1,
-     *         "pageSize": 20,
-     *         "totalResults": 1,
-     *         "totalPages": 1,
-     *         "hasPrev": false,
-     *         "hasNext": false,
-     *         "movies": [
-     *         {
-     *         "id": "tt555",
-     *         "title": "The Dark Knight",
-     *         "year": 2008,
-     *         "director": "Christopher Nolan",
-     *         "rating": 4.9,
-     *         "genres": [
-     *         { "id": 1, "name": "Action" }
-     *         ],
-     *         "stars": [
-     *         { "id": "2", "name": "Christian Bale", "birthYear": 1974 }
-     *         ]
-     *         }
-     *         ]
-     *         }
-     */
+    /* 
+   private final List<Movie> dummyMovies = List.of(
+            new Movie(
+                    "tt1",
+                    "Zebra Story",
+                    2018,
+                    "Alice Brown",
+                    7.2,
+                    List.of(new Genre(1L, "Drama")),
+                    List.of(new Star("nm3", "Chris Evans", 1981))
+            ),
+            new Movie(
+                    "tt2",
+                    "Alpha Movie",
+                    2005,
+                    "David Clark",
+                    8.1,
+                    List.of(new Genre(2L, "Action")),
+                    List.of(new Star("nm1", "Tom Hardy", 1977))
+            ),
+            new Movie(
+                    "tt3",
+                    "Middle Ground",
+                    2012,
+                    "Brian Adams",
+                    6.9,
+                    List.of(new Genre(3L, "Fiction")),
+                    List.of(new Star("nm2", "Leonardo DiCaprio", 1974))
+            ),
+            new Movie(
+                    "tt4",
+                    "Another Tale",
+                    2022,
+                    "Aaron Smith",
+                    7.9,
+                    List.of(new Genre(1L, "Drama"), new Genre(4L, "Comedy")),
+                    List.of(new Star("nm4", "Brad Pitt", 1963))
+            )
+    ); */
 
+    // Retrieves a paginated list of movies that belong to the selected genre.
+    // Used by the frontend "Browse by Genre" page.
     @Override
     public MoviesPageState browseMoviesByGenre(Integer genreId, int page, int pageSize) {
-        // TODO: implement later (DB logic)
-        return new MoviesPageState(page, pageSize, 0, java.util.List.of());
+
+        // // Ensure page and page size are valid before applying pagination.
+        int safePage = Math.max(page, 1);
+        int safePageSize = Math.max(pageSize, 1);
+        int offset = (safePage - 1) * safePageSize;
+
+        // Query movies filtered by genre using the join table between movies and genres.
+        var result = dsl
+                .selectDistinct(
+                        MOVIES.ID,
+                        MOVIES.TITLE,
+                        MOVIES.YEAR,
+                        MOVIES.DIRECTOR
+                )
+                .from(MOVIES)
+                .join(GenresInMovies.GENRES_IN_MOVIES)
+                .on(MOVIES.ID.eq(GenresInMovies.GENRES_IN_MOVIES.MOVIEID))
+                .where(GenresInMovies.GENRES_IN_MOVIES.GENREID.eq(genreId))
+                .orderBy(MOVIES.TITLE.asc())
+                .limit(safePageSize)
+                .offset(offset)
+                .fetch();
+
+        // Map the query result into Movie DTOs for the browse page.    
+        List<Movie> movies = result.map(r ->
+                new Movie(
+                        r.get(MOVIES.ID),
+                        r.get(MOVIES.TITLE),
+                        r.get(MOVIES.YEAR),
+                        r.get(MOVIES.DIRECTOR),
+                        0.0,
+                        List.of(),
+                        List.of()
+                )
+        );
+
+        // // Count total matching movies to support frontend pagination.
+        int total = dsl
+                .selectCount()
+                .from(MOVIES)
+                .join(GenresInMovies.GENRES_IN_MOVIES)
+                .on(MOVIES.ID.eq(GenresInMovies.GENRES_IN_MOVIES.MOVIEID))
+                .where(GenresInMovies.GENRES_IN_MOVIES.GENREID.eq(genreId))
+                .fetchOne(0, int.class);
+
+        return new MoviesPageState(safePage, safePageSize, total, movies);
     }
 
-    /**
-     * Browse movies by first letter.
-     *
-     * Logic:
-     * - Retrieves movies starting with the given character (e.g., 'A', 'B', '2')
-     * - Applies pagination (page, pageSize)
-     * - Returns paged movie list with metadata
-     *
-     * @request GET /api/movies/browseByFirstLetter
-     * @return {
-     *         "page": 1,
-     *         "pageSize": 20,
-     *         "totalResults": 1,
-     *         "totalPages": 1,
-     *         "hasPrev": false,
-     *         "hasNext": false,
-     *         "movies": [
-     *         {
-     *         "id": "tt777",
-     *         "title": "Avatar",
-     *         "year": 2009,
-     *         "director": "James Cameron",
-     *         "rating": 4.2,
-     *         "genres": [
-     *         { "id": 2, "name": "Sci-Fi" }
-     *         ],
-     *         "stars": [
-     *         { "id": "3", "name": "Sam Worthington", "birthYear": 1976 }
-     *         ]
-     *         }
-     *         ]
-     *         }
-     */
+
+
+
+    // Retrieves a paginated list of movies whose titles start with the specified letter(s).
+    // Used by the frontend "Browse by First Letter" page.
     @Override
-    public MoviesPageState browseMoviesByFirstLetter(String startsWith, int page, int pageSize) {
-        // TODO: implement later (DB logic)
-        return new MoviesPageState(page, pageSize, 0, java.util.List.of());
+public MoviesPageState browseMoviesByFirstLetter(String startsWith, int page, int pageSize) {
+
+    // Validate and sanitize input parameters for pagination and filtering.    
+    validatePaging(page, pageSize);
+
+    if (startsWith == null || startsWith.isBlank()) {
+        return new MoviesPageState(page, pageSize, 0, List.of());
     }
 
-    /**
-     * Get movie by ID.
-     *
-     * Logic:
-     * - Retrieves full movie details by its ID
-     * - Includes genres and stars
-     *
-     * @request GET /api/movies/{id}
-     * @return {
-     *         "id": "tt999",
-     *         "title": "Study",
-     *         "year": 2004,
-     *         "director": "Layan",
-     *         "rating": 4.5,
-     *         "genres": [
-     *         { "id": 1, "name": "Action" },
-     *         { "id": 2, "name": "Drama" }
-     *         ],
-     *         "stars": [
-     *         { "id": "1", "name": "Tom Hanks", "birthYear": 1956 },
-     *         { "id": "2", "name": "Lena Headey", "birthYear": 1973 }
-     *         ]
-     *         }
-     */
+    int totalResults = movieRepository.countMoviesByFirstLetter(startsWith);
+
+    if (totalResults == 0) {
+        return new MoviesPageState(page, pageSize, 0, List.of());
+    }
+
+    // fetch movie IDs that match the first letter filter with pagination applied at the database level for efficiency.
+    List<String> movieIds = movieRepository.findMovieIdsByFirstLetter(startsWith, page, pageSize);
+
+    if (movieIds.isEmpty()) {
+        return new MoviesPageState(page, pageSize, totalResults, List.of());
+    }
+
+    List<Record5<String, String, Integer, String, Double>> rows = movieRepository.findMovieRows(movieIds);
+
+    List<Movie> movies = new ArrayList<>();
+
+    for (String movieId : movieIds) {
+        Record5<String, String, Integer, String, Double> row = rows.stream()
+                .filter(r -> movieId.equals(r.get(0, String.class)))
+                .findFirst()
+                .orElse(null);
+
+        if (row != null) {
+            movies.add(new Movie(
+                    row.get(0, String.class),
+                    row.get(1, String.class),
+                    row.get(2, Integer.class),
+                    row.get(3, String.class),
+                    row.get(4, Double.class),
+                    movieRepository.findGenresByMovieId(movieId),
+                    movieRepository.findStarsByMovieId(movieId)
+            ));
+        }
+    }
+
+    return new MoviesPageState(page, pageSize, totalResults, movies);
+}
 
     @Override
     public Movie getMovieById(String movieId) {
-        // TODO: implement later (DB logic)
 
-        List<Genre> genres = List.of(new Genre(1L, "Action"), new Genre(2L, "Drama"));
-        List<Star> stars = List.of(
-                new Star("1", "Tom Hanks", 1956),
-                new Star("2", "Lena Headey", 1973));
+        var movieRecord = dsl
+                .select(
+                        MOVIES.ID,
+                        MOVIES.TITLE,
+                        MOVIES.YEAR,
+                        MOVIES.DIRECTOR
+                )
+                .from(MOVIES)
+                .where(MOVIES.ID.eq(movieId))
+                .fetchOne();
 
-        return new Movie(movieId, "Study", 2004, "Layan", 4.5, genres, stars);
+        if (movieRecord == null) {
+            return null;
+        }
+
+        var ratingRecord = dsl
+                .select(RATINGS.RATING)
+                .from(RATINGS)
+                .where(RATINGS.MOVIEID.eq(movieId))
+                .fetchOne();
+
+        double finalRating = 0.0;
+        if (ratingRecord != null && ratingRecord.get(RATINGS.RATING) != null) {
+            finalRating = ratingRecord.get(RATINGS.RATING);
+        }
+
+        List<Genre> genres = dsl
+                .select(
+                        GENRES.ID,
+                        GENRES.NAME
+                )
+                .from(GENRES)
+                .join(GenresInMovies.GENRES_IN_MOVIES)
+                .on(GENRES.ID.eq(GenresInMovies.GENRES_IN_MOVIES.GENREID))
+                .where(GenresInMovies.GENRES_IN_MOVIES.MOVIEID.eq(movieId))
+                .orderBy(GENRES.NAME.asc())
+                .fetch(record -> new Genre(
+                        record.get(GENRES.ID).longValue(),
+                        record.get(GENRES.NAME)
+                ));
+
+        List<Star> stars = dsl
+                .select(
+                        STARS.ID,
+                        STARS.NAME,
+                        STARS.BIRTHYEAR
+                )
+                .from(STARS)
+                .join(STARS_IN_MOVIES)
+                .on(STARS.ID.eq(STARS_IN_MOVIES.STARID))
+                .where(STARS_IN_MOVIES.MOVIEID.eq(movieId))
+                .orderBy(STARS.NAME.asc())
+                .fetch(record -> {
+                    Integer birthYear = record.get(STARS.BIRTHYEAR);
+
+                    return new Star(
+                            record.get(STARS.ID),
+                            record.get(STARS.NAME),
+                            birthYear
+                    );
+                });
+
+        return new Movie(
+                movieRecord.get(MOVIES.ID),
+                movieRecord.get(MOVIES.TITLE),
+                movieRecord.get(MOVIES.YEAR),
+                movieRecord.get(MOVIES.DIRECTOR),
+                finalRating,
+                genres,
+                stars
+        );
     }
 
     private void validatePaging(int page, int pageSize) {
@@ -267,5 +378,17 @@ public class MovieServiceImpl implements MovieService {
             return null;
         }
         return value.trim();
+    }
+
+    private MoviesPageState paginate(List<Movie> source, int page, int pageSize) {
+
+        int totalResults = source.size();
+        int fromIndex = Math.max(0, (page - 1) * pageSize);
+        int toIndex = Math.min(fromIndex + pageSize, totalResults);
+
+        List<Movie> pageItems =
+                fromIndex >= totalResults ? List.of() : source.subList(fromIndex, toIndex);
+
+        return new MoviesPageState(page, pageSize, totalResults, pageItems);
     }
 }
