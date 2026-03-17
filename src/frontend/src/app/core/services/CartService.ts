@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 export interface CartItem {
   movieId: string;

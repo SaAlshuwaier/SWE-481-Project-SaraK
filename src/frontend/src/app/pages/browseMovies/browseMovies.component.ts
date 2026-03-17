@@ -33,11 +33,13 @@ export class BrowseMoviesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.loadMovies();
+  }
+
+  private loadMovies(): void {
     const genreId = this.route.snapshot.paramMap.get('genreId');
     const letter = this.route.snapshot.queryParams['letter'];
     const genreName = this.route.snapshot.queryParams['genreName'];
-
-    this.page = 1;
 
     // Browse by genre
     if (genreId) {
@@ -97,7 +99,6 @@ export class BrowseMoviesComponent implements OnInit {
 
     console.log('Sorted movies:', this.sortedMovies);
 
-    // Force UI refresh after async response
     this.cdr.detectChanges();
   }
 
@@ -128,20 +129,20 @@ export class BrowseMoviesComponent implements OnInit {
   onPageSizeChange(event: Event): void {
     this.pageSize = Number((event.target as HTMLSelectElement).value) as 10 | 20 | 50 | 100;
     this.page = 1;
-    this.ngOnInit();
+    this.loadMovies();
   }
 
   nextPage(): void {
     if (this.pageState?.hasNext) {
       this.page++;
-      this.ngOnInit();
+      this.loadMovies();
     }
   }
 
   previousPage(): void {
     if (this.pageState?.hasPrev) {
       this.page--;
-      this.ngOnInit();
+      this.loadMovies();
     }
   }
 

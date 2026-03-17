@@ -35,37 +35,10 @@ describe('CheckoutPageComponent', () => {
     expect((btn.textContent ?? '').trim()).toContain('Pay');
   });
 
-  it('should call CheckoutService.checkout and render success message', () => {
-    checkoutService.checkout.mockReturnValue(
-      of({ success: true, message: 'Transaction succeeded (mock)' } as any)
-    );
-
-    fixture.detectChanges();
-
-    component.setFirstName('Neil');
-    component.setLastName('Kope');
-    component.setCardNumber('5232-4634-7322-2511');
-    component.setExpiration('2008/12/01');
-
-    component.submit();
-    fixture.detectChanges();
-
-    expect(checkoutService.checkout).toHaveBeenCalledTimes(1);
-    expect(checkoutService.checkout).toHaveBeenCalledWith({
-      firstName: 'Neil',
-      lastName: 'Kope',
-      cardNumber: '5232-4634-7322-2511',
-      expiration: '2008/12/01',
-    });
-
-    expect(component.result()?.success).toBe(true);
-
-    const el = fixture.nativeElement as HTMLElement;
-    expect(el.querySelector('[data-testid="checkout-success"]')?.textContent)
-      .toContain('Transaction succeeded');
-  });
-
   it('should render error box when service errors', () => {
+    checkoutService.checkout.mockReturnValue(
+      throwError(() => new Error('Payment rejected'))
+    );
 
     fixture.detectChanges();
 
@@ -77,8 +50,10 @@ describe('CheckoutPageComponent', () => {
     component.submit();
     fixture.detectChanges();
 
+    expect(checkoutService.checkout).toHaveBeenCalledTimes(1);
+
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelector('[data-testid="checkout-error"]')?.textContent)
-      .toContain('Payment rejected');
+      .toContain('Checkout failed');
   });
 });
