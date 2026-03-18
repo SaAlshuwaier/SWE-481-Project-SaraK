@@ -81,7 +81,10 @@ describe('AuthService (HTTP Mock Tests)', () => {
       email: 'test@uci.edu',
       password: 'test123',
       address: 'Riyadh',
-      ccId: '1111222233334444',
+      ccNumber: '0011 2233 4455 6677',
+      ccExpiration:'2026-12-31',
+      ccFirstName: 'Jana',
+      ccLastName: 'Alshreef',
     };
 
     const mockRes: RegisterResponseDto = {
@@ -100,7 +103,7 @@ describe('AuthService (HTTP Mock Tests)', () => {
     const req = httpMock.expectOne(`${environment.backendUrl}/api/auth/register`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body.email).toBe('test@uci.edu');
-    expect(req.request.body.ccId).toBe('1111222233334444');
+    expect(req.request.body.ccNumber).toBe('0011 2233 4455 6677');
     req.flush(mockRes);
   });
 });

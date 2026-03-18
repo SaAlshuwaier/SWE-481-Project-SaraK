@@ -4,5 +4,8 @@ export interface RegisterRequestDto {
   email: string;
   password: string;
   address: string;
-  ccId: string;
+  ccNumber:     string;
+  ccExpiration: string;
+  ccFirstName:  string;
+  ccLastName:   string;
 }
