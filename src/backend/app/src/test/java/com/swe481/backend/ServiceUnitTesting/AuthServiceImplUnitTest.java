@@ -5,7 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.jooq.DSLContext;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static com.jooq.swe481.generated.tables.Customers.CUSTOMERS;
+import com.jooq.swe481.generated.tables.records.CustomersRecord;
 import com.swe481.backend.Dto.Auth.LoginRequest;
 import com.swe481.backend.Dto.Auth.LoginResponse;
 import com.swe481.backend.Dto.Auth.RegisterRequest;
@@ -16,35 +22,42 @@ import com.swe481.backend.service.serviceImp.AuthServiceImpl;
  * Unit tests for AuthServiceImpl methods.
  * 
  */
+@ExtendWith(MockitoExtension.class)
 public class AuthServiceImplUnitTest {
 
     private DSLContext dls;
-    private final AuthServiceImpl authService = new AuthServiceImpl(dls);
+    private AuthServiceImpl authService;
+
+    @BeforeEach
+    void setUp() {
+        dls = Mockito.mock(DSLContext.class);
+        authService = new AuthServiceImpl(dls);
+    }
 
     /**
-     * Tests the behavior of login(...) under different input conditions.
-     *
-     * Logic:
-     * These tests verify that the login method returns the correct
-     * LoginResponse depending on the validity of the provided credentials.
-     *
+     * Tests the behavior of login(...)
+     * 
      * The tested scenarios include:
      * - Valid credentials → login succeeds.
      * - Missing or empty input → validation error is returned.
      * - wrong email and passowrd → login fails.
      * - correct email wrong password → login fails.
-     * - wrong email correct password  → login fails.
-     *
-     * Parameters:
-     * - Email and password provided in LoginRequest.
-     *
-     * Expected Output:
-     * - A LoginResponse object indicating whether the login attempt
-     * succeeded or failed, along with the appropriate message.
+     * - wrong email correct password → login fails.
      */
     @Test
     void login_validRequest_returnsSuccessTrueAndCorrectMessage() {
         LoginRequest request = new LoginRequest("user@email.com", "123456");
+
+        var user = Mockito.mock(CustomersRecord.class);
+        Mockito.when(user.getPassword()).thenReturn("123456");
+        Mockito.when(user.getId()).thenReturn(1);
+
+        var selectStep = Mockito.mock(org.jooq.SelectWhereStep.class);
+        var conditionStep = Mockito.mock(org.jooq.SelectConditionStep.class);
+
+        Mockito.when(dls.selectFrom(CUSTOMERS)).thenReturn(selectStep);
+        Mockito.when(selectStep.where(Mockito.any(org.jooq.Condition.class))).thenReturn(conditionStep);
+        Mockito.when(conditionStep.fetchOne()).thenReturn(user);
 
         LoginResponse response = authService.login(request);
 
@@ -70,6 +83,13 @@ public class AuthServiceImplUnitTest {
 
         LoginRequest request = new LoginRequest("wrong@email.com", "wrong");
 
+        var selectStep = Mockito.mock(org.jooq.SelectWhereStep.class);
+        var conditionStep = Mockito.mock(org.jooq.SelectConditionStep.class);
+
+        Mockito.when(dls.selectFrom(CUSTOMERS)).thenReturn(selectStep);
+        Mockito.when(selectStep.where(Mockito.any(org.jooq.Condition.class))).thenReturn(conditionStep);
+        Mockito.when(conditionStep.fetchOne()).thenReturn(null); // user not found
+
         LoginResponse response = authService.login(request);
 
         assertNotNull(response);
@@ -81,6 +101,16 @@ public class AuthServiceImplUnitTest {
     void login_validEmailWrongPassword_returnsFailure() {
 
         LoginRequest request = new LoginRequest("Parker234@aol.com", "wrongPassword");
+
+        var user = Mockito.mock(CustomersRecord.class);
+        Mockito.when(user.getPassword()).thenReturn("correctPassword");
+
+        var selectStep = Mockito.mock(org.jooq.SelectWhereStep.class);
+        var conditionStep = Mockito.mock(org.jooq.SelectConditionStep.class);
+
+        Mockito.when(dls.selectFrom(CUSTOMERS)).thenReturn(selectStep);
+        Mockito.when(selectStep.where(Mockito.any(org.jooq.Condition.class))).thenReturn(conditionStep);
+        Mockito.when(conditionStep.fetchOne()).thenReturn(user);
 
         LoginResponse response = authService.login(request);
 
@@ -94,11 +124,37 @@ public class AuthServiceImplUnitTest {
 
         LoginRequest request = new LoginRequest("wrong@email.com", "test");
 
+        var selectStep = Mockito.mock(org.jooq.SelectWhereStep.class);
+        var conditionStep = Mockito.mock(org.jooq.SelectConditionStep.class);
+
+        Mockito.when(dls.selectFrom(CUSTOMERS)).thenReturn(selectStep);
+        Mockito.when(selectStep.where(Mockito.any(org.jooq.Condition.class))).thenReturn(conditionStep);
+        Mockito.when(conditionStep.fetchOne()).thenReturn(null); // no user
+
         LoginResponse response = authService.login(request);
 
         assertNotNull(response);
         assertFalse(response.isSuccess());
         assertEquals("Invalid email or password", response.getMessage());
+    }
+
+    @Test
+    void login_wrongPassword_returnsFailure() {
+        LoginRequest request = new LoginRequest("user@email.com", "wrong");
+
+        var user = Mockito.mock(CustomersRecord.class);
+        Mockito.when(user.getPassword()).thenReturn("correct");
+
+        var selectStep = Mockito.mock(org.jooq.SelectWhereStep.class);
+        var conditionStep = Mockito.mock(org.jooq.SelectConditionStep.class);
+
+        Mockito.when(dls.selectFrom(CUSTOMERS)).thenReturn(selectStep);
+        Mockito.when(selectStep.where(Mockito.any(org.jooq.Condition.class))).thenReturn(conditionStep);
+        Mockito.when(conditionStep.fetchOne()).thenReturn(user);
+
+        LoginResponse response = authService.login(request);
+
+        assertFalse(response.isSuccess());
     }
 
     /**
