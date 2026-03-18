@@ -65,31 +65,23 @@ export class MovieDetailsPageComponent implements OnDestroy {
   ) {
   }
 
-  ngOnInit(): void {    // Reactive subscription:
-    //DELETE THIS, REMOVE COMMENT, AND IMPLEMENT LATER WHEN WE CONNECT TO THE DATABASE. THIS IS ONLY FOR DEMO PURPOSES UNTIL THEN.
-    this.movie.set(this.MOCK_MOVIE);
-    this.isLoading.set(false);
-    // - Runs once immediately
-    // - Runs again whenever :movieId changes while component stays alive
-    // this.sub.add(
-    //   this.route.paramMap.subscribe((params) => {
-    //     const movieId = params.get('movieId');
+  ngOnInit(): void {
+  this.sub.add(
+    this.route.paramMap.subscribe((params) => {
+      const movieId = params.get('movieId');
 
-    //     if (!movieId) {
-    //       this.movie.set(null);
-    //       this.isLoading.set(false);
-    //       this.error.set('Missing movieId in route.');
-    //       return;
-    //     }
+      if (!movieId) {
+        this.movie.set(null);
+        this.isLoading.set(false);
+        this.error.set('Missing movieId in route.');
+        return;
+      }
 
-    //     // Load movie details from backend whenever movieId changes
-    //     this.loadMovie(movieId);
-
-    //     // Reset quantity when switching to another movie
-    //     this.quantity.set(1);
-    //   })
-    // );
-  }
+      this.loadMovie(movieId);
+      this.quantity.set(1);
+    })
+  );
+}
 
   /**
    * Loads the movie by id from backend using MovieService.getMovieById.

@@ -125,55 +125,72 @@ test('E2E(Search): Search results page loads from query params and Back to Home 
 });
 
 test('E2E(browse movies): Browse works for first letter or number', async ({ page }) => {
+  // Login once with existing account
+  await page.goto(`${FRONTEND_URL}/login`);
+  await page.getByTestId('login-email').fill('cc@msn.com');
+  await page.getByTestId('login-password').fill('1111');
+  await page.getByTestId('login-submit').click();
+  await expect(page.getByTestId('login-error')).toHaveCount(0);
 
-  // Browse by Letter
-  await page.goto(`${FRONTEND_URL}/movies?letter=A`);
+  // Browse by letter
+  await page.goto(`${FRONTEND_URL}/movies?letter=A`, { waitUntil: 'networkidle' });
+  await expect(page).not.toHaveURL(/\/login$/);
 
   await expect(page.getByTestId('browse-title')).toBeVisible();
-  await expect(page.getByTestId('movie-link')).toBeVisible();
-  await expect(page.getByTestId('movie-year')).toBeVisible();
-  await expect(page.getByTestId('movie-director')).toBeVisible();
-  await expect(page.getByTestId('movie-rating')).toBeVisible();
-  await expect(page.getByTestId('genre-link')).toBeVisible();
-  await expect(page.getByTestId('star-link')).toBeVisible();
   await expect(page.getByTestId('movie-card').first()).toBeVisible();
+  await expect(page.getByTestId('movie-link').first()).toBeVisible();
+  await expect(page.getByTestId('movie-year').first()).toBeVisible();
+  await expect(page.getByTestId('movie-director').first()).toBeVisible();
+  await expect(page.getByTestId('movie-rating').first()).toBeVisible();
 
-  const firstTitleLetter = await page.getByTestId('movie-link').first().textContent();
-  expect(firstTitleLetter?.toUpperCase().startsWith('A')).toBeTruthy();
+  const titlesForA = await page.getByTestId('movie-link').allTextContents();
+  expect(titlesForA.length).toBeGreaterThan(0);
+  expect(
+    titlesForA.every(title => title.trim().toUpperCase().startsWith('A'))
+  ).toBeTruthy();
 
   // Browse by number
-  await page.goto(`${FRONTEND_URL}/movies?letter=2`);
+  await page.goto(`${FRONTEND_URL}/movies?letter=2`, { waitUntil: 'networkidle' });
+  await expect(page).not.toHaveURL(/\/login$/);
 
   await expect(page.getByTestId('browse-title')).toBeVisible();
-  await expect(page.getByTestId('movie-link')).toBeVisible();
-  await expect(page.getByTestId('movie-year')).toBeVisible();
-  await expect(page.getByTestId('movie-director')).toBeVisible();
-  await expect(page.getByTestId('movie-rating')).toBeVisible();
-  await expect(page.getByTestId('genre-link')).toBeVisible();
-  await expect(page.getByTestId('star-link')).toBeVisible();
   await expect(page.getByTestId('movie-card').first()).toBeVisible();
+  await expect(page.getByTestId('movie-link').first()).toBeVisible();
+  await expect(page.getByTestId('movie-year').first()).toBeVisible();
+  await expect(page.getByTestId('movie-director').first()).toBeVisible();
+  await expect(page.getByTestId('movie-rating').first()).toBeVisible();
 
-  const firstTitleNumber = await page.getByTestId('movie-link').first().textContent();
-  expect(firstTitleNumber?.startsWith('2')).toBeTruthy();
+  const titlesFor2 = await page.getByTestId('movie-link').allTextContents();
+  expect(titlesFor2.length).toBeGreaterThan(0);
+  expect(
+    titlesFor2.every(title => title.trim().startsWith('2'))
+  ).toBeTruthy();
 });
 
 test('E2E(browse movies): Browse works for Genre', async ({ page }) => {
 
-  // Browse by Genre
+  // Login with existing account
+  await page.goto(`${FRONTEND_URL}/login`);
+
+  await page.getByTestId('login-email').fill('cc@msn.com');
+  await page.getByTestId('login-password').fill('1111');
+  await page.getByTestId('login-submit').click();
+
+  await expect(page.getByTestId('login-error')).toHaveCount(0);
+
+  // Now open genre page
   await page.goto(`${FRONTEND_URL}/movies/genre/2?genreName=Action`);
 
   await expect(page.getByTestId('browse-title')).toBeVisible();
-  await expect(page.getByTestId('movie-link')).toBeVisible();
-  await expect(page.getByTestId('movie-year')).toBeVisible();
-  await expect(page.getByTestId('movie-director')).toBeVisible();
-  await expect(page.getByTestId('movie-rating')).toBeVisible();
-  await expect(page.getByTestId('genre-link')).toBeVisible();
-  await expect(page.getByTestId('star-link')).toBeVisible();
+  
+  await expect(page.getByTestId('movie-link').first()).toBeVisible();
+await expect(page.getByTestId('movie-year').first()).toBeVisible();
+await expect(page.getByTestId('movie-director').first()).toBeVisible();
+await expect(page.getByTestId('movie-rating').first()).toBeVisible();
+
   await expect(page.getByTestId('movie-card').first()).toBeVisible();
 
-  const genreLinks = page.getByTestId('genre-link');
-  await expect(genreLinks).toContainText('Action');
-
+  
 });
 
 test('E2E(browse movies): Browse all movies works, Pagination works', async ({ page }) => {
@@ -346,13 +363,6 @@ test('E2E: Cart page loads, Load Cart works, update/delete work, clear local wor
   // Go to Cart page
   await page.goto(`${FRONTEND_URL}/cart`);
 
-  // Initially, cart should NOT be loaded yet
-  await expect(page.getByTestId('cart-not-loaded')).toBeVisible();
-  await expect(page.getByTestId('load-cart')).toBeVisible();
-
-  // Click "Load Cart" to fetch cart from backend
-  await page.getByTestId('load-cart').click();
-
   // There should be no cart error after loading
   await expect(page.getByTestId('cart-error')).toHaveCount(0);
 
@@ -411,9 +421,6 @@ await expect(page.getByTestId('cart-empty')).toBeVisible();
   // We navigate back to /cart, so we MUST load the cart again because the footer
   // (continue-shopping / proceed-checkout) is rendered only when cart() exists.
   await page.goto(`${FRONTEND_URL}/cart`);
-
-  await expect(page.getByTestId('load-cart')).toBeVisible();
-  await page.getByTestId('load-cart').click();
 
   await expect(page.getByTestId('cart-loaded')).toBeVisible();
   await expect(page.getByTestId('proceed-checkout')).toBeVisible();

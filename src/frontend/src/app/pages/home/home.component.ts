@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
+import { filter, Subscription } from 'rxjs';
 
+import { GenreService } from '../../core/services/GenreService';
+import { GenreDto } from '../../core/models/GenreDto';
 
 type TitleFilter = string;
 
@@ -13,15 +16,14 @@ type TitleFilter = string;
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
 
-  /*
-     Router Injection
-     Used to navigate from Home → Browse/Search pages
- */
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private genreService: GenreService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
-  
   filters = {
     title: '',
     year: '',
@@ -29,102 +31,82 @@ export class HomeComponent implements OnInit {
     star: ''
   };
 
-  /* 
-     Data shown in UI
-     Loaded from mock response (simulated DB/API)
-   */
-  genres: string[] = [];
+  genres: GenreDto[] = [];
   titleFilters: TitleFilter[] = [];
 
-  /* 
-     Mock Response (Simulated DB/API)
-     We "map" it in ngOnInit instead of hard-coding UI arrays directly.
-   */
-  private readonly mockHomeResponse: {
-    genres: string[];
-    titleFilters: TitleFilter[];
-  } = {
-    genres: [
-      'Action','Adult','Adventure','Animation','Biography','Comedy','Crime',
-      'Documentary','Drama','Family','Fantasy','History','Horror',
-      'Music','Musical','Mystery','Reality-TV','Romance','Sci-Fi','Sport',
-      'Thriller','War','Western'
-    ],
-    titleFilters: [
+  private routerSub?: Subscription;
+
+  ngOnInit(): void {
+    console.log('HomeComponent ngOnInit fired');
+
+    this.loadGenres();
+
+    this.routerSub = this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        const nav = event as NavigationEnd;
+        if (nav.urlAfterRedirects === '/home') {
+          console.log('NavigationEnd to /home');
+          this.loadGenres();
+        }
+      });
+
+    this.titleFilters = [
       ...Array.from({ length: 10 }, (_, i) => String(i)),
       ...Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i)),
-    ]
-  };
-
-  /* 
-     Genre Mapping (Name → ID)
-   */
-  private readonly genreNameToId: Record<string, number> = {
-    Action: 2,
-    Adult: 3,
-    Adventure: 4,
-    Animation: 5,
-    Biography: 6,
-    Comedy: 7,
-    Crime: 8,
-    Documentary: 9,
-    Drama: 10,
-    Family: 11,
-    Fantasy: 12,
-    History: 13,
-    Horror: 14,
-    Music: 15,
-    Musical: 16,
-    Mystery: 17,
-    'Reality-TV': 18,
-    Romance: 19,
-    'Sci-Fi': 20,
-    Sport: 21,
-    Thriller: 22,
-    War: 23,
-    Western: 24
-  };
-
-  
-  ngOnInit(): void {
-    this.genres = [...this.mockHomeResponse.genres];
-    this.titleFilters = [...this.mockHomeResponse.titleFilters];
+    ];
   }
 
-  
-  goToSearchResults() {
-  const queryParams: any = {};
-
-  if (this.filters.title.trim()) queryParams.title = this.filters.title.trim();
-  if (this.filters.year.trim()) queryParams.year = this.filters.year.trim();
-  if (this.filters.director.trim()) queryParams.director = this.filters.director.trim();
-  if (this.filters.star.trim()) queryParams.star = this.filters.star.trim();
-
-  this.router.navigate(['/movies/search'], { queryParams });
-}
-
-  
-  onClear(): void {
-    this.filters = { title: '', year: '', director: '', star: '' };
+  ngOnDestroy(): void {
+    this.routerSub?.unsubscribe();
   }
 
-  
-  goToBrowseGenre(genreName: string): void {
-    const genreId = this.genreNameToId[genreName];
+  private loadGenres(): void {
+    console.log('Loading genres...');
 
-    // If mapping missing, fall back to browse all
-    if (!genreId) {
-      this.router.navigate(['/movies']);
-      return;
-    }
-
-    this.router.navigate(['/movies/genre', genreId], {
-      queryParams: { genreName }
+    this.genreService.getAllGenres().subscribe({
+      next: (genres) => {
+        console.log('Genres loaded:', genres);
+        this.genres = genres ?? [];
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading genres:', err);
+        this.genres = [];
+        this.cdr.detectChanges();
+      }
     });
   }
 
-  
+  goToSearchResults(): void {
+    const queryParams: any = {};
+
+    if (this.filters.title.trim()) queryParams.title = this.filters.title.trim();
+    if (this.filters.year.trim()) queryParams.year = this.filters.year.trim();
+    if (this.filters.director.trim()) queryParams.director = this.filters.director.trim();
+    if (this.filters.star.trim()) queryParams.star = this.filters.star.trim();
+
+    this.router.navigate(['/movies/search'], { queryParams });
+  }
+
+  onClear(): void {
+    this.filters = {
+      title: '',
+      year: '',
+      director: '',
+      star: ''
+    };
+  }
+
+  goToBrowseGenre(genre: GenreDto): void {
+    this.router.navigate(['/movies/genre', genre.id], {
+      queryParams: { genreName: genre.name }
+    });
+  }
+
   goToBrowseTitle(startsWith: string): void {
-  this.router.navigate(['/movies'], { queryParams: { letter: startsWith } });
-}
+    this.router.navigate(['/movies'], {
+      queryParams: { letter: startsWith }
+    });
+  }
 }

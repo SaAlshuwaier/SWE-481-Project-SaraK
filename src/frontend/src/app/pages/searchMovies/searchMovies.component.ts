@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { finalize, take } from 'rxjs/operators';
+
 import { MovieService } from '../../core/services/MovieService';
 import { MoviesPageStateDto } from '../../core/models/MoviesPageStateDto';
 import { MovieDto } from '../../core/models/MovieDto';
@@ -13,26 +15,15 @@ import { MovieDto } from '../../core/models/MovieDto';
   styleUrls: ['./searchMovies.component.css'],
 })
 export class SearchMoviesComponent implements OnInit {
-  // ===== Page state =====
-  pageState!: MoviesPageStateDto;
+  pageState = signal<MoviesPageStateDto | null>(null);
+  movies = signal<MovieDto[]>([]);
+  loading = signal(false);
+  errorMessage = signal('');
 
-  // Movies returned from backend (or dummy if service not ready)
-  movies: MovieDto[] = [];
-  
-  loading = false;
-  errorMessage = '';
-
-
-  // Pagination
   page = 1;
   pageSize = 20;
 
-  // Search query (from URL)
   query: { title?: string; year?: string; director?: string; star?: string } = {};
-
-
-
-  
 
   constructor(
     private route: ActivatedRoute,
@@ -41,29 +32,49 @@ export class SearchMoviesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Listen to query params and reload results
-    this.route.queryParams.subscribe((qp) => {
-      this.page = 1;
+    const qp = this.route.snapshot.queryParams;
 
-      this.query = {
-        title: qp['title'] || undefined,
-        year: qp['year'] || undefined,
-        director: qp['director'] || undefined,
-        star: qp['star'] || undefined,
-      };
+    this.query = {
+      title: qp['title'] || undefined,
+      year: qp['year'] || undefined,
+      director: qp['director'] || undefined,
+      star: qp['star'] || undefined,
+    };
 
-      this.loadSearchResults();
-    });
+    this.loadSearchResults();
   }
 
-  private loadSearchResults(): void {
-  const yearNumber =
-    this.query.year && this.query.year.trim() !== ''
-      ? Number(this.query.year)
-      : undefined;
+private loadSearchResults(): void {
+  const rawYear = this.query.year?.trim();
+  let yearNumber: number | undefined = undefined;
 
-  this.loading = true;
-  this.errorMessage = '';
+  // Frontend validation before sending request
+  if (rawYear) {
+    const parsed = Number(rawYear);
+const currentYear = new Date().getFullYear();
+    if (!Number.isInteger(parsed) ||
+  parsed < 1800 ||
+  parsed > currentYear) {
+      this.movies.set([]);
+      this.pageState.set({
+        page: this.page,
+        pageSize: this.pageSize,
+        totalResults: 0,
+        totalPages: 0,
+        hasPrev: false,
+        hasNext: false,
+        movies: [],
+      });
+      this.errorMessage.set('Year must be a valid number.');
+      this.loading.set(false);
+      return;
+    }
+
+    yearNumber = parsed;
+  }
+
+  this.loading.set(true);
+  this.errorMessage.set('');
 
   this.movieService
     .searchMovies(
@@ -74,49 +85,49 @@ export class SearchMoviesComponent implements OnInit {
       this.page,
       this.pageSize
     )
+    .pipe(
+      take(1),
+      finalize(() => {
+        this.loading.set(false);
+      })
+    )
     .subscribe({
       next: (state) => {
-        this.pageState = state;
-        this.movies = state.movies ?? [];
-        this.loading = false;
+        this.pageState.set(state);
+        this.movies.set(state.movies ?? []);
       },
-      error: () => {
-        // On error, clear movies and pageState but show error message
-        this.movies = [];
-        this.pageState = {
+      error: (err) => {
+        console.error('SEARCH ERROR:', err);
+        this.movies.set([]);
+        this.pageState.set({
           page: this.page,
           pageSize: this.pageSize,
           totalResults: 0,
-          totalPages: 1,
+          totalPages: 0,
           hasPrev: false,
           hasNext: false,
           movies: [],
-        } as any;
-
-        this.errorMessage = 'Something went wrong while loading results.';
-        this.loading = false;
+        });
+        this.errorMessage.set('Something went wrong while loading results.');
       },
     });
 }
 
-  
 
-  // ===== Pagination =====
   nextPage(): void {
-    if (this.pageState?.hasNext) {
+    if (this.pageState()?.hasNext) {
       this.page++;
       this.loadSearchResults();
     }
   }
 
   previousPage(): void {
-    if (this.pageState?.hasPrev) {
+    if (this.pageState()?.hasPrev) {
       this.page--;
       this.loadSearchResults();
     }
   }
 
-  // ===== Back to home =====
   backToHome(): void {
     this.router.navigate(['/home']);
   }

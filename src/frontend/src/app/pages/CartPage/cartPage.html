@@ -14,17 +14,6 @@
     <!-- When cart is not loaded yet -->
     <div *ngIf="!cart()" class="empty-block" data-testid="cart-not-loaded">
       <div class="empty" data-testid="cart-not-loaded-text">No cart loaded.</div>
-
-      <div class="cart-footer">
-        <button
-          class="btn btn-ghost"
-          (click)="loadCart()"
-          [disabled]="isLoading()"
-          data-testid="load-cart"
-        >
-          Load Cart
-        </button>
-      </div>
     </div>
 
     <!-- When cart exists -->

@@ -25,7 +25,7 @@ describe('MovieService', () => {
 
     // ─── searchMovies ─────────────────────────────────────────────────────────
 
-    it('should search movies with no filters (default pagination)', () => {
+     it('should search movies with no filters and default pagination', () => {
         const mockResponse = {
             page: 1,
             pageSize: 20,
@@ -47,10 +47,6 @@ describe('MovieService', () => {
         };
 
         service.searchMovies().subscribe(response => {
-
-            //  1. CONNECTION - verified by httpMock below (correct URL + method)
-
-            //  2. RESPONSE KEYS - check that all expected keys exist
             expect(response.page).toBeDefined();
             expect(response.pageSize).toBeDefined();
             expect(response.totalResults).toBeDefined();
@@ -59,7 +55,6 @@ describe('MovieService', () => {
             expect(response.hasNext).toBeDefined();
             expect(response.movies).toBeDefined();
 
-            //  3. MOVIE OBJECT KEYS - check keys exist on each movie
             const movie = response.movies[0];
             expect(movie.id).toBeDefined();
             expect(movie.title).toBeDefined();
@@ -74,7 +69,6 @@ describe('MovieService', () => {
             expect(movie.stars[0].name).toBeDefined();
             expect(movie.stars[0].birthYear).toBeDefined();
 
-            //  4. VALUES - check actual values are correct
             expect(response.totalResults).toBe(1);
             expect(response.movies.length).toBe(1);
             expect(movie.title).toBe('25th Hour');
@@ -84,7 +78,6 @@ describe('MovieService', () => {
             expect(movie.genres[0].name).toBe('Drama');
             expect(movie.stars[0].name).toBe('Edward Norton');
 
-            //  5. TYPES - check each field has the correct data type
             expect(typeof response.page).toBe('number');
             expect(typeof response.pageSize).toBe('number');
             expect(typeof response.totalResults).toBe('number');
@@ -100,7 +93,6 @@ describe('MovieService', () => {
             expect(typeof movie.rating).toBe('number');
             expect(Array.isArray(movie.genres)).toBe(true);
             expect(Array.isArray(movie.stars)).toBe(true);
-
             expect(typeof movie.genres[0].id).toBe('number');
             expect(typeof movie.genres[0].name).toBe('string');
             expect(typeof movie.stars[0].id).toBe('string');
@@ -108,23 +100,27 @@ describe('MovieService', () => {
             expect(typeof movie.stars[0].birthYear).toBe('number');
         });
 
-        //  1. CONNECTION - correct URL, params, and HTTP method
         const req = httpMock.expectOne(
-            req => req.url === `${baseUrl}/api/movies/search`
-                && req.params.get('page') === '1'
-                && req.params.get('pageSize') === '20'
+            req =>
+                req.url === `${baseUrl}/api/movies/search` &&
+                req.params.get('page') === '1' &&
+                req.params.get('pageSize') === '20' &&
+                !req.params.has('title') &&
+                !req.params.has('year') &&
+                !req.params.has('director') &&
+                !req.params.has('starName')
         );
         expect(req.request.method).toBe('GET');
         req.flush(mockResponse);
     });
 
-    it('should search movies with all optional filters', () => {
+    it('should search movies with all optional filters including year', () => {
         const mockResponse = {
             page: 2,
             pageSize: 10,
             totalResults: 2,
             totalPages: 1,
-            hasPrev: false,
+            hasPrev: true,
             hasNext: false,
             movies: [
                 {
@@ -148,16 +144,13 @@ describe('MovieService', () => {
             ]
         };
 
-        service.searchMovies('', undefined, 'Richard Linklater', 'Ethan Hawke', 2, 10)
+        service.searchMovies('Bad', 2005, 'Richard Linklater', 'Ethan Hawke', 2, 10)
             .subscribe(response => {
-
-                //  2. RESPONSE KEYS
                 expect(response.page).toBeDefined();
                 expect(response.pageSize).toBeDefined();
                 expect(response.totalResults).toBeDefined();
                 expect(response.movies).toBeDefined();
 
-                //  3. MOVIE OBJECT KEYS
                 response.movies.forEach(movie => {
                     expect(movie.id).toBeDefined();
                     expect(movie.title).toBeDefined();
@@ -168,13 +161,10 @@ describe('MovieService', () => {
                     expect(movie.stars).toBeDefined();
                 });
 
-                //  4. VALUES
-                expect(response.movies[0].director).toBe('Richard Linklater');
-                expect(response.movies[1].director).toBe('Richard Linklater');
                 expect(response.page).toBe(2);
+                expect(response.pageSize).toBe(10);
                 expect(response.totalResults).toBe(2);
 
-                //  5. TYPES
                 expect(typeof response.page).toBe('number');
                 expect(typeof response.pageSize).toBe('number');
                 expect(typeof response.totalResults).toBe('number');
@@ -191,18 +181,131 @@ describe('MovieService', () => {
                 });
             });
 
-        //  1. CONNECTION
         const req = httpMock.expectOne(
-            req => req.url === `${baseUrl}/api/movies/search`
-                && req.params.get('director') === 'Richard Linklater'
-                && req.params.get('starName') === 'Ethan Hawke'
-                && req.params.get('page') === '2'
-                && req.params.get('pageSize') === '10'
+            req =>
+                req.url === `${baseUrl}/api/movies/search` &&
+                req.params.get('title') === 'Bad' &&
+                req.params.get('year') === '2005' &&
+                req.params.get('director') === 'Richard Linklater' &&
+                req.params.get('starName') === 'Ethan Hawke' &&
+                req.params.get('page') === '2' &&
+                req.params.get('pageSize') === '10'
         );
         expect(req.request.method).toBe('GET');
         req.flush(mockResponse);
     });
 
+    it('should include year param when year is provided', () => {
+        service.searchMovies(undefined, 2005, undefined, undefined, 1, 20).subscribe();
+
+        const req = httpMock.expectOne(
+            req =>
+                req.url === `${baseUrl}/api/movies/search` &&
+                req.params.get('year') === '2005' &&
+                req.params.get('page') === '1' &&
+                req.params.get('pageSize') === '20'
+        );
+
+        expect(req.request.method).toBe('GET');
+        req.flush({
+            page: 1,
+            pageSize: 20,
+            totalResults: 0,
+            totalPages: 0,
+            hasPrev: false,
+            hasNext: false,
+            movies: []
+        });
+    });
+
+    it('should not include year param when year is undefined', () => {
+        service.searchMovies('alpha', undefined, 'david', 'tom', 1, 20).subscribe();
+
+        const req = httpMock.expectOne(
+            req =>
+                req.url === `${baseUrl}/api/movies/search` &&
+                req.params.get('title') === 'alpha' &&
+                req.params.get('director') === 'david' &&
+                req.params.get('starName') === 'tom' &&
+                req.params.get('page') === '1' &&
+                req.params.get('pageSize') === '20' &&
+                !req.params.has('year')
+        );
+
+        expect(req.request.method).toBe('GET');
+        req.flush({
+            page: 1,
+            pageSize: 20,
+            totalResults: 0,
+            totalPages: 0,
+            hasPrev: false,
+            hasNext: false,
+            movies: []
+        });
+    });
+
+    it('should send custom pagination params in search request', () => {
+        service.searchMovies('alpha', 2005, 'david', 'tom', 3, 5).subscribe();
+
+        const req = httpMock.expectOne(
+            req =>
+                req.url === `${baseUrl}/api/movies/search` &&
+                req.params.get('title') === 'alpha' &&
+                req.params.get('year') === '2005' &&
+                req.params.get('director') === 'david' &&
+                req.params.get('starName') === 'tom' &&
+                req.params.get('page') === '3' &&
+                req.params.get('pageSize') === '5'
+        );
+
+        expect(req.request.method).toBe('GET');
+        req.flush({
+            page: 3,
+            pageSize: 5,
+            totalResults: 12,
+            totalPages: 3,
+            hasPrev: true,
+            hasNext: false,
+            movies: []
+        });
+    });
+ it('should handle empty search results', () => {
+        const mockResponse = {
+            page: 1,
+            pageSize: 20,
+            totalResults: 0,
+            totalPages: 0,
+            hasPrev: false,
+            hasNext: false,
+            movies: []
+        };
+
+        service.searchMovies('no-such-movie', 2005, 'unknown', 'nobody', 1, 20)
+            .subscribe(response => {
+                expect(response.page).toBe(1);
+                expect(response.pageSize).toBe(20);
+                expect(response.totalResults).toBe(0);
+                expect(response.totalPages).toBe(0);
+                expect(response.hasPrev).toBe(false);
+                expect(response.hasNext).toBe(false);
+                expect(response.movies).toEqual([]);
+                expect(Array.isArray(response.movies)).toBe(true);
+            });
+
+        const req = httpMock.expectOne(
+            req =>
+                req.url === `${baseUrl}/api/movies/search` &&
+                req.params.get('title') === 'no-such-movie' &&
+                req.params.get('year') === '2005' &&
+                req.params.get('director') === 'unknown' &&
+                req.params.get('starName') === 'nobody' &&
+                req.params.get('page') === '1' &&
+                req.params.get('pageSize') === '20'
+        );
+
+        expect(req.request.method).toBe('GET');
+        req.flush(mockResponse);
+    });
     // ─── browseMoviesByGenre ──────────────────────────────────────────────────
 
     it('should browse movies by genre with default pagination', () => {

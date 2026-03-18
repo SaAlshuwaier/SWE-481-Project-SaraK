@@ -41,7 +41,8 @@ public class MoviesPageState {
         this.page = page;
         this.pageSize = pageSize;
         this.totalResults = totalResults;
-        this.totalPages = (int) Math.ceil((double) totalResults / pageSize);
+        this.totalPages = totalResults == 0 ? 1 : (int) Math.ceil((double) totalResults / pageSize);
+
         this.hasPrev = page > 1;
         this.hasNext = page < totalPages;
 
