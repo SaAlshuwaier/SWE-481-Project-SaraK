@@ -2,7 +2,7 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
 
-import { CheckoutService } from '../../core/services/CheckoutService';
+import { CheckoutService, CheckoutRequest } from '../../core/services/CheckoutService';
 import { CheckoutDto } from '../../core/models/CheckoutDto';
 
 @Component({
@@ -33,7 +33,7 @@ export class CheckoutPageComponent {
     this.error.set(null);
     this.result.set(null);
 
-    const body: CheckoutDto = {
+    const body: CheckoutRequest = {
       firstName: this.firstName(),
       lastName: this.lastName(),
       cardNumber: this.cardNumber(),
@@ -43,10 +43,13 @@ export class CheckoutPageComponent {
     this.isLoading.set(true);
 
     this.checkoutService.checkout(body)
-      .pipe(finalize(() => this.isLoading.set(false)))
-      .subscribe({
-        next: (res) => this.result.set(res),
-        error: (err) => this.error.set(err?.message ?? 'Checkout failed'),
-      });
+  .pipe(finalize(() => this.isLoading.set(false)))
+  .subscribe({
+    next: (res) => this.result.set(res),
+    error: (err) => {
+      const backendMessage = err?.error?.message;
+      this.error.set(backendMessage || 'Checkout failed');
+    },
+  });
   }
 }
