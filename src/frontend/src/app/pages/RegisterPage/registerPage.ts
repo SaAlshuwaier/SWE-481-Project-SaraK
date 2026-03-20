@@ -33,6 +33,8 @@ export class RegisterPageComponent {
   error = signal<string | null>(null);
   result = signal<RegisterResponseDto | null>(null);
 
+  today = new Date().toISOString().split('T')[0]; 
+  
   constructor(private auth: AuthService, private router: Router) {}
 
   setFirstName(v: string) { this.firstName.set(v); }

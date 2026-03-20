@@ -82,6 +82,7 @@
         class="input"
         type="date"
         [value]="ccExpiration()"
+        [min]="today"
         (input)="setCcExpiration(($any($event.target).value))"
         data-testid="reg-ccexpiration"
         maxlength="50"
