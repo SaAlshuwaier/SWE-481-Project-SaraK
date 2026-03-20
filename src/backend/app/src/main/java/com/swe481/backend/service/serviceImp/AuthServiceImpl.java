@@ -152,12 +152,17 @@ public class AuthServiceImpl implements AuthService {
             return new RegisterResponse("Email already in use", null, false);
         }
 
-        // 8) Insert CC + customer, get back the new customerId
+        // 8) Check credit card number is not already registered
+        if (customerRepository.creditCardExists(request.getCcNumber())) {
+            return new RegisterResponse("Credit card already in use", null, false);
+        }
+
+        // 9) Insert CC + customer, get back the new customerId
         Integer newCustomerId = customerRepository.insertCustomerWithCreditCard(request);
 
         System.out.println("[Registered new customer with ID:] " + newCustomerId);
 
-        // 9) Return success response
+        // 10) Return success response
         return new RegisterResponse("User registered successfully", newCustomerId, true);
     }
 }

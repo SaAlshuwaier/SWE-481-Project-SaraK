@@ -32,6 +32,18 @@ public class CustomerRepository {
     }
 
     /**
+     * Check if a credit card number already exists in the creditcards table.
+     *
+     * @param ccNumber the formatted card number ("XXXX XXXX XXXX XXXX")
+     * @return true if the card number is already registered, false if available
+     */
+    public boolean creditCardExists(String ccNumber) {
+    return dsl.fetchExists(
+            dsl.selectFrom(CREDITCARDS)
+                    .where(CREDITCARDS.ID.eq(ccNumber)));
+    }
+
+    /**
      * Inserts a new credit card row, then inserts a new customer linked to it.
      *
      * creditcards table: (id, firstName, lastName, expiration)
