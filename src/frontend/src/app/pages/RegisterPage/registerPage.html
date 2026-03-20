@@ -11,12 +11,15 @@
     <h2 class="title" data-testid="register-title">Register</h2>
 
     <div class="form">
+
+      <!-- Customer fields -->
       <label class="label">First Name</label>
       <input
         class="input"
         [value]="firstName()"
         (input)="setFirstName(($any($event.target).value))"
         data-testid="reg-firstname"
+        maxlength="50"
       />
 
       <label class="label">Last Name</label>
@@ -25,6 +28,7 @@
         [value]="lastName()"
         (input)="setLastName(($any($event.target).value))"
         data-testid="reg-lastname"
+        maxlength="50"
       />
 
       <label class="label">Email</label>
@@ -33,8 +37,14 @@
         type="email"
         [value]="email()"
         (input)="setEmail(($any($event.target).value))"
+        (blur)="emailTouched.set(true)"
+        placeholder="name@example.com"
         data-testid="reg-email"
+        maxlength="50"
       />
+      <div *ngIf="emailTouched() && !isValidEmail(email())" class="err-box">
+        Invalid email format
+      </div>
 
       <label class="label">Password</label>
       <input
@@ -42,7 +52,9 @@
         type="password"
         [value]="password()"
         (input)="setPassword(($any($event.target).value))"
+        placeholder="••••••••"
         data-testid="reg-password"
+        maxlength="20"
       />
 
       <label class="label">Address</label>
@@ -51,38 +63,64 @@
         [value]="address()"
         (input)="setAddress(($any($event.target).value))"
         data-testid="reg-address"
+        maxlength="200"
       />
 
-      <label class="label">Credit Card ID</label>
+      <!-- Credit card fields -->
+      <label class="label">Card Number</label>
       <input
         class="input"
-        [value]="ccId()"
-        (input)="setCcId(($any($event.target).value))"
-        data-testid="reg-ccid"
+        [value]="ccNumber()"
+        (input)="setCcNumber(($any($event.target).value))"
+        placeholder="0000 0000 0000 0000"
+        data-testid="reg-ccnumber"
+        maxlength="20"
+      />
+
+      <label class="label">Card Expiration Date</label>
+      <input
+        class="input"
+        type="date"
+        [value]="ccExpiration()"
+        [min]="today"
+        (input)="setCcExpiration(($any($event.target).value))"
+        data-testid="reg-ccexpiration"
+        maxlength="50"
+      />
+
+      <label class="label">Name on Card (First Name)</label>
+      <input
+        class="input"
+        [value]="ccFirstName()"
+        (input)="setCcFirstName(($any($event.target).value))"
+        data-testid="reg-ccfirstname"
+        maxlength="50"
+      />
+
+      <label class="label">Name on Card (Last Name)</label>
+      <input
+        class="input"
+        [value]="ccLastName()"
+        (input)="setCcLastName(($any($event.target).value))"
+        data-testid="reg-cclastname"
       />
 
       <button
         class="btn"
         (click)="submit()"
-        [disabled]="isLoading()"
         data-testid="reg-submit"
       >
         {{ isLoading() ? 'Creating…' : 'Create Account' }}
       </button>
 
+      <p class="register-link">
+        Already have an account? <a routerLink="/login">Sign in here</a>
+      </p>
+
       <div *ngIf="error()" class="err-box" data-testid="reg-error">
         {{ error() }}
       </div>
 
-      <div *ngIf="result()" class="ok-box" data-testid="reg-success">
-        <div class="ok-title">Response</div>
-        <div class="ok-text">
-          <span data-testid="reg-success-message">{{ result()?.message }}</span>
-          <span *ngIf="result()?.customerId" data-testid="reg-customer-id">
-            (ID: {{ result()?.customerId }})
-          </span>
-        </div>
-      </div>
     </div>
   </div>
 </section>

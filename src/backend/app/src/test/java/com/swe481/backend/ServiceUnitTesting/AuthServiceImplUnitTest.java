@@ -4,6 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +20,7 @@ import com.swe481.backend.Dto.Auth.LoginRequest;
 import com.swe481.backend.Dto.Auth.LoginResponse;
 import com.swe481.backend.Dto.Auth.RegisterRequest;
 import com.swe481.backend.Dto.Auth.RegisterResponse;
+import com.swe481.backend.Dto.Repo.CustomerRepository;
 import com.swe481.backend.service.serviceImp.AuthServiceImpl;
 
 /**
@@ -24,14 +29,16 @@ import com.swe481.backend.service.serviceImp.AuthServiceImpl;
  */
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceImplUnitTest {
-
+    private CustomerRepository customerRepository;
     private DSLContext dls;
     private AuthServiceImpl authService;
 
     @BeforeEach
     void setUp() {
         dls = Mockito.mock(DSLContext.class);
-        authService = new AuthServiceImpl(dls);
+        authService = new AuthServiceImpl(dls, customerRepository);
+        customerRepository = mock(CustomerRepository.class);
+
     }
 
     /**
@@ -175,13 +182,18 @@ public class AuthServiceImplUnitTest {
      */
     @Test
     void register_validRequest_returnsSuccessTrueAndCorrectMessage() {
+        // email not taken, insert returns a new customerId
+        when(customerRepository.emailExists("hailah@email.com")).thenReturn(false);
+        when(customerRepository.insertCustomerWithCreditCard(any())).thenReturn(42);
+
         RegisterRequest request = new RegisterRequest(
                 "Hailah",
                 "Saad",
                 "hailah@email.com",
                 "1234",
-                "",
-                "");
+                "Hittin",
+                "0011 2233 4455 6677",
+                "2026-12-31", "Hailah", "Saad");
 
         RegisterResponse response = authService.register(request);
 
@@ -197,12 +209,15 @@ public class AuthServiceImplUnitTest {
                 "Saad",
                 "", // ← email empty
                 "1234",
-                "",
-                "");
+                "Hittin",
+                "0011 2233 4455 6677",
+                "2026-12-31", "Hailah", "Saad");
 
         RegisterResponse response = authService.register(request);
 
-        // Expect failure (logic not yet implemented, so this will FAIL)
+        // Expect failure 
         assertFalse(response.isSuccess());
+        assertEquals("All fields are required", response.getMessage());
+
     }
 }

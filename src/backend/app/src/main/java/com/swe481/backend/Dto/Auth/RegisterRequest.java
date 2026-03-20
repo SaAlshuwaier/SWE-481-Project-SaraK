@@ -18,7 +18,10 @@ import lombok.Setter;
  *   "email": "Loba@email.com",
  *   "password": "1234",
  *   "address": "Riyadh",
- *   "ccId": "1111222233334444"
+ *   "ccNumber": "1111222233334444",
+ *   "ccExpiration": "2026-01-01",
+ *   "ccFirstName": "Loba",
+ *   "ccLastName": "Yahya"
  * }
  */
 public class RegisterRequest {
@@ -30,5 +33,8 @@ public class RegisterRequest {
 
     private String address;
 
-    private String ccId; // foreign key -> in phase 3 we must validate that it actually exists
-}
+// Credit card fields (name on card may differ from account holder)
+    private String ccNumber;
+    private String ccExpiration;   // format: "yyyy-MM-dd"
+    private String ccFirstName;
+    private String ccLastName;}
