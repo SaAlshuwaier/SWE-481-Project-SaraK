@@ -1,9 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-
 import { AuthService } from './AuthService';
 import { environment } from '../../../environment/environment';
-
 import { LoginRequestDto } from '../models/Auth/LoginRequestDto';
 import { LoginResponseDto } from '../models/Auth/LoginResponseDto';
 import { LogoutResponseDto } from '../models/Auth/LogoutResponseDto';
@@ -28,8 +26,8 @@ describe('AuthService (HTTP Mock Tests)', () => {
 
   it('should POST /api/auth/login', () => {
     const body: LoginRequestDto = {
-      email: 'Kdoll@mail.com',
-      password: 'password20',
+      email: 'test@uci.edu',
+      password: 'test123',
     };
 
     const mockRes: LoginResponseDto = {
@@ -39,20 +37,25 @@ describe('AuthService (HTTP Mock Tests)', () => {
     };
 
     service.login(body).subscribe((res) => {
+  
       expect('message' in res).toBeTruthy();
       expect('success' in res).toBeTruthy();
 
       expect(typeof res.message).toBe('string');
-      expect(typeof res.success).toBe('boolean');
+      expect(typeof res.success).toBe('boolean'); 
 
-      expect(res.success).toBe(true);
       expect(res.message).toBe('Login successful');
+      expect(res.success).toBe(true);
+      expect(res.customerId).toBe(872020);
     });
 
     const req = httpMock.expectOne(`${environment.backendUrl}/api/auth/login`);
     expect(req.request.method).toBe('POST');
-    expect(req.request.body.email).toBe('test@uci.edu');
-    expect(req.request.body.password).toBe('test123');
+
+    // request body checks (MATCH input)
+    expect(req.request.body.email).toBe(body.email);
+    expect(req.request.body.password).toBe(body.password);
+
     req.flush(mockRes);
   });
 
@@ -63,14 +66,23 @@ describe('AuthService (HTTP Mock Tests)', () => {
     };
 
     service.logout().subscribe((res) => {
-      expect(res.success).toBe(true);
+
+      expect('message' in res).toBeTruthy();
+      expect('success' in res).toBeTruthy();
+
+      expect(typeof res.message).toBe('string');
+      expect(typeof res.success).toBe('boolean');
+
       expect(res.message).toBe('Logout successful');
+      expect(res.success).toBe(true);
     });
 
     const req = httpMock.expectOne(`${environment.backendUrl}/api/auth/logout`);
     expect(req.request.method).toBe('POST');
 
+    // request body check
     expect(req.request.body).toEqual({});
+
     req.flush(mockRes);
   });
 
@@ -94,9 +106,17 @@ describe('AuthService (HTTP Mock Tests)', () => {
     };
 
     service.register(body).subscribe((res) => {
-      expect(res.success).toBe(true);
+     
+      expect('message' in res).toBeTruthy();
+      expect('success' in res).toBeTruthy();
+
+      
       expect(typeof res.message).toBe('string');
-      // customerId optional, so check type only if exists
+      expect(typeof res.success).toBe('boolean');
+
+      
+      expect(res.message).toBe('User registered successfully');
+      expect(res.success).toBe(true);
       expect(res.customerId).toBe(12);
     });
 

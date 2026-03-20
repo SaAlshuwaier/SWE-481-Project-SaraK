@@ -1,19 +1,35 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { of } from 'rxjs';
 import { HomeComponent } from './home.component';
 import { Router } from '@angular/router';
 import { provideRouter } from '@angular/router';
+import { GenreService } from '../../core/services/GenreService';
 
 describe('HomeComponent (Home Navigation)', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
   let router: Router;
 
+  let genreService: {
+    getAllGenres: ReturnType<typeof vi.fn>;
+  };
+
   beforeEach(async () => {
+    genreService = {
+      getAllGenres: vi.fn().mockReturnValue(
+        of([
+          { id: 1, name: 'Comedy' },
+          { id: 2, name: 'Action' }
+        ])
+      )
+    };
+
     await TestBed.configureTestingModule({
-      imports: [HomeComponent], // standalone
+      imports: [HomeComponent],
       providers: [
-        provideRouter([]), //  provides Router + ActivatedRoute needed by routerLink
+        provideRouter([]),
+        { provide: GenreService, useValue: genreService },
       ],
     }).compileComponents();
 
@@ -21,9 +37,8 @@ describe('HomeComponent (Home Navigation)', () => {
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
 
-    fixture.detectChanges(); // triggers ngOnInit
+    fixture.detectChanges();
   });
-
 
   it('should load genres and titleFilters from mock response', () => {
     expect(component.genres.length).toBeGreaterThan(0);
@@ -43,7 +58,7 @@ describe('HomeComponent (Home Navigation)', () => {
       queryParams: {
         title: 'matrix',
         director: 'nolan',
-        star: 'keanu', 
+        star: 'keanu',
       },
     });
   });
@@ -65,10 +80,9 @@ describe('HomeComponent (Home Navigation)', () => {
   it('goToBrowseGenre should navigate to /movies/genre/:genreId with genreName query', () => {
     const navSpy = vi.spyOn(router, 'navigate');
 
-    component.goToBrowseGenre('Comedy');
+    component.goToBrowseGenre({ id: 1, name: 'Comedy' });
 
-    
-    expect(navSpy).toHaveBeenCalledWith(['/movies/genre', 7], {
+    expect(navSpy).toHaveBeenCalledWith(['/movies/genre', 1], {
       queryParams: { genreName: 'Comedy' },
     });
   });

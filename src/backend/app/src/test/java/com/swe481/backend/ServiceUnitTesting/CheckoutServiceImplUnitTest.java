@@ -1,99 +1,132 @@
 package com.swe481.backend.ServiceUnitTesting;
-import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.Test;
-
+import com.swe481.backend.Dto.Cart;
+import com.swe481.backend.Dto.CheckoutResult;
+import com.swe481.backend.Dto.Repo.CheckoutRepository;
 import com.swe481.backend.service.serviceImp.CheckoutServiceImpl;
+import jakarta.servlet.http.HttpSession;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-/**
- * Unit tests for CheckoutServiceImpl.validatePayment(...)
- *
- * Expected behavior (final implementation):
- * - Required fields: firstName, lastName, cardNumber, expiration
- * 
-*/
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
 public class CheckoutServiceImplUnitTest {
 
-    private final CheckoutServiceImpl checkoutService = new CheckoutServiceImpl();
+    @Mock
+    private CheckoutRepository checkoutRepository;
 
-    @Test
-    void validatePaymentWithValidDetails() {
-        boolean result = checkoutService.validatePayment(
-                "Neil", "Kope", "5232-4634-7322-2511", "2008/12/01"
-        );
-        assertTrue(result);
-    
+    @Mock
+    private HttpSession httpSession;
+
+    private CheckoutServiceImpl checkoutService;
+
+    @BeforeEach
+    void setUp() {
+        checkoutService = new CheckoutServiceImpl(checkoutRepository, httpSession);
     }
 
     @Test
-    void validatePaymentWithInvalidCardNumber() {
-    boolean result = checkoutService.validatePayment(
-            "Neil", "Kope", "0000-0000-0000-0000", "2008/12/01"
-    );
-    assertFalse(result);
+    void processCheckoutShouldReturnInvalidExpirationWhenDateFormatIsWrong() {
+        CheckoutResult result = checkoutService.processCheckout(
+                "Janet",
+                "Trink",
+                "1354895485215896548",
+                "wrong-date"
+        );
+
+        assertFalse(result.isSuccess());
+        assertEquals("INVALID_EXPIRATION", result.getCode());
+        assertEquals("Expiration date format is invalid.", result.getMessage());
     }
 
     @Test
-    void validatePaymentWithEmptyCardNumber() {
-    boolean result = checkoutService.validatePayment(
-            "Neil", "Kope", "", "2008/12/01"
-    );
-    assertFalse(result);
+    void processCheckoutShouldReturnInvalidCardWhenCardDoesNotMatchDatabase() {
+        when(checkoutRepository.isValidCreditCard(
+                eq("Janet"),
+                eq("Trink"),
+                eq("1354895485215896548"),
+                eq(LocalDate.of(2004, 3, 25))
+        )).thenReturn(false);
+
+        CheckoutResult result = checkoutService.processCheckout(
+                "Janet",
+                "Trink",
+                "1354895485215896548",
+                "2004-03-25"
+        );
+
+        assertFalse(result.isSuccess());
+        assertEquals("INVALID_CARD", result.getCode());
+        assertEquals("The card information does not match our records.", result.getMessage());
     }
 
     @Test
-    void validatePaymentWithInvalidExpirationCard() {
-        boolean result = checkoutService.validatePayment(
-                "Neil", "Kope", "5232-4634-7322-2511", "2000/01/01"
+    void processCheckoutShouldReturnCustomerNotFoundWhenCardExistsButCustomerIsMissing() {
+        when(checkoutRepository.isValidCreditCard(any(), any(), any(), any())).thenReturn(true);
+        when(checkoutRepository.findCustomerId("Janet", "Trink", "1354895485215896548")).thenReturn(null);
+
+        CheckoutResult result = checkoutService.processCheckout(
+                "Janet",
+                "Trink",
+                "1354895485215896548",
+                "2004-03-25"
         );
-        assertFalse(result);
+
+        assertFalse(result.isSuccess());
+        assertEquals("CUSTOMER_NOT_FOUND", result.getCode());
+        assertEquals("No customer account is linked to this card.", result.getMessage());
     }
 
     @Test
-    void validatePaymentWithEmptyExpirationCard() {
-        boolean result = checkoutService.validatePayment(
-                "Neil", "Kope", "5232-4634-7322-2511", ""
+    void processCheckoutShouldReturnEmptyCartWhenCartSessionIsMissing() {
+        when(checkoutRepository.isValidCreditCard(any(), any(), any(), any())).thenReturn(true);
+        when(checkoutRepository.findCustomerId("Janet", "Trink", "1354895485215896548")).thenReturn(1);
+        when(httpSession.getAttribute("cart")).thenReturn(null);
+
+        CheckoutResult result = checkoutService.processCheckout(
+                "Janet",
+                "Trink",
+                "1354895485215896548",
+                "2004-03-25"
         );
-        assertFalse(result);
+
+        assertFalse(result.isSuccess());
+        assertEquals("EMPTY_CART", result.getCode());
+        assertEquals("Your cart is empty.", result.getMessage());
     }
 
     @Test
-    void validatePaymentWithInvalidFirstName() {
-        boolean result = checkoutService.validatePayment(
-                "Loba", "Kope", "5232-4634-7322-2511", "2008/12/01"
-        );
-        assertFalse(result);
-    }
+    void processCheckoutShouldSucceedAndInsertSalesWhenEverythingIsValid() {
+        Cart.CartItem item = new Cart.CartItem("tt0461892", "15", 2);
+        Cart cart = new Cart(new ArrayList<>(List.of(item)), 2);
 
-     @Test
-    void validatePaymentWithEmptyFirstName() {
-        boolean result = checkoutService.validatePayment(
-                "", "Kope", "5232-4634-7322-2511", "2008/12/01"
-        );
-        assertFalse(result);
-    }
+        when(checkoutRepository.isValidCreditCard(any(), any(), any(), any())).thenReturn(true);
+        when(checkoutRepository.findCustomerId("Janet", "Trink", "1354895485215896548")).thenReturn(1);
+        when(httpSession.getAttribute("cart")).thenReturn(cart);
 
-     @Test
-    void validatePaymentWithInvalidLastName() {
-        boolean result = checkoutService.validatePayment(
-                "Neil", "Alyahya", "5232-4634-7322-2511", "2008/12/01"
+        CheckoutResult result = checkoutService.processCheckout(
+                "Janet",
+                "Trink",
+                "1354895485215896548",
+                "2004-03-25"
         );
-        assertFalse(result);
-    }
 
-     @Test
-    void validatePaymentWithEmptyLastName() {
-        boolean result = checkoutService.validatePayment(
-                "Neil", "", "5232-4634-7322-2511", "2008/12/01"
-        );
-        assertFalse(result);
-    }
+        assertTrue(result.isSuccess());
+        assertEquals("SUCCESS", result.getCode());
+        assertEquals("Payment completed successfully.", result.getMessage());
 
-    @Test
-    void validatePaymentWithNullFields() {
-    boolean result = checkoutService.validatePayment(
-            null, null, null, null
-    );
-    assertFalse(result);
+        verify(checkoutRepository, times(2))
+                .insertSale(eq(1), eq("tt0461892"), any(LocalDate.class));
+
+        verify(httpSession).removeAttribute("cart");
+    }
 }
-} 

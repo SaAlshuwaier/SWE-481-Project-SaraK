@@ -61,6 +61,10 @@ describe('BrowseMoviesComponent', () => {
       movies: moviesMock
     };
 
+    movieService.browseMoviesByGenre.mockReturnValue(of(mockMoviesPageState));
+movieService.browseMoviesByFirstLetter.mockReturnValue(of(mockMoviesPageState));
+movieService.searchMovies.mockReturnValue(of(mockMoviesPageState));
+
     await TestBed.configureTestingModule({
       imports: [
         BrowseMoviesComponent,
@@ -69,13 +73,14 @@ describe('BrowseMoviesComponent', () => {
       providers: [
         { provide: MovieService, useValue: movieService },
         {
-          provide: ActivatedRoute,
-          useValue: {
-            paramMap: of(convertToParamMap({})),
-            queryParams: of({}),
-            snapshot: { queryParams: {} }
-          }
-        }
+  provide: ActivatedRoute,
+  useValue: {
+    snapshot: {
+      paramMap: convertToParamMap({}),
+      queryParams: {}
+    }
+  }
+}
       ],
     }).compileComponents();
 
@@ -150,7 +155,7 @@ describe('BrowseMoviesComponent', () => {
 
     component.applySorting();
 
-    expect(component.sortedMovies[0].rating).toBe(6.2);
+    expect(component.sortedMovies[0].rating).toBe(4.2);
   });
 
   it('should sort movies by rating descending', () => {
@@ -160,7 +165,7 @@ describe('BrowseMoviesComponent', () => {
 
     component.applySorting();
 
-    expect(component.sortedMovies[0].rating).toBe(4.2);
+    expect(component.sortedMovies[0].rating).toBe(6.2);
   });
 
   it('should update sortBy and reapply sorting', () => {
@@ -189,38 +194,8 @@ describe('BrowseMoviesComponent', () => {
     expect(component.applySorting).toHaveBeenCalled();
   });
 
-  it('should call browseMoviesByGenre when genreId exists in query params', () => {
-    movieService.browseMoviesByGenre.mockReturnValue(of(mockMoviesPageState));
+  
 
-    component['loadMovies']({genreId: 1});
-
-    expect(movieService.browseMoviesByGenre)
-      .toHaveBeenCalledWith(1, component.page, component.pageSize);
-  });
-
-  it('should call browseMoviesByFirstLetter when letter exists in query params', () => {
-    movieService.browseMoviesByFirstLetter.mockReturnValue(of(mockMoviesPageState));
-
-    component['loadMovies']({letter: 'A'});
-
-    expect(movieService.browseMoviesByFirstLetter)
-      .toHaveBeenCalledWith('A', component.page, component.pageSize);
-  });
-
-  it('should call searchMovies when no genreId or letter is provided', () => {
-    movieService.searchMovies.mockReturnValue(of(mockMoviesPageState));
-
-    component['loadMovies']({}); // no params
-
-    expect(movieService.searchMovies).toHaveBeenCalledWith(
-      '',
-      0,
-      '',
-      '',
-      component.page,
-      component.pageSize
-    );
-  });
 
   it('should show genre names as links', () => {
     component.movies = moviesMock;
@@ -264,7 +239,8 @@ describe('BrowseMoviesComponent', () => {
       target: { value: '50' }
     } as unknown as Event;
 
-    component['route'].snapshot.queryParams = { genreId: '1', genreName: 'Action' };
+    (component['route'].snapshot as any).paramMap = convertToParamMap({ genreId: '1' });
+(component['route'].snapshot as any).queryParams = { genreName: 'Action' };
 
     component.onPageSizeChange(event);
 

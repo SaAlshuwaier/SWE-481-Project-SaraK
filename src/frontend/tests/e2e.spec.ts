@@ -428,3 +428,63 @@ await expect(page.getByTestId('cart-empty')).toBeVisible();
   await page.getByTestId('proceed-checkout').click();
   await expect(page).toHaveURL(/\/checkout(\?.*)?$/);
 });
+test('E2E: Checkout success flow (valid card)', async ({ page }) => {
+  // Add item to cart first
+  const context = await page.context();
+const request = context.request;
+
+await request.post('http://localhost:8080/api/cart/addItem', {
+    data: {
+      movieId: 'tt0378947',
+      title: 'Test Movie',
+      quantity: 1,
+    },
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  await page.goto(`${FRONTEND_URL}/checkout`);
+
+  await expect(page.getByTestId('checkout-title')).toBeVisible();
+
+  await page.getByTestId('checkout-firstname').fill('Janet');
+  await page.getByTestId('checkout-lastname').fill('Trink');
+  await page.getByTestId('checkout-card').fill('1354895485215896548');
+  await page.getByTestId('checkout-expiration').fill('2004-03-25');
+
+  await page.getByTestId('checkout-submit').click();
+
+  // Success
+  await expect(page.getByTestId('checkout-error')).toHaveCount(0);
+  await expect(page.getByTestId('checkout-success')).toBeVisible();
+  await expect(page.getByTestId('checkout-success'))
+    .toContainText('Payment completed successfully');
+});
+
+test('E2E: Checkout fails with invalid card', async ({ page }) => {
+  const context = await page.context();
+const request = context.request;
+
+await request.post('http://localhost:8080/api/cart/addItem', {
+    data: {
+      movieId: 'tt0378947',
+      title: 'Test Movie',
+      quantity: 1,
+    },
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  // invvalid card
+  await page.goto(`${FRONTEND_URL}/checkout`);
+
+  await page.getByTestId('checkout-firstname').fill('Wrong');
+  await page.getByTestId('checkout-lastname').fill('User');
+  await page.getByTestId('checkout-card').fill('0000000000000000');
+  await page.getByTestId('checkout-expiration').fill('2004-03-25');
+
+  await page.getByTestId('checkout-submit').click();
+
+  await expect(page.getByTestId('checkout-success')).toHaveCount(0);
+  await expect(page.getByTestId('checkout-error')).toBeVisible();
+  await expect(page.getByTestId('checkout-error'))
+    .toContainText('card information');
+});
