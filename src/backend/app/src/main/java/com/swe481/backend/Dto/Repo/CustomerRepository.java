@@ -75,4 +75,12 @@ public class CustomerRepository {
 
         return customerRecord.getId();
     }
+
+    /** Retrieves customer by email. */
+    public CustomersRecord findByEmail(String email) {
+    return dsl
+            .selectFrom(CUSTOMERS)
+            .where(CUSTOMERS.EMAIL.eq(email))
+            .fetchOne();
+}
 }
