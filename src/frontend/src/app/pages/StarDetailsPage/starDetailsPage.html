@@ -10,7 +10,7 @@
 <section class="page-wrap">
   <div class="card">
 
-    <a class="back-link" routerLink="/movies" data-testid="back-to-movies">← Back to Movies</a>
+
     <div *ngIf="isLoading()" class="muted" data-testid="star-loading">Loading star details…</div>
 
     <div *ngIf="error()" class="err-box" data-testid="star-error">
