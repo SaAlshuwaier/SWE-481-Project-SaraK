@@ -60,10 +60,7 @@ public class AuthServiceImpl implements AuthService {
             return new LoginResponse("Email and password required", false, null);
         }
 
-        CustomersRecord user = dsl
-                .selectFrom(CUSTOMERS)
-                .where(CUSTOMERS.EMAIL.eq(request.getEmail()))
-                .fetchOne();
+        CustomersRecord user = customerRepository.findByEmail(request.getEmail());
 
         //wrong credentials or user not found
         if (user == null || !user.getPassword().equals(request.getPassword())) {
