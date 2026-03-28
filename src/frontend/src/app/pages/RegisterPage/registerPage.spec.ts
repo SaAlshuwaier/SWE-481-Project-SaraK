@@ -30,7 +30,7 @@ describe('RegisterPageComponent', () => {
     const el = fixture.nativeElement as HTMLElement;
 
     const inputs = el.querySelectorAll('input');
-    expect(inputs.length).toBe(9);
+    expect(inputs.length).toBe(10);
 
     const btn = el.querySelector('button') as HTMLButtonElement;
     expect(btn).toBeTruthy();
@@ -54,6 +54,7 @@ it('should call AuthService.register with correct body', () => {
     component.setCcExpiration('2026-12-31');
     component.setCcFirstName('Jana');
     component.setCcLastName('Alshreef');
+    component.setConfirmPassword('test123'); 
 
     component.submit();
     fixture.detectChanges();

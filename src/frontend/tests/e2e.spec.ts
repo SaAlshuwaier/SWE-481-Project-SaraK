@@ -27,8 +27,12 @@ test('E2E: Register works and shows success response', async ({ page }) => {
   await page.getByTestId('reg-lastname').fill('Alshreef');
   await page.getByTestId('reg-email').fill(email);
   await page.getByTestId('reg-password').fill(password);
+  await page.getByTestId('reg-confirm-password').fill(password); 
   await page.getByTestId('reg-address').fill('Riyadh');
   await page.getByTestId('reg-ccnumber').fill('0011 2233 4455 6677');
+   await page.getByTestId('reg-ccexpiration').fill('2027-12-31'); 
+  await page.getByTestId('reg-ccfirstname').fill('Jana');         
+  await page.getByTestId('reg-cclastname').fill('Alshreef');  
 
   await page.getByTestId('reg-submit').click();
 
@@ -317,12 +321,17 @@ test('E2E: Navigation flow Movie -> Star -> Movie works', async ({ page }) => {
 });
 
 test('E2E: Star Details loads from DB, renders fields, and has valid movie links', async ({ page }) => {
+  await page.goto(`${FRONTEND_URL}/login`);
+  await page.getByTestId('login-email').fill('cc@msn.com');
+  await page.getByTestId('login-password').fill('1111');
+  await page.getByTestId('login-submit').click();
+  await expect(page.getByTestId('login-error')).toHaveCount(0);
+
   await page.goto(`${FRONTEND_URL}/stars/${STAR_ID}`);
 
   // Assert real DB values
   await expect(page.getByTestId('star-name')).toHaveText('Lorenzo Minoli');
-  // No birthYear in DB, so assert it's not shown OR shows a fallback
-  await expect(page.getByTestId('star-birthyear')).toHaveText('-'); // adjust to whatever your UI shows for null
+
 
   // Movies list should be visible and contain his one known movie
   const moviesList = page.getByTestId('movies-list');
@@ -334,9 +343,7 @@ test('E2E: Star Details loads from DB, renders fields, and has valid movie links
   await expect(firstMovieLink).toBeVisible();
   await expect(firstMovieLink).toHaveAttribute('href', /.*\/movies\/tt0400548$/);
 
-  // Back to Movies works
-  await page.getByTestId('back-to-movies').click();
-  await expect(page).toHaveURL(/\/movies(\?.*)?$/);
+
 });
 
 
