@@ -27,8 +27,12 @@ test('E2E: Register works and shows success response', async ({ page }) => {
   await page.getByTestId('reg-lastname').fill('Alshreef');
   await page.getByTestId('reg-email').fill(email);
   await page.getByTestId('reg-password').fill(password);
+  await page.getByTestId('reg-confirm-password').fill(password); 
   await page.getByTestId('reg-address').fill('Riyadh');
   await page.getByTestId('reg-ccnumber').fill('0011 2233 4455 6677');
+   await page.getByTestId('reg-ccexpiration').fill('2027-12-31'); 
+  await page.getByTestId('reg-ccfirstname').fill('Jana');         
+  await page.getByTestId('reg-cclastname').fill('Alshreef');  
 
   await page.getByTestId('reg-submit').click();
 
