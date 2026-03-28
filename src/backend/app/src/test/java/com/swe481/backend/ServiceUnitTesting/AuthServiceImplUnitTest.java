@@ -36,8 +36,8 @@ public class AuthServiceImplUnitTest {
     @BeforeEach
     void setUp() {
         dls = Mockito.mock(DSLContext.class);
-        authService = new AuthServiceImpl(dls, customerRepository);
         customerRepository = mock(CustomerRepository.class);
+        authService = new AuthServiceImpl(dls, customerRepository);
 
     }
 

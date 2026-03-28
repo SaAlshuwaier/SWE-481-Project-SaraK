@@ -57,6 +57,23 @@
         maxlength="20"
       />
 
+       <!--confirm password field -->
+      <label class="label">Confirm Password</label>
+      <input
+        class="input"
+        type="password"
+        [value]="confirmPassword()"
+        (input)="setConfirmPassword(($any($event.target).value))"
+        (blur)="confirmTouched.set(true)"
+        placeholder="••••••••"
+        data-testid="reg-confirm-password"
+        maxlength="20"
+      />
+      <!-- confirm password error -->
+      <div *ngIf="confirmTouched() && confirmPassword() && !passwordsMatch()" class="err-box">
+        Passwords do not match
+      </div>
+
       <label class="label">Address</label>
       <input
         class="input"
@@ -72,10 +89,15 @@
         class="input"
         [value]="ccNumber()"
         (input)="setCcNumber(($any($event.target).value))"
+        (blur)="ccNumberTouched.set(true)"
         placeholder="0000 0000 0000 0000"
         data-testid="reg-ccnumber"
         maxlength="20"
       />
+
+      <div *ngIf="ccNumberTouched() && ccNumber() && !isValidCcNumber(ccNumber())" class="err-box">
+        Card number must be exactly 16 digits (numbers only)
+      </div>
 
       <label class="label">Card Expiration Date</label>
       <input
@@ -93,17 +115,28 @@
         class="input"
         [value]="ccFirstName()"
         (input)="setCcFirstName(($any($event.target).value))"
+        (blur)="ccFirstNameTouched.set(true)"
         data-testid="reg-ccfirstname"
         maxlength="50"
       />
+
+      <!-- cc first name error -->
+      <div *ngIf="ccFirstNameTouched() && ccFirstName() && !isValidCardName(ccFirstName())" class="err-box">
+        Name on card must contain letters only
+      </div>
 
       <label class="label">Name on Card (Last Name)</label>
       <input
         class="input"
         [value]="ccLastName()"
         (input)="setCcLastName(($any($event.target).value))"
+        (blur)="ccLastNameTouched.set(true)"
         data-testid="reg-cclastname"
       />
+      <!--cc last name error -->
+      <div *ngIf="ccLastNameTouched() && ccLastName() && !isValidCardName(ccLastName())" class="err-box">
+        Name on card must contain letters only
+      </div>
 
       <button
         class="btn"
