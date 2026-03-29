@@ -5,8 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import static com.jooq.swe481.generated.tables.Customers.CUSTOMERS;
+
 import com.jooq.swe481.generated.tables.records.CustomersRecord;
 import com.swe481.backend.Dto.Auth.LoginRequest;
 import com.swe481.backend.Dto.Auth.LoginResponse;
@@ -51,27 +53,26 @@ public class AuthServiceImplUnitTest {
      * - correct email wrong password → login fails.
      * - wrong email correct password → login fails.
      */
-    @Test
-    void login_validRequest_returnsSuccessTrueAndCorrectMessage() {
-        LoginRequest request = new LoginRequest("user@email.com", "123456");
+@Test
+void login_validRequest_returnsSuccessTrueAndCorrectMessage() {
 
-        var user = Mockito.mock(CustomersRecord.class);
-        Mockito.when(user.getPassword()).thenReturn("123456");
-        Mockito.when(user.getId()).thenReturn(1);
+    CustomersRecord mockUser = new CustomersRecord();
+    mockUser.setEmail("ar@tilae.com");
+    mockUser.setPassword("strike");
 
-        var selectStep = Mockito.mock(org.jooq.SelectWhereStep.class);
-        var conditionStep = Mockito.mock(org.jooq.SelectConditionStep.class);
+    when(customerRepository.findByEmail(anyString()))
+            .thenReturn(mockUser);
 
-        Mockito.when(dls.selectFrom(CUSTOMERS)).thenReturn(selectStep);
-        Mockito.when(selectStep.where(Mockito.any(org.jooq.Condition.class))).thenReturn(conditionStep);
-        Mockito.when(conditionStep.fetchOne()).thenReturn(user);
+    LoginRequest request = new LoginRequest("ar@tilae.com", "strike");
 
-        LoginResponse response = authService.login(request);
+    LoginResponse response = authService.login(request);
 
-        assertNotNull(response);
-        assertEquals("Login successful", response.getMessage());
-        assertTrue(response.isSuccess());
-    }
+    System.out.println(response.getMessage());
+
+    assertNotNull(response);
+    assertEquals("Login successful", response.getMessage());
+    assertTrue(response.isSuccess());
+}
 
     @Test
     void login_emptyEmailOrPassword_returnsFailure() {
@@ -90,13 +91,6 @@ public class AuthServiceImplUnitTest {
 
         LoginRequest request = new LoginRequest("wrong@email.com", "wrong");
 
-        var selectStep = Mockito.mock(org.jooq.SelectWhereStep.class);
-        var conditionStep = Mockito.mock(org.jooq.SelectConditionStep.class);
-
-        Mockito.when(dls.selectFrom(CUSTOMERS)).thenReturn(selectStep);
-        Mockito.when(selectStep.where(Mockito.any(org.jooq.Condition.class))).thenReturn(conditionStep);
-        Mockito.when(conditionStep.fetchOne()).thenReturn(null); // user not found
-
         LoginResponse response = authService.login(request);
 
         assertNotNull(response);
@@ -108,16 +102,6 @@ public class AuthServiceImplUnitTest {
     void login_validEmailWrongPassword_returnsFailure() {
 
         LoginRequest request = new LoginRequest("Parker234@aol.com", "wrongPassword");
-
-        var user = Mockito.mock(CustomersRecord.class);
-        Mockito.when(user.getPassword()).thenReturn("correctPassword");
-
-        var selectStep = Mockito.mock(org.jooq.SelectWhereStep.class);
-        var conditionStep = Mockito.mock(org.jooq.SelectConditionStep.class);
-
-        Mockito.when(dls.selectFrom(CUSTOMERS)).thenReturn(selectStep);
-        Mockito.when(selectStep.where(Mockito.any(org.jooq.Condition.class))).thenReturn(conditionStep);
-        Mockito.when(conditionStep.fetchOne()).thenReturn(user);
 
         LoginResponse response = authService.login(request);
 
@@ -131,13 +115,6 @@ public class AuthServiceImplUnitTest {
 
         LoginRequest request = new LoginRequest("wrong@email.com", "test");
 
-        var selectStep = Mockito.mock(org.jooq.SelectWhereStep.class);
-        var conditionStep = Mockito.mock(org.jooq.SelectConditionStep.class);
-
-        Mockito.when(dls.selectFrom(CUSTOMERS)).thenReturn(selectStep);
-        Mockito.when(selectStep.where(Mockito.any(org.jooq.Condition.class))).thenReturn(conditionStep);
-        Mockito.when(conditionStep.fetchOne()).thenReturn(null); // no user
-
         LoginResponse response = authService.login(request);
 
         assertNotNull(response);
@@ -148,16 +125,6 @@ public class AuthServiceImplUnitTest {
     @Test
     void login_wrongPassword_returnsFailure() {
         LoginRequest request = new LoginRequest("user@email.com", "wrong");
-
-        var user = Mockito.mock(CustomersRecord.class);
-        Mockito.when(user.getPassword()).thenReturn("correct");
-
-        var selectStep = Mockito.mock(org.jooq.SelectWhereStep.class);
-        var conditionStep = Mockito.mock(org.jooq.SelectConditionStep.class);
-
-        Mockito.when(dls.selectFrom(CUSTOMERS)).thenReturn(selectStep);
-        Mockito.when(selectStep.where(Mockito.any(org.jooq.Condition.class))).thenReturn(conditionStep);
-        Mockito.when(conditionStep.fetchOne()).thenReturn(user);
 
         LoginResponse response = authService.login(request);
 
@@ -204,7 +171,7 @@ public class AuthServiceImplUnitTest {
 
     @Test
     void register_withEmptyEmail_shouldReturnFailure() {
-        RegisterRequest request = new RegisterRequest(
+        RegisterRequest rquest = new RegisterRequest(
                 "Hailah",
                 "Saad",
                 "", // ← email empty
@@ -213,7 +180,7 @@ public class AuthServiceImplUnitTest {
                 "0011 2233 4455 6677",
                 "2026-12-31", "Hailah", "Saad");
 
-        RegisterResponse response = authService.register(request);
+        RegisterResponse response = authService.register(rquest);
 
         // Expect failure 
         assertFalse(response.isSuccess());

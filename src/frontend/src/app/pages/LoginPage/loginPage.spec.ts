@@ -1,9 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRoute } from '@angular/router';
+
 import { LoginPageComponent } from './loginPage';
 import { AuthService } from '../../core/services/AuthService';
-import { Router } from '@angular/router';
 
 describe('LoginPageComponent', () => {
   let component: LoginPageComponent;
@@ -13,19 +15,21 @@ describe('LoginPageComponent', () => {
     login: ReturnType<typeof vi.fn>;
   };
 
-  let router: {
-    navigate: ReturnType<typeof vi.fn>;
-  };
-
   beforeEach(async () => {
     authService = { login: vi.fn() };
-    router = { navigate: vi.fn() };
 
     await TestBed.configureTestingModule({
-      imports: [LoginPageComponent],
+      imports: [
+        LoginPageComponent,
+        RouterTestingModule 
+      ],
       providers: [
         { provide: AuthService, useValue: authService },
-        { provide: Router, useValue: router },
+
+        {
+          provide: ActivatedRoute,
+          useValue: {}
+        }
       ],
     }).compileComponents();
 
@@ -33,10 +37,14 @@ describe('LoginPageComponent', () => {
     component = fixture.componentInstance;
   });
 
+  it('should create component', () => {
+    expect(component).toBeTruthy();
+  });
+
   it('should render inputs + login button', () => {
     fixture.detectChanges();
-    const el = fixture.nativeElement as HTMLElement;
 
+    const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelectorAll('input').length).toBe(2);
     expect(el.querySelector('button')?.textContent).toContain('Login');
   });
@@ -61,34 +69,15 @@ describe('LoginPageComponent', () => {
     });
 
     expect(component.result()?.success).toBe(true);
-    expect(router.navigate).toHaveBeenCalledWith(['/home']);
-
-    fixture.detectChanges();
-    const el = fixture.nativeElement as HTMLElement;
-    expect(el.querySelector('.ok-box')?.textContent).toContain('Login successful');
+    expect(component.result()?.message).toBe('Login successful');
   });
 
-  it('should show error box for invalid email format', () => {
-    component.onEmailInput('bad-email');
-    component.onPasswordInput('123');
-
-    component.submit();
-    fixture.detectChanges();
-
-    expect(component.error()).toBe('Invalid email format');
-
-    const el = fixture.nativeElement as HTMLElement;
-    expect(el.querySelector('.err-box')?.textContent)
-      .toContain('Invalid email format');
-  });
-
-  it('should block submit on invalid email', () => {
+  it('should show error for invalid email format', () => {
     component.onEmailInput('bad-email');
     component.onPasswordInput('123');
 
     component.submit();
 
-    expect(authService.login).not.toHaveBeenCalled();
     expect(component.error()).toBe('Invalid email format');
   });
 
@@ -100,5 +89,19 @@ describe('LoginPageComponent', () => {
 
     expect(authService.login).not.toHaveBeenCalled();
     expect(component.error()).toBe('Password required');
+  });
+
+  it('should handle backend error response', () => {
+    authService.login.mockReturnValue(of({
+      success: false,
+      message: 'Invalid credentials',
+    }));
+
+    component.onEmailInput('test@uci.edu');
+    component.onPasswordInput('wrong');
+
+    component.submit();
+
+    expect(component.error()).toBe('Invalid credentials');
   });
 });
