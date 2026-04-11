@@ -9,6 +9,7 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.jooq.swe481.generated.tables.Movies.MOVIES;
 import static com.jooq.swe481.generated.tables.Ratings.RATINGS;
@@ -153,5 +154,18 @@ public List<String> findMovieIdsByFirstLetter(String startsWith, int page, int p
             .fetch(MOVIES.ID);
 }
 
-
+public Optional<Record5<String, String, Integer, String, Double>> findMovieRowById(String movieId) {
+    return dsl
+            .select(
+                    MOVIES.ID,
+                    MOVIES.TITLE,
+                    MOVIES.YEAR,
+                    MOVIES.DIRECTOR,
+                    DSL.coalesce(RATINGS.RATING.cast(Double.class), DSL.inline(0.0)).as("rating")
+            )
+            .from(MOVIES)
+            .leftJoin(RATINGS).on(RATINGS.MOVIEID.eq(MOVIES.ID))
+            .where(MOVIES.ID.eq(movieId))
+            .fetchOptional();
+}
 }

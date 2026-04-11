@@ -133,31 +133,27 @@ public class MovieControllerIntegrationTest {
                 .andExpect(jsonPath("$.hasNext").isBoolean());
     }
 
-    @Test
-    void GetMovieById_shouldReturnMovie() throws Exception {
-        mockMvc.perform(
-                        get(endPoint + "/{id}", "tt999")
-                )
-                .andExpect(status().isOk())
-                // Contract: Movie
-                .andExpect(jsonPath("$.id").isString())
-                .andExpect(jsonPath("$.title").isString())
-                .andExpect(jsonPath("$.year").isNumber())
-                .andExpect(jsonPath("$.director").isString())
-                .andExpect(jsonPath("$.rating").isNumber())
-                .andExpect(jsonPath("$.genres").isArray())
-                .andExpect(jsonPath("$.stars").isArray());
-    }
-
-    @Test
-void getMovieById_withDifferentId_shouldStillReturnMovieForNow() throws Exception {
+  @Test
+void getMovieById_shouldReturnMovie_whenIdExists() throws Exception {
     mockMvc.perform(
-                    get("/api/movies/{id}", "tt1234567")
+                    get(endPoint + "/{id}", "tt0378947")
             )
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value("tt1234567"))
+            .andExpect(jsonPath("$.id").value("tt0378947"))
             .andExpect(jsonPath("$.title").isString())
-            .andExpect(jsonPath("$.year").isNumber());
+            .andExpect(jsonPath("$.year").isNumber())
+            .andExpect(jsonPath("$.director").isString())
+            .andExpect(jsonPath("$.rating").isNumber())
+            .andExpect(jsonPath("$.genres").isArray())
+            .andExpect(jsonPath("$.stars").isArray());
+}
+
+@Test
+void getMovieById_shouldReturnNotFound_whenIdDoesNotExist() throws Exception {
+    mockMvc.perform(
+                    get(endPoint + "/{id}", "tt1234567")
+            )
+            .andExpect(status().isNotFound());
 }
 
 

@@ -286,82 +286,32 @@ public MoviesPageState browseMoviesByFirstLetter(String startsWith, int page, in
 
     return new MoviesPageState(page, pageSize, totalResults, movies);
 }
-
-    @Override
-    public Movie getMovieById(String movieId) {
-
-        var movieRecord = dsl
-                .select(
-                        MOVIES.ID,
-                        MOVIES.TITLE,
-                        MOVIES.YEAR,
-                        MOVIES.DIRECTOR
-                )
-                .from(MOVIES)
-                .where(MOVIES.ID.eq(movieId))
-                .fetchOne();
-
-        if (movieRecord == null) {
-            return null;
-        }
-
-        var ratingRecord = dsl
-                .select(RATINGS.RATING)
-                .from(RATINGS)
-                .where(RATINGS.MOVIEID.eq(movieId))
-                .fetchOne();
-
-        double finalRating = 0.0;
-        if (ratingRecord != null && ratingRecord.get(RATINGS.RATING) != null) {
-            finalRating = ratingRecord.get(RATINGS.RATING);
-        }
-
-        List<Genre> genres = dsl
-                .select(
-                        GENRES.ID,
-                        GENRES.NAME
-                )
-                .from(GENRES)
-                .join(GenresInMovies.GENRES_IN_MOVIES)
-                .on(GENRES.ID.eq(GenresInMovies.GENRES_IN_MOVIES.GENREID))
-                .where(GenresInMovies.GENRES_IN_MOVIES.MOVIEID.eq(movieId))
-                .orderBy(GENRES.NAME.asc())
-                .fetch(record -> new Genre(
-                        record.get(GENRES.ID).longValue(),
-                        record.get(GENRES.NAME)
-                ));
-
-        List<Star> stars = dsl
-                .select(
-                        STARS.ID,
-                        STARS.NAME,
-                        STARS.BIRTHYEAR
-                )
-                .from(STARS)
-                .join(STARS_IN_MOVIES)
-                .on(STARS.ID.eq(STARS_IN_MOVIES.STARID))
-                .where(STARS_IN_MOVIES.MOVIEID.eq(movieId))
-                .orderBy(STARS.NAME.asc())
-                .fetch(record -> {
-                    Integer birthYear = record.get(STARS.BIRTHYEAR);
-
-                    return new Star(
-                            record.get(STARS.ID),
-                            record.get(STARS.NAME),
-                            birthYear
-                    );
-                });
-
-        return new Movie(
-                movieRecord.get(MOVIES.ID),
-                movieRecord.get(MOVIES.TITLE),
-                movieRecord.get(MOVIES.YEAR),
-                movieRecord.get(MOVIES.DIRECTOR),
-                finalRating,
-                genres,
-                stars
-        );
+@Override
+public Movie getMovieById(String movieId) {
+    if (movieId == null || movieId.isBlank()) {
+        throw new IllegalArgumentException("movieId must not be null or blank");
     }
+
+    var movieRowOpt = movieRepository.findMovieRowById(movieId);
+
+    if (movieRowOpt.isEmpty()) {
+        return null;
+    }
+
+    var row = movieRowOpt.get();
+
+    Movie movie = new Movie();
+    movie.setId(row.get(0, String.class));
+    movie.setTitle(row.get(1, String.class));
+    movie.setYear(row.get(2, Integer.class));
+    movie.setDirector(row.get(3, String.class));
+    movie.setRating(row.get(4, Double.class));
+
+    movie.setGenres(movieRepository.findGenresByMovieId(movieId));
+    movie.setStars(movieRepository.findStarsByMovieId(movieId));
+
+    return movie;
+}
 
     private void validatePaging(int page, int pageSize) {
         if (page < 1) {

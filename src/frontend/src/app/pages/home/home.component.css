@@ -2,3 +2,8 @@
 :host {
   display: block;
 }
+.error-text {
+  color: #dc3545; 
+  font-size: 13px;
+  margin-top: 4px;
+}

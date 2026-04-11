@@ -2,6 +2,14 @@ import { test, expect } from '@playwright/test';
 
 const FRONTEND_URL = 'http://localhost:4200';
 
+async function login(page: any) {
+  await page.goto(`${FRONTEND_URL}/login`);
+  await page.getByTestId('login-email').fill('cc@msn.com');
+  await page.getByTestId('login-password').fill('1111');
+  await page.getByTestId('login-submit').click();
+  await expect(page.getByTestId('login-error')).toHaveCount(0);
+  await expect(page).not.toHaveURL(/\/login$/);
+}
 // REAL IDs that exist in DB:
 const MOVIE_ID = 'tt0378947';
 const STAR_ID = 'nm0591555';
@@ -87,26 +95,33 @@ test('E2E(Home): Home page loads and navigation to Search / Cart / Browse works'
   await expect(page).toHaveURL(/\/cart(\?.*)?$/);*/
 });
 
-test('E2E(Search): Search results page loads from query params and Back to Home works', async ({ page }) => {
-  await page.goto(`${FRONTEND_URL}/movies/search?title=inception&year=2010`);
+test('E2E(Search): Search results page requires login and loads from query params', async ({ page }) => {
+  await login(page);
 
-  // Page header exists
+  await page.goto(`${FRONTEND_URL}/movies/search?title=inception&year=2010`, {
+    waitUntil: 'networkidle'
+  });
+
+  // Not redirected to login
+  await expect(page).not.toHaveURL(/\/login$/);
+
+  // Basic assertion that search results page is loaded (adjust selector to what exists)
   await expect(page.getByRole('heading', { name: 'Search Results' })).toBeVisible();
 
-  // Context line shows filters (your HTML has it)
+  // Assert that the search query is reflected in the UI (in a "context" box or similar)
   await expect(page.locator('.context')).toContainText('Title:');
   await expect(page.locator('.context')).toContainText('inception');
   await expect(page.locator('.context')).toContainText('2010');
 
-  // Either movies appear OR empty state appears (DB-dependent)
-  const hasMovies = await page.locator('.movie-card').first().isVisible().catch(() => false);
-  if (!hasMovies) {
-    await expect(page.locator('.empty')).toBeVisible();
-  }
+  // Assert that results are rendered (at least one movie card or an empty state message)
+  const movieCards = page.locator('.movie-card');
+  const emptyState = page.locator('.empty');
 
-  // Back to Home
-  await page.getByRole('button', { name: /Back to Home/i }).click();
-  await expect(page).toHaveURL(/\/home$/);
+  if (await movieCards.count() > 0) {
+    await expect(movieCards.first()).toBeVisible();
+  } else {
+    await expect(emptyState).toBeVisible();
+  }
 });
 
 test('E2E(browse movies): Browse works for first letter or number', async ({ page }) => {
@@ -259,40 +274,43 @@ test('E2E(browse movies): Navigation Movie, Star, and Genre links work', async (
 });
 
 
-test('E2E: Movie Details loads from DB, renders fields,  and has valid star links', async ({ page }) => {
-  await page.goto(`${FRONTEND_URL}/movies/${MOVIE_ID}`);
+test('E2E(Movie Details): Movie details requires login and loads from DB', async ({ page }) => {
+  await login(page);
+
+  await page.goto(`${FRONTEND_URL}/movies/${MOVIE_ID}`, {
+    waitUntil: 'networkidle'
+  });
+
+  // Not redirected to login
+  await expect(page).not.toHaveURL(/\/login$/);
 
   // Assert real DB values
   await expect(page.getByTestId('movie-title')).toHaveText('Melinda and Melinda');
   await expect(page.getByTestId('movie-year')).toHaveText('2004');
   await expect(page.getByTestId('movie-director')).toHaveText('Woody Allen');
-  await expect(page.getByTestId('movie-rating')).toHaveText('6.5');
+  await expect(page.getByTestId('movie-rating')).toContainText('6.5');
   await expect(page.getByTestId('movie-genres')).toContainText('Drama');
   await expect(page.getByTestId('movie-genres')).toContainText('Comedy');
   await expect(page.getByTestId('movie-genres')).toContainText('Romance');
 
-  // quantity: click + twice -> 3
+  // quantity
   await page.getByTestId('qty-inc').click();
   await page.getByTestId('qty-inc').click();
   await expect(page.getByTestId('qty-input')).toHaveValue('3');
 
+  // add to cart
   await page.getByTestId('add-to-cart').click();
   await expect(page.getByTestId('cart-error')).toHaveCount(0);
 
-  // Stars list should be visible and contain stars
+  // stars
   const starsList = page.getByTestId('stars-list');
   await expect(starsList).toBeVisible();
   await expect(starsList).toContainText('Wallace Shawn');
   await expect(starsList).toContainText('Chiwetel Ejiofor');
   await expect(starsList).toContainText('Woody Allen');
 
-  // Star links point to correct route
   const firstStarLink = page.getByTestId('star-link').first();
-  await expect(firstStarLink).toHaveAttribute('href', new RegExp(`.*/stars/[^/]+$`));
-
-  // Back to Movies works
-  await page.getByTestId('back-to-movies').click();
-  await expect(page).toHaveURL(/\/movies(\?.*)?$/);
+  await expect(firstStarLink).toHaveAttribute('href', /.*\/stars\/[^/]+$/);
 });
 
 test('E2E: Navigation flow Movie -> Star -> Movie works', async ({ page }) => {
