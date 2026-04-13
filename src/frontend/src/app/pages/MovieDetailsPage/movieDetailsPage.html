@@ -13,7 +13,14 @@
   <div class="card">
 
     <!-- Back link -->
-    <a class="back-link" routerLink="/movies" data-testid="back-to-movies">← Back to Movies</a>
+    <a
+  class="back-link"
+  [routerLink]="backLink"
+  [queryParams]="backQueryParams"
+  data-testid="back-to-movies"
+>
+  ← Back to Movies
+</a>
 
     <!-- Loading / Error -->
     <div *ngIf="isLoading()" class="muted" data-testid="movie-loading">Loading movie details…</div>

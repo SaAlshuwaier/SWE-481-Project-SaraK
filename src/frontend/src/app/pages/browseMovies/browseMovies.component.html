@@ -67,6 +67,11 @@
           data-testid="movie-link"
           class="movie-title-browseMovies-link"
           [routerLink]="['/movies', movie.id]"
+[queryParams]="{
+  from: 'genre',
+  genreId: route.snapshot.paramMap.get('genreId'),
+  genreName: route.snapshot.queryParams['genreName']
+}"
         >
           {{ movie.title }}
         </a>
