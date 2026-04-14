@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -69,6 +68,12 @@ Mockito.when(movieRepository.findMovieRowById("tt0422896"))
 
         Mockito.when(movieRepository.findStarsByMovieId("tt123"))
                 .thenReturn(List.of(new Star("1", "Sean Penn", 1960)));
+
+        Mockito.when(movieRepository.countMoviesByGenre(Mockito.anyInt()))
+       .thenReturn(1);
+
+        Mockito.when(movieRepository.findMovieIdsByGenre(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt()))
+       .thenReturn(List.of("tt123"));
     }
 
     // test suite of searchMovies() method
@@ -134,28 +139,30 @@ Mockito.when(movieRepository.findMovieRowById("tt0422896"))
     // end of test suite of searchMovies() method
 
     // test suite for browseMoviesByGenre() method
-    @Disabled("Uses DSLContext directly and needs separate refactor")
     @Test
     void shouldReturnOnlyMoviesBelongingToGenre() {
         MoviesPageState result =
                 movieService.browseMoviesByGenre(1, 1, 10);
 
-        assertTrue(result.getMovies().isEmpty());
-        assertEquals(0, result.getTotalResults());
+        assertFalse(result.getMovies().isEmpty());
+        assertEquals(1, result.getTotalResults());
     }
-    @Disabled("Uses DSLContext directly and needs separate refactor")
-    @Test
-    void shouldReturnEmptyPage_whenGenreHasNoMovies() {
+
+
+   @Test
+   void shouldReturnEmptyPage_whenGenreHasNoMovies() {
+        Mockito.when(movieRepository.countMoviesByGenre(99)).thenReturn(0);
+
         MoviesPageState result =
                 movieService.browseMoviesByGenre(99, 1, 10);
 
         assertEquals(0, result.getTotalResults());
         assertTrue(result.getMovies().isEmpty());
-    }
+}
 
     // end of test suite for browseMoviesByGenre() method
 
-    @Disabled("Depends on old dummy-data behavior")
+   // @Disabled("Depends on old dummy-data behavior")
     // test suite for browseMoviesByFirstLetter()
     @Test
     void shouldReturnMoviesStartingWithGivenLetter() {
@@ -165,7 +172,7 @@ Mockito.when(movieRepository.findMovieRowById("tt0422896"))
         assertTrue(result.getMovies().isEmpty());
         assertEquals(0, result.getTotalResults());
     }
-    @Disabled("Depends on old dummy-data behavior")
+  //  @Disabled("Depends on old dummy-data behavior")
     @Test
     void shouldReturnEmptyPage_whenNoMoviesMatch() {
         MoviesPageState result =
@@ -193,8 +200,10 @@ void getMovieByIdReturnsMovieDetails() {
     Mockito.when(movieRepository.findGenresByMovieId(movieId))
             .thenReturn(List.of(new Genre(1L, "Drama")));
 
+
     Mockito.when(movieRepository.findStarsByMovieId(movieId))
             .thenReturn(List.of(new Star("1", "Actor Name", 1990)));
+
 
     Movie result = movieService.getMovieById(movieId);
 

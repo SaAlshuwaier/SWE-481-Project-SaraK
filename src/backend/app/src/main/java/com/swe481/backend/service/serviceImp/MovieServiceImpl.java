@@ -2,7 +2,6 @@ package com.swe481.backend.service.serviceImp;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -183,55 +182,112 @@ public class MovieServiceImpl implements MovieService {
 
     // Retrieves a paginated list of movies that belong to the selected genre.
     // Used by the frontend "Browse by Genre" page.
+
+
     @Override
-    public MoviesPageState browseMoviesByGenre(Integer genreId, int page, int pageSize) {
+public MoviesPageState browseMoviesByGenre(Integer genreId, int page, int pageSize) {
 
-        // // Ensure page and page size are valid before applying pagination.
-        int safePage = Math.max(page, 1);
-        int safePageSize = Math.max(pageSize, 1);
-        int offset = (safePage - 1) * safePageSize;
+    validatePaging(page, pageSize);
 
-        // Query movies filtered by genre using the join table between movies and genres.
-        var result = dsl
-                .selectDistinct(
-                        MOVIES.ID,
-                        MOVIES.TITLE,
-                        MOVIES.YEAR,
-                        MOVIES.DIRECTOR
-                )
-                .from(MOVIES)
-                .join(GenresInMovies.GENRES_IN_MOVIES)
-                .on(MOVIES.ID.eq(GenresInMovies.GENRES_IN_MOVIES.MOVIEID))
-                .where(GenresInMovies.GENRES_IN_MOVIES.GENREID.eq(genreId))
-                .orderBy(MOVIES.TITLE.asc())
-                .limit(safePageSize)
-                .offset(offset)
-                .fetch();
+    int totalResults = movieRepository.countMoviesByGenre(genreId);
 
-        // Map the query result into Movie DTOs for the browse page.    
-        List<Movie> movies = result.map(r ->
-                new Movie(
-                        r.get(MOVIES.ID),
-                        r.get(MOVIES.TITLE),
-                        r.get(MOVIES.YEAR),
-                        r.get(MOVIES.DIRECTOR),
-                        0.0,
-                        List.of(),
-                        List.of()
-                )
-        );
-
-        // // Count total matching movies to support frontend pagination.
-        int total = dsl
-                .selectCount()
-                .from(MOVIES)
-                .join(GenresInMovies.GENRES_IN_MOVIES)
-                .on(MOVIES.ID.eq(GenresInMovies.GENRES_IN_MOVIES.MOVIEID))
-                .where(GenresInMovies.GENRES_IN_MOVIES.GENREID.eq(genreId))
-                .fetchOne(0, int.class);
-
-        return new MoviesPageState(safePage, safePageSize, total, movies);
+    if (totalResults == 0) {
+        return new MoviesPageState(page, pageSize, 0, List.of());
     }
+
+    List<String> movieIds = movieRepository.findMovieIdsByGenre(genreId, page, pageSize);
+
+    if (movieIds.isEmpty()) {
+        return new MoviesPageState(page, pageSize, totalResults, List.of());
+    }
+
+    List<Record5<String, String, Integer, String, Double>> rows =
+            movieRepository.findMovieRows(movieIds);
+
+    List<Movie> movies = new ArrayList<>();
+
+    for (String movieId : movieIds) {
+        Record5<String, String, Integer, String, Double> row = rows.stream()
+                .filter(r -> movieId.equals(r.get(0, String.class)))
+                .findFirst()
+                .orElse(null);
+
+        if (row != null) {
+            movies.add(new Movie(
+                    row.get(0, String.class),
+                    row.get(1, String.class),
+                    row.get(2, Integer.class),
+                    row.get(3, String.class),
+                    row.get(4, Double.class),
+                    movieRepository.findGenresByMovieId(movieId),
+                    movieRepository.findStarsByMovieId(movieId)
+            ));
+        }
+    }
+
+    return new MoviesPageState(page, pageSize, totalResults, movies);
+}
+
+    /*
+    @Override
+public MoviesPageState browseMoviesByGenre(Integer genreId, int page, int pageSize) {
+
+    validatePaging(page, pageSize);
+
+    int totalResults = dsl
+            .selectCount()
+            .from(MOVIES)
+            .join(GenresInMovies.GENRES_IN_MOVIES)
+            .on(MOVIES.ID.eq(GenresInMovies.GENRES_IN_MOVIES.MOVIEID))
+            .where(GenresInMovies.GENRES_IN_MOVIES.GENREID.eq(genreId))
+            .fetchOne(0, int.class);
+
+    if (totalResults == 0) {
+        return new MoviesPageState(page, pageSize, 0, List.of());
+    }
+
+    int offset = (page - 1) * pageSize;
+
+    List<String> movieIds = dsl
+        .select(MOVIES.ID)
+        .from(MOVIES)
+        .join(GenresInMovies.GENRES_IN_MOVIES)
+        .on(MOVIES.ID.eq(GenresInMovies.GENRES_IN_MOVIES.MOVIEID))
+        .where(GenresInMovies.GENRES_IN_MOVIES.GENREID.eq(genreId))
+        .orderBy(MOVIES.TITLE.asc(), MOVIES.ID.asc())
+        .limit(pageSize)
+        .offset(offset)
+        .fetch(MOVIES.ID);
+
+    if (movieIds.isEmpty()) {
+        return new MoviesPageState(page, pageSize, totalResults, List.of());
+    }
+
+    List<Record5<String, String, Integer, String, Double>> rows = movieRepository.findMovieRows(movieIds);
+
+    List<Movie> movies = new ArrayList<>();
+
+    for (String movieId : movieIds) {
+        Record5<String, String, Integer, String, Double> row = rows.stream()
+                .filter(r -> movieId.equals(r.get(0, String.class)))
+                .findFirst()
+                .orElse(null);
+
+        if (row != null) {
+            movies.add(new Movie(
+                    row.get(0, String.class),
+                    row.get(1, String.class),
+                    row.get(2, Integer.class),
+                    row.get(3, String.class),
+                    row.get(4, Double.class),
+                    movieRepository.findGenresByMovieId(movieId),
+                    movieRepository.findStarsByMovieId(movieId)
+            ));
+        }
+    }
+
+    return new MoviesPageState(page, pageSize, totalResults, movies);
+}  */
 
 
 

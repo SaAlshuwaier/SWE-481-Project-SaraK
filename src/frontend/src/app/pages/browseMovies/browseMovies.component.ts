@@ -27,7 +27,7 @@ export class BrowseMoviesComponent implements OnInit {
   order: 'asc' | 'desc' = 'asc';
 
   constructor(
-    private route: ActivatedRoute,
+    public route: ActivatedRoute,
     private movieService: MovieService,
     private cdr: ChangeDetectorRef
   ) {}

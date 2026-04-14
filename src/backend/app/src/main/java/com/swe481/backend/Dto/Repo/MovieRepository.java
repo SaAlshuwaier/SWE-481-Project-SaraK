@@ -1,22 +1,22 @@
 package com.swe481.backend.Dto.Repo;
 
-import com.swe481.backend.Dto.Genre;
-import com.swe481.backend.Dto.Star;
+import java.util.List;
+import java.util.Optional;
+
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record5;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
-
+import static com.jooq.swe481.generated.tables.Genres.GENRES;
+import static com.jooq.swe481.generated.tables.GenresInMovies.GENRES_IN_MOVIES;
 import static com.jooq.swe481.generated.tables.Movies.MOVIES;
 import static com.jooq.swe481.generated.tables.Ratings.RATINGS;
 import static com.jooq.swe481.generated.tables.Stars.STARS;
 import static com.jooq.swe481.generated.tables.StarsInMovies.STARS_IN_MOVIES;
-import static com.jooq.swe481.generated.tables.Genres.GENRES;
-import static com.jooq.swe481.generated.tables.GenresInMovies.GENRES_IN_MOVIES;
+import com.swe481.backend.Dto.Genre;
+import com.swe481.backend.Dto.Star;
 
 @Repository
 public class MovieRepository {
@@ -154,6 +154,33 @@ public List<String> findMovieIdsByFirstLetter(String startsWith, int page, int p
             .fetch(MOVIES.ID);
 }
 
+
+
+
+public int countMoviesByGenre(Integer genreId) {
+    return dsl
+            .selectCount()
+            .from(MOVIES)
+            .join(GENRES_IN_MOVIES).on(MOVIES.ID.eq(GENRES_IN_MOVIES.MOVIEID))
+            .where(GENRES_IN_MOVIES.GENREID.eq(genreId))
+            .fetchOne(0, int.class);
+}
+
+public List<String> findMovieIdsByGenre(Integer genreId, int page, int pageSize) {
+    int offset = (page - 1) * pageSize;
+
+    return dsl
+            .select(MOVIES.ID)
+            .from(MOVIES)
+            .join(GENRES_IN_MOVIES).on(MOVIES.ID.eq(GENRES_IN_MOVIES.MOVIEID))
+            .where(GENRES_IN_MOVIES.GENREID.eq(genreId))
+            .orderBy(MOVIES.TITLE.asc(), MOVIES.ID.asc())
+            .limit(pageSize)
+            .offset(offset)
+            .fetch(MOVIES.ID);
+}
+
+
 public Optional<Record5<String, String, Integer, String, Double>> findMovieRowById(String movieId) {
     return dsl
             .select(
@@ -168,4 +195,5 @@ public Optional<Record5<String, String, Integer, String, Double>> findMovieRowBy
             .where(MOVIES.ID.eq(movieId))
             .fetchOptional();
 }
+
 }

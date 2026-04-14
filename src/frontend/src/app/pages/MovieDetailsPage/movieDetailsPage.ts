@@ -47,9 +47,14 @@ export class MovieDetailsPageComponent implements OnDestroy {
         { id: 'nm0578815', name: 'D.J. Mendel' },
     ],
 };
+
+
   movie = signal<MovieDto | null>(null);
   isLoading = signal<boolean>(true);
   error = signal<string | null>(null);
+
+backLink: any[] = ['/movies'];
+backQueryParams: any = {};
 
   quantity = signal<number>(1);
   cartResult = signal<CartDto | null>(null);
@@ -66,6 +71,15 @@ export class MovieDetailsPageComponent implements OnDestroy {
   }
 
   ngOnInit(): void {
+  const from = this.route.snapshot.queryParamMap.get('from');
+  const genreId = this.route.snapshot.queryParamMap.get('genreId');
+  const genreName = this.route.snapshot.queryParamMap.get('genreName');
+
+  if (from === 'genre' && genreId) {
+    this.backLink = ['/movies/genre', genreId];
+    this.backQueryParams = genreName ? { genreName } : {};
+  }
+
   this.sub.add(
     this.route.paramMap.subscribe((params) => {
       const movieId = params.get('movieId');
@@ -177,4 +191,8 @@ private loadMovie(movieId: string): void {
   ngOnDestroy(): void {
     this.sub.unsubscribe();
   }
+
+
+
+  
 }

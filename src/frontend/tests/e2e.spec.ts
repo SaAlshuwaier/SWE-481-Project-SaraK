@@ -446,6 +446,8 @@ test('E2E: Checkout success flow (valid card)', async ({ page }) => {
   const request = context.request;
 
   await request.post('http://localhost:8080/api/cart/addItem', {
+
+  
     data: {
       movieId: 'tt0378947',
       title: 'Test Movie',
@@ -477,6 +479,8 @@ test('E2E: Checkout fails with invalid card', async ({ page }) => {
   const request = context.request;
 
   await request.post('http://localhost:8080/api/cart/addItem', {
+
+  
     data: {
       movieId: 'tt0378947',
       title: 'Test Movie',
