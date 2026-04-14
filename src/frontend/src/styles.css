@@ -17,7 +17,7 @@ body {
 
 
 .text-primary {
-  color: #e50914 !important;
+  color: #e50914 ;
 }
 
 
@@ -31,15 +31,15 @@ a:hover {
 
 /* Navbar */
 .navbar {
-  background-color: #111 !important;
+  background-color: #111 ;
 }
 
 .navbar .nav-link {
-  color: #fff !important;
+  color: #fff ;
 }
 
 .navbar .nav-link:hover {
-  color: #e50914 !important;
+  color: #e50914 ;
 }
 
 /* Card */
