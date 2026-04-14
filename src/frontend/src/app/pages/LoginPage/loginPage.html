@@ -1,70 +1,80 @@
-<header class="app-header">
-  <img class="app-logo" src="/favicon.ico" alt="PLOT BOX logo" />
-
+<header class="app-header container d-flex align-items-center gap-3 mt-4">
   <div class="app-title">
-    <h1>PLOT BOX</h1>
-    <p>Login</p>
+    <h1 class="mb-0 fw-bold">PLOT BOX</h1>
   </div>
+
 </header>
 
-<section class="page-wrap">
-  <div class="card" data-testid="login-page">
+<section class="page-wrap container d-flex justify-content-center mt-4">
 
-    <h2 class="title" data-testid="login-title">Sign in</h2>
+  <div class="card shadow p-4 w-100" style="max-width: 400px;" data-testid="login-page">
 
-    <div class="form">
-      <label class="label">Email</label>
-      <input
-        class="input"
-        type="email"
-        [value]="email()"
-        (input)="onEmailInput(($any($event.target).value))"
-        (blur)="emailTouched.set(true)"
-        placeholder="name@example.com"
-        data-testid="login-email"
-      />
+    <h2 class="title text-center mb-3" data-testid="login-title">Sign in</h2>
+
+    <div class="form d-flex flex-column gap-3">
+
+      <!-- Email -->
+      <div>
+        <label class="label form-label">Email</label>
+        <input
+          class="input form-control"
+          type="email"
+          [value]="email()"
+          (input)="onEmailInput(($any($event.target).value))"
+          (blur)="emailTouched.set(true)"
+          placeholder="name@example.com"
+          data-testid="login-email"
+        />
+      </div>
 
       <div
-      *ngIf="emailTouched() && !isValidEmail(email())"
-      class="err-box"
-        >
-         Invalid email format
-         </div>
+        *ngIf="emailTouched() && !isValidEmail(email())"
+        class="err-box text-danger small"
+      >
+        Invalid email format
+      </div>
 
-      <label class="label">Password</label>
-      <input
-        class="input"
-        type="password"
-        [value]="password()"
-        (input)="onPasswordInput(($any($event.target).value))"
-        placeholder="••••••••"
-        data-testid="login-password"
-      />
+      <!-- Password -->
+      <div>
+        <label class="label form-label">Password</label>
+        <input
+          class="input form-control"
+          type="password"
+          [value]="password()"
+          (input)="onPasswordInput(($any($event.target).value))"
+          placeholder="••••••••"
+          data-testid="login-password"
+        />
+      </div>
 
+      <!-- Button -->
       <button
-        class="btn"
+        class="btn btn-primary w-100"
         (click)="submit()"
         [disabled]="isLoading() || !isValidEmail(email()) || !password()"
         data-testid="login-submit"
       >
         {{ isLoading() ? 'Signing in…' : 'Login' }}
       </button>
-      
-      <p class="register-link">
-        Don't have an account? <a routerLink="/register">Register here</a>
+
+      <!-- Register -->
+      <p class="register-link text-center small mt-2">
+        Don't have an account?
+        <a routerLink="/register">Register here</a>
       </p>
 
-      <div *ngIf="error()" class="err-box" data-testid="login-error">
+      <!-- Error -->
+      <div *ngIf="error()" class="err-box text-danger small mt-2">
         {{ error() }}
       </div>
 
-      <div *ngIf="result()" class="ok-box" data-testid="login-success">
-        <div class="ok-title">Response</div>
-        <div class="ok-text" data-testid="login-success-message">
-          {{ result()?.message }}
-        </div>
+      <!-- Success -->
+      <div *ngIf="result()" class="ok-box alert alert-success mt-2">
+        {{ result()?.message }}
       </div>
+
     </div>
 
   </div>
+
 </section>

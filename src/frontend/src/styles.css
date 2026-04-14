@@ -1,1 +1,63 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+body {
+  color: #111;
+  background: #fff;
+}
+
+.btn-primary {
+  background-color: #e50914;
+  border-color: #e50914;
+}
+
+.btn-primary:hover {
+  background-color: #c40812;
+  border-color: #c40812;
+}
+
+
+.text-primary {
+  color: #e50914 !important;
+}
+
+
+a {
+  color: #092ee5;
+}
+
+a:hover {
+  color: #c40812;
+}
+
+/* Navbar */
+.navbar {
+  background-color: #111 !important;
+}
+
+.navbar .nav-link {
+  color: #fff !important;
+}
+
+.navbar .nav-link:hover {
+  color: #e50914 !important;
+}
+
+/* Card */
+.card {
+  border-radius: 12px;
+}
+
+/* Inputs focus */
+.form-control:focus {
+  border-color: #e50914;
+  box-shadow: 0 0 0 2px rgba(229,9,20,0.2);
+}
+
+/* Disabled button */
+.btn-primary:disabled,
+.btn-primary.disabled {
+  background-color: #e50914;
+  border-color: #e50914;
+  opacity: 0.6;
+  color: #fff;
+}
