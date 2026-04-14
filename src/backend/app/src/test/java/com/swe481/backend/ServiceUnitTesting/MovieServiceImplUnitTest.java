@@ -68,6 +68,12 @@ class MovieServiceImplUnitTest {
 
         Mockito.when(movieRepository.findStarsByMovieId("tt123"))
                 .thenReturn(List.of(new Star("1", "Sean Penn", 1960)));
+
+        Mockito.when(movieRepository.countMoviesByGenre(Mockito.anyInt()))
+       .thenReturn(1);
+
+        Mockito.when(movieRepository.findMovieIdsByGenre(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt()))
+       .thenReturn(List.of("tt123"));
     }
 
     // test suite of searchMovies() method
@@ -133,28 +139,30 @@ class MovieServiceImplUnitTest {
     // end of test suite of searchMovies() method
 
     // test suite for browseMoviesByGenre() method
-    @Disabled("Uses DSLContext directly and needs separate refactor")
     @Test
     void shouldReturnOnlyMoviesBelongingToGenre() {
         MoviesPageState result =
                 movieService.browseMoviesByGenre(1, 1, 10);
 
-        assertTrue(result.getMovies().isEmpty());
-        assertEquals(0, result.getTotalResults());
+        assertFalse(result.getMovies().isEmpty());
+        assertEquals(1, result.getTotalResults());
     }
-    @Disabled("Uses DSLContext directly and needs separate refactor")
-    @Test
-    void shouldReturnEmptyPage_whenGenreHasNoMovies() {
+
+
+   @Test
+   void shouldReturnEmptyPage_whenGenreHasNoMovies() {
+        Mockito.when(movieRepository.countMoviesByGenre(99)).thenReturn(0);
+
         MoviesPageState result =
                 movieService.browseMoviesByGenre(99, 1, 10);
 
         assertEquals(0, result.getTotalResults());
         assertTrue(result.getMovies().isEmpty());
-    }
+}
 
     // end of test suite for browseMoviesByGenre() method
 
-    @Disabled("Depends on old dummy-data behavior")
+   // @Disabled("Depends on old dummy-data behavior")
     // test suite for browseMoviesByFirstLetter()
     @Test
     void shouldReturnMoviesStartingWithGivenLetter() {
@@ -164,7 +172,7 @@ class MovieServiceImplUnitTest {
         assertTrue(result.getMovies().isEmpty());
         assertEquals(0, result.getTotalResults());
     }
-    @Disabled("Depends on old dummy-data behavior")
+  //  @Disabled("Depends on old dummy-data behavior")
     @Test
     void shouldReturnEmptyPage_whenNoMoviesMatch() {
         MoviesPageState result =
@@ -194,6 +202,7 @@ class MovieServiceImplUnitTest {
         assertFalse(result.getGenres().isEmpty());
         assertFalse(result.getStars().isEmpty());
     }
+
     @Disabled("Uses DSLContext directly and needs separate refactor")
     @Test
     void getMovieByIdWithNullId_stillReturnsObjectForNow() {

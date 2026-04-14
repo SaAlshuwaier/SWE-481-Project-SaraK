@@ -182,6 +182,53 @@ public class MovieServiceImpl implements MovieService {
 
     // Retrieves a paginated list of movies that belong to the selected genre.
     // Used by the frontend "Browse by Genre" page.
+
+
+    @Override
+public MoviesPageState browseMoviesByGenre(Integer genreId, int page, int pageSize) {
+
+    validatePaging(page, pageSize);
+
+    int totalResults = movieRepository.countMoviesByGenre(genreId);
+
+    if (totalResults == 0) {
+        return new MoviesPageState(page, pageSize, 0, List.of());
+    }
+
+    List<String> movieIds = movieRepository.findMovieIdsByGenre(genreId, page, pageSize);
+
+    if (movieIds.isEmpty()) {
+        return new MoviesPageState(page, pageSize, totalResults, List.of());
+    }
+
+    List<Record5<String, String, Integer, String, Double>> rows =
+            movieRepository.findMovieRows(movieIds);
+
+    List<Movie> movies = new ArrayList<>();
+
+    for (String movieId : movieIds) {
+        Record5<String, String, Integer, String, Double> row = rows.stream()
+                .filter(r -> movieId.equals(r.get(0, String.class)))
+                .findFirst()
+                .orElse(null);
+
+        if (row != null) {
+            movies.add(new Movie(
+                    row.get(0, String.class),
+                    row.get(1, String.class),
+                    row.get(2, Integer.class),
+                    row.get(3, String.class),
+                    row.get(4, Double.class),
+                    movieRepository.findGenresByMovieId(movieId),
+                    movieRepository.findStarsByMovieId(movieId)
+            ));
+        }
+    }
+
+    return new MoviesPageState(page, pageSize, totalResults, movies);
+}
+
+    /*
     @Override
 public MoviesPageState browseMoviesByGenre(Integer genreId, int page, int pageSize) {
 
@@ -240,7 +287,7 @@ public MoviesPageState browseMoviesByGenre(Integer genreId, int page, int pageSi
     }
 
     return new MoviesPageState(page, pageSize, totalResults, movies);
-}
+}  */
 
 
 
