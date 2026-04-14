@@ -10,7 +10,7 @@
 <section class="page-wrap">
   <div class="card">
 
-    <a class="back-link" routerLink="/movies" data-testid="back-to-movies">← Back to Movies</a>
+
     <div *ngIf="isLoading()" class="muted" data-testid="star-loading">Loading star details…</div>
 
     <div *ngIf="error()" class="err-box" data-testid="star-error">
@@ -21,9 +21,9 @@
       <h2 class="title" data-testid="star-name">{{ s.name }}</h2>
 
       <div class="meta">
-        <div class="meta-row">
+        <div class="meta-row" *ngIf="s.birthYear != null">
           <span class="label">Birth Year:</span>
-          <span class="value" data-testid="star-birthyear">{{ formatBirthYear(s.birthYear) }}</span>
+          <span class="value" data-testid="star-birthyear">{{ s.birthYear }}</span>
         </div>
       </div>
 
@@ -35,9 +35,7 @@
         <ul class="movie-list" *ngIf="movies()?.length" data-testid="movies-list">
           <!-- Clicking movie navigates to /movies/:movieId -->
           <li *ngFor="let m of movies()">
-            <a class="movie-link"
-               data-testid="movie-link"
-               [routerLink]="['/movies', m.id]">
+            <a class="movie-link" data-testid="movie-link" [routerLink]="['/movies', m.id]">
               {{ m.title }}
             </a>
           </li>

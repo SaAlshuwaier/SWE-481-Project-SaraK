@@ -87,8 +87,10 @@ export class AuthService {
      *   "email": "loba@email.com",
      *   "password": "1234",
      *   "address": "Riyadh",
-     *   "ccId": "1234567890123456"
-     * }
+     *   "ccNumber": "0011 2233 4455 6677",
+     *   "ccExpiration": "2026-01-01",
+     *   "ccFirstName": "Loba",
+     *   "ccLastName": "Alyahya"     
      *
      * @return {
      *   "message": "User registered successfully",

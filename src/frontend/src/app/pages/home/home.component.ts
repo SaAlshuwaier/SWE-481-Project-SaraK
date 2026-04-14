@@ -34,6 +34,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   genres: GenreDto[] = [];
   titleFilters: TitleFilter[] = [];
 
+  yearError = '';
+  searchError = '';
+
   private routerSub?: Subscription;
 
   ngOnInit(): void {
@@ -61,6 +64,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.routerSub?.unsubscribe();
   }
 
+  get isSearchDisabled(): boolean {
+    return !this.filters.title.trim() &&
+           !this.filters.year.trim() &&
+           !this.filters.director.trim() &&
+           !this.filters.star.trim();
+  }
+
   private loadGenres(): void {
     console.log('Loading genres...');
 
@@ -79,12 +89,35 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   goToSearchResults(): void {
+    this.yearError = '';
+    this.searchError = '';
+
+    const title = this.filters.title.trim();
+    const year = this.filters.year.trim();
+    const director = this.filters.director.trim();
+    const star = this.filters.star.trim();
+
+    if (!title && !year && !director && !star) {
+      this.searchError = 'Please enter at least one search field.';
+      return;
+    }
+
+    if (year) {
+      const parsed = Number(year);
+      const currentYear = new Date().getFullYear();
+
+      if (!Number.isInteger(parsed) || parsed < 1800 || parsed > currentYear) {
+        this.yearError = 'Year must be a valid number.';
+        return;
+      }
+    }
+
     const queryParams: any = {};
 
-    if (this.filters.title.trim()) queryParams.title = this.filters.title.trim();
-    if (this.filters.year.trim()) queryParams.year = this.filters.year.trim();
-    if (this.filters.director.trim()) queryParams.director = this.filters.director.trim();
-    if (this.filters.star.trim()) queryParams.star = this.filters.star.trim();
+    if (title) queryParams.title = title;
+    if (year) queryParams.year = year;
+    if (director) queryParams.director = director;
+    if (star) queryParams.star = star;
 
     this.router.navigate(['/movies/search'], { queryParams });
   }
@@ -96,6 +129,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       director: '',
       star: ''
     };
+
+    this.yearError = '';
+    this.searchError = '';
   }
 
   goToBrowseGenre(genre: GenreDto): void {

@@ -199,19 +199,5 @@ describe('SearchMoviesComponent', () => {
     expect(movieServiceMock.searchMovies).toHaveBeenCalled();
   });
 
-  it('backToHome should navigate to /home', async () => {
-    await createComponentWithQueryParams({
-      title: 'alpha',
-      year: '2005',
-      director: 'david',
-      star: 'tom',
-    });
 
-    const router = TestBed.inject(Router);
-    const navSpy = vi.spyOn(router, 'navigate');
-
-    component.backToHome();
-
-    expect(navSpy).toHaveBeenCalledWith(['/home']);
-  });
 });

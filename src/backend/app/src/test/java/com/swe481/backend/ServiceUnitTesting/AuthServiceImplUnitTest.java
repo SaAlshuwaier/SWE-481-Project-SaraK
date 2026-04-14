@@ -4,54 +4,75 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
+
 import org.jooq.DSLContext;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.jooq.swe481.generated.tables.records.CustomersRecord;
 import com.swe481.backend.Dto.Auth.LoginRequest;
 import com.swe481.backend.Dto.Auth.LoginResponse;
 import com.swe481.backend.Dto.Auth.RegisterRequest;
 import com.swe481.backend.Dto.Auth.RegisterResponse;
+import com.swe481.backend.Dto.Repo.CustomerRepository;
 import com.swe481.backend.service.serviceImp.AuthServiceImpl;
 
 /**
  * Unit tests for AuthServiceImpl methods.
  * 
  */
+@ExtendWith(MockitoExtension.class)
 public class AuthServiceImplUnitTest {
-
+    private CustomerRepository customerRepository;
     private DSLContext dls;
-    private final AuthServiceImpl authService = new AuthServiceImpl(dls);
+    private AuthServiceImpl authService;
+
+    @BeforeEach
+    void setUp() {
+        dls = Mockito.mock(DSLContext.class);
+        customerRepository = mock(CustomerRepository.class);
+        authService = new AuthServiceImpl(dls, customerRepository);
+
+    }
 
     /**
-     * Tests the behavior of login(...) under different input conditions.
-     *
-     * Logic:
-     * These tests verify that the login method returns the correct
-     * LoginResponse depending on the validity of the provided credentials.
-     *
+     * Tests the behavior of login(...)
+     * 
      * The tested scenarios include:
      * - Valid credentials → login succeeds.
      * - Missing or empty input → validation error is returned.
      * - wrong email and passowrd → login fails.
      * - correct email wrong password → login fails.
-     * - wrong email correct password  → login fails.
-     *
-     * Parameters:
-     * - Email and password provided in LoginRequest.
-     *
-     * Expected Output:
-     * - A LoginResponse object indicating whether the login attempt
-     * succeeded or failed, along with the appropriate message.
+     * - wrong email correct password → login fails.
      */
-    @Test
-    void login_validRequest_returnsSuccessTrueAndCorrectMessage() {
-        LoginRequest request = new LoginRequest("user@email.com", "123456");
+@Test
+void login_validRequest_returnsSuccessTrueAndCorrectMessage() {
 
-        LoginResponse response = authService.login(request);
+    CustomersRecord mockUser = new CustomersRecord();
+    mockUser.setEmail("ar@tilae.com");
+    mockUser.setPassword("strike");
 
-        assertNotNull(response);
-        assertEquals("Login successful", response.getMessage());
-        assertTrue(response.isSuccess());
-    }
+    when(customerRepository.findByEmail(anyString()))
+            .thenReturn(mockUser);
+
+    LoginRequest request = new LoginRequest("ar@tilae.com", "strike");
+
+    LoginResponse response = authService.login(request);
+
+    System.out.println(response.getMessage());
+
+    assertNotNull(response);
+    assertEquals("Login successful", response.getMessage());
+    assertTrue(response.isSuccess());
+}
 
     @Test
     void login_emptyEmailOrPassword_returnsFailure() {
@@ -101,6 +122,15 @@ public class AuthServiceImplUnitTest {
         assertEquals("Invalid email or password", response.getMessage());
     }
 
+    @Test
+    void login_wrongPassword_returnsFailure() {
+        LoginRequest request = new LoginRequest("user@email.com", "wrong");
+
+        LoginResponse response = authService.login(request);
+
+        assertFalse(response.isSuccess());
+    }
+
     /**
      * Tests that register(...) returns a RegisterResponse with success=true and the
      * correct message for a valid request.
@@ -119,13 +149,18 @@ public class AuthServiceImplUnitTest {
      */
     @Test
     void register_validRequest_returnsSuccessTrueAndCorrectMessage() {
+        // email not taken, insert returns a new customerId
+        when(customerRepository.emailExists("hailah@email.com")).thenReturn(false);
+        when(customerRepository.insertCustomerWithCreditCard(any())).thenReturn(42);
+
         RegisterRequest request = new RegisterRequest(
                 "Hailah",
                 "Saad",
                 "hailah@email.com",
                 "1234",
-                "",
-                "");
+                "Hittin",
+                "0011 2233 4455 6677",
+                "2026-12-31", "Hailah", "Saad");
 
         RegisterResponse response = authService.register(request);
 
@@ -136,17 +171,20 @@ public class AuthServiceImplUnitTest {
 
     @Test
     void register_withEmptyEmail_shouldReturnFailure() {
-        RegisterRequest request = new RegisterRequest(
+        RegisterRequest rquest = new RegisterRequest(
                 "Hailah",
                 "Saad",
                 "", // ← email empty
                 "1234",
-                "",
-                "");
+                "Hittin",
+                "0011 2233 4455 6677",
+                "2026-12-31", "Hailah", "Saad");
 
-        RegisterResponse response = authService.register(request);
+        RegisterResponse response = authService.register(rquest);
 
-        // Expect failure (logic not yet implemented, so this will FAIL)
+        // Expect failure 
         assertFalse(response.isSuccess());
+        assertEquals("All fields are required", response.getMessage());
+
     }
 }

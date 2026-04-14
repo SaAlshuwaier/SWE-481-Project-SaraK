@@ -45,7 +45,7 @@ describe('HomeComponent (Home Navigation)', () => {
     expect(component.titleFilters.length).toBe(36);
   });
 
-  it('goToSearchResults should navigate to /movies with correct query params', () => {
+  it('goToSearchResults should navigate to /movies/search with correct query params', () => {
     const navSpy = vi.spyOn(router, 'navigate');
 
     component.filters.title = 'matrix';
@@ -96,4 +96,54 @@ describe('HomeComponent (Home Navigation)', () => {
       queryParams: { letter: 'A' },
     });
   });
+  it('isSearchDisabled should be true when all filters are empty', () => {
+  component.filters = { title: '', year: '', director: '', star: '' };
+  expect(component.isSearchDisabled).toBe(true);
+});
+
+it('isSearchDisabled should be false when at least one filter has value', () => {
+  component.filters.title = 'matrix';
+  expect(component.isSearchDisabled).toBe(false);
+});
+
+it('goToSearchResults should not navigate and should set searchError when all filters are empty', () => {
+  const navSpy = vi.spyOn(router, 'navigate');
+
+  component.filters = { title: '', year: '', director: '', star: '' };
+  component.goToSearchResults();
+
+  expect(navSpy).not.toHaveBeenCalled();
+  expect(component.searchError).toBe('Please enter at least one search field.');
+});
+
+it('goToSearchResults should not navigate and should set yearError when year is invalid', () => {
+  const navSpy = vi.spyOn(router, 'navigate');
+
+  component.filters.year = 'abcd';
+  component.goToSearchResults();
+
+  expect(navSpy).not.toHaveBeenCalled();
+  expect(component.yearError).toBe('Year must be a valid number.');
+});
+it('onClear should reset filters and clear errors', () => {
+  component.filters = {
+    title: 'x',
+    year: '1994',
+    director: 'y',
+    star: 'z',
+  };
+  component.yearError = 'Year must be a valid number.';
+  component.searchError = 'Please enter at least one search field.';
+
+  component.onClear();
+
+  expect(component.filters).toEqual({
+    title: '',
+    year: '',
+    director: '',
+    star: '',
+  });
+  expect(component.yearError).toBe('');
+  expect(component.searchError).toBe('');
+});
 });

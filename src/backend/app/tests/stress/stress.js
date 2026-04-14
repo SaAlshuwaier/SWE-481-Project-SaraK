@@ -1,6 +1,6 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
-import { Rate, Trend } from 'k6/metrics';
+import { Rate, Trend, Counter } from 'k6/metrics';
 
 // ============================================
 // CONFIGURATION
@@ -8,214 +8,283 @@ import { Rate, Trend } from 'k6/metrics';
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:8080/api';
 const ENVIRONMENT = __ENV.ENV || 'development';
 
-console.log('Stress Test Starting...');
-console.log(`Target URL: ${BASE_URL}`);
-console.log(`Environment: ${ENVIRONMENT}`);
+const FAILURE_RATE_THRESHOLD = 0.10;  // 10% error rate = system is failing
+const SLOW_RESPONSE_THRESHOLD = 3000;  // 3s p95 = system is degraded
+const CONSECUTIVE_FAIL_LIMIT = 20;    // 20 back-to-back failures = dead
 
 // ============================================
-// CUSTOM METRICS
+// METRICS
 // ============================================
 const errorRate = new Rate('errors');
-const authErrors = new Rate('auth_errors');
-const cartErrors = new Rate('cart_errors');
-const checkoutErrors = new Rate('checkout_errors');
 const movieErrors = new Rate('movie_errors');
+const genreErrors = new Rate('genre_errors');
 
-const authTrend = new Trend('auth_duration');
-const cartTrend = new Trend('cart_duration');
-const checkoutTrend = new Trend('checkout_duration');
-const searchTrend = new Trend('search_duration');
+const movieTrend = new Trend('movie_duration');
+const genreTrend = new Trend('genre_duration');
 
-//  Missing helper (was causing runtime crash)
+const totalRequests = new Counter('total_requests');
+const totalFailures = new Counter('total_failures');
+
+// ============================================
+// PER-VU STATE
+// ============================================
+let consecutiveFailures = 0;
+let breakdownDetected = false;
+const WINDOW_SIZE = 50;
+let recentResults = [];
+
+function recordResult(success) {
+    recentResults.push(success);
+    if (recentResults.length > WINDOW_SIZE) recentResults.shift();
+    var failures = recentResults.filter(function (r) { return !r; }).length;
+    var localErrorRate = failures / recentResults.length;
+    if (!success) { consecutiveFailures++; } else { consecutiveFailures = 0; }
+    return { localErrorRate: localErrorRate, consecutiveFailures: consecutiveFailures };
+}
+
 function recordError(rateMetric, isError) {
     rateMetric.add(isError ? 1 : 0);
     errorRate.add(isError ? 1 : 0);
+    totalRequests.add(1);
+    if (isError) totalFailures.add(1);
+    return isError;
 }
 
 // ============================================
-// STRESS TEST CONFIGURATION
+// STAGES — ramp up until it breaks
 // ============================================
 export const options = {
     scenarios: {
-        stress_test: {
+        stress_ramp: {
             executor: 'ramping-vus',
+            startVUs: 0,
             stages: [
-                { duration: '2m', target: 50 },
-                { duration: '2m', target: 100 },
-                { duration: '2m', target: 200 },
-                { duration: '2m', target: 500 },   // Ramp up rapidly to a high load
-                { duration: '2m', target: 1000 },  // Overwhelm the system further
-                { duration: '5m', target: 2000 },  // Maintain high load
-                { duration: '5m', target: 5000 },  // Heavy traffic to force failure
-                { duration: '2m', target: 0 },     // Ramp down and check recovery
+                { duration: '1m', target: 50 },
+                { duration: '1m', target: 100 },
+                { duration: '1m', target: 200 },
+                { duration: '1m', target: 400 },
+                { duration: '1m', target: 800 },
+                { duration: '2m', target: 1500 },
+                { duration: '2m', target: 3000 },
+                { duration: '2m', target: 5000 },
+                { duration: '1m', target: 0 },
             ],
-            gracefulRampDown: '30s',
+            gracefulRampDown: '15s',
         },
     },
     thresholds: {
-        http_req_failed: ['rate<0.05'],
-        http_req_duration: [
-            'p(95)<2000',
-            'p(99)<5000',
-        ],
-        errors: ['rate<0.05'],
+        'errors': [{ threshold: 'rate<' + FAILURE_RATE_THRESHOLD, abortOnFail: true, delayAbortEval: '30s' }],
+        'http_req_duration': [{ threshold: 'p(95)<' + SLOW_RESPONSE_THRESHOLD, abortOnFail: true, delayAbortEval: '30s' }],
+        'http_req_failed': [{ threshold: 'rate<0.10', abortOnFail: true, delayAbortEval: '20s' }],
+        'movie_errors': ['rate<0.15'],
+        'genre_errors': ['rate<0.15'],
     },
     tags: {
-        test_type: 'stress-test',
+        test_type: 'stress-failfast',
         environment: ENVIRONMENT,
-        timestamp: new Date().toISOString(),
     },
+    summaryTrendStats: ['avg', 'min', 'med', 'max', 'p(90)', 'p(95)', 'p(99)'],
 };
 
 // ============================================
-// SETUP
+// SETUP — probe endpoints once before load
 // ============================================
 export function setup() {
-    const res = http.get(`${BASE_URL}/genres`);
-    if (res.status !== 200) {
-        throw new Error(`Server health check failed before test start. Status: ${res.status}`);
+    console.log('');
+    console.log('Fail-Fast Stress Test Starting...');
+    console.log('Target: ' + BASE_URL + ' | Env: ' + ENVIRONMENT);
+    console.log('Break triggers: error_rate>' + (FAILURE_RATE_THRESHOLD * 100) + '% | p95>' + SLOW_RESPONSE_THRESHOLD + 'ms | consecutive_fails>' + CONSECUTIVE_FAIL_LIMIT);
+    console.log('');
+    console.log('--- SETUP: Diagnostic probe ---');
+
+    var genresRes = http.get(BASE_URL + '/genres', { timeout: '10s' });
+    console.log('  GET /genres              -> ' + genresRes.status);
+    if (genresRes.status !== 200) {
+        throw new Error('[ABORT] /genres returned ' + genresRes.status + '. Is the server running?');
     }
-    console.log(`Server reachable. Health check status: ${res.status}.`);
-    return { startTime: new Date().toISOString() };
+
+    var movieRes = http.get(BASE_URL + '/movies/search?title=Matrix&page=1&pageSize=10', { timeout: '10s' });
+    console.log('  GET /movies/search       -> ' + movieRes.status);
+
+    var browseRes = http.get(BASE_URL + '/movies/browseByFirstLetter?startsWith=A&page=1&pageSize=10', { timeout: '10s' });
+    console.log('  GET /movies/browseByFirstLetter -> ' + browseRes.status);
+
+    var genreOk = genresRes.status === 200;
+    var movieOk = movieRes.status === 200;
+    var browseOk = browseRes.status === 200;
+
+    console.log('');
+    console.log('  /genres              OK? ' + (genreOk ? 'YES' : 'NO <- PROBLEM'));
+    console.log('  /movies/search       OK? ' + (movieOk ? 'YES' : 'NO <- PROBLEM'));
+    console.log('  /movies/browseByFirstLetter OK? ' + (browseOk ? 'YES' : 'NO <- PROBLEM'));
+    console.log('');
+
+    if (!genreOk || !movieOk || !browseOk) {
+        console.log('  WARNING: Some endpoints are failing. Test will abort quickly.');
+    } else {
+        console.log('  All endpoints healthy. Starting ramp-up...');
+    }
+
+    return { startTime: new Date().toISOString(), startEpoch: Date.now() };
 }
 
 // ============================================
-// TEST DATA
+// SEARCH VARIATIONS — realistic traffic mix
 // ============================================
-const movieIds = ['tt0012345', 'tt0067890', 'tt0135792', 'tt0246801', 'tt0357913'];
+var searchQueries = [
+    '/movies/search?title=The+Matrix&year=1999&page=1&pageSize=20',
+    '/movies/search?title=Inception&page=1&pageSize=20',
+    '/movies/search?title=Godfather&page=1&pageSize=20',
+    '/movies/search?director=Spielberg&page=1&pageSize=20',
+    '/movies/search?title=Star+Wars&page=1&pageSize=20',
+    '/movies/search?page=1&pageSize=20',
+    '/movies/search?title=Avengers&page=2&pageSize=20',
+];
 
-// Generate large payloads to simulate heavy requests
-function generateHeavyPayload() {
-    return {
-        username: 'testuser_' + Math.random().toString(36).substr(2, 9),
-        password: 'Test@123456',
-        email: `testuser_${Math.random().toString(36).substr(2, 9)}@example.com`,
-        firstName: 'Heavy',
-        lastName: 'Load',
-        cart: new Array(1000).fill({
-            movieId: movieIds[Math.floor(Math.random() * movieIds.length)],
-            quantity: 5,
-        }),
-    };
+var browseLetters = ['A', 'B', 'C', 'D', 'E', 'M', 'S', 'T'];
+
+// ============================================
+// TEST FUNCTIONS
+// ============================================
+function testMovieSearch() {
+    var query = searchQueries[Math.floor(Math.random() * searchQueries.length)];
+    var res = http.get(BASE_URL + query, { tags: { op: 'movie_search' } });
+    movieTrend.add(res.timings.duration);
+    check(res, { 'movie search 200': function (r) { return r.status === 200; } });
+    return recordError(movieErrors, res.status !== 200);
+}
+
+function testGenres() {
+    var res = http.get(BASE_URL + '/genres', { tags: { op: 'genres' } });
+    genreTrend.add(res.timings.duration);
+    check(res, { 'genres 200': function (r) { return r.status === 200; } });
+    return recordError(genreErrors, res.status !== 200);
+}
+
+function testBrowse() {
+    var letter = browseLetters[Math.floor(Math.random() * browseLetters.length)];
+    var res = http.get(BASE_URL + '/movies/browseByFirstLetter?startsWith=' + letter + '&page=1&pageSize=20', { tags: { op: 'browse' } });
+    movieTrend.add(res.timings.duration);
+    check(res, { 'browse 200': function (r) { return r.status === 200; } });
+    return recordError(movieErrors, res.status !== 200);
 }
 
 // ============================================
-// AUTH
-// ============================================
-function testAuth() {
-    const userData = generateHeavyPayload();
-
-    // Register
-    const registerRes = http.post(`${BASE_URL}/auth/register`, JSON.stringify(userData), {
-        headers: { 'Content-Type': 'application/json' },
-        tags: { type: 'auth', operation: 'register' },
-    });
-
-    authTrend.add(registerRes.timings.duration);
-    const registerOk = check(registerRes, {
-        'register status is 200': (r) => r.status === 200,
-    });
-    recordError(authErrors, !registerOk);
-
-    // Login immediately after register
-    const loginRes = http.post(
-        `${BASE_URL}/auth/login`,
-        JSON.stringify({ username: userData.username, password: userData.password }),
-        {
-            headers: { 'Content-Type': 'application/json' },
-            tags: { type: 'auth', operation: 'login' },
-        }
-    );
-
-    authTrend.add(loginRes.timings.duration);
-    const loginOk = check(loginRes, {
-        'login status is 200': (r) => r.status === 200,
-    });
-    recordError(authErrors, !loginOk);
-}
-
-// ============================================
-// CART 
-// ============================================
-function testCart() {
-    // Get cart (no auth header)
-    const getCartRes = http.get(`${BASE_URL}/cart`, {
-        tags: { type: 'cart', operation: 'getCart' },
-    });
-
-    cartTrend.add(getCartRes.timings.duration);
-    recordError(cartErrors, getCartRes.status !== 200);
-
-    // Add item with a heavy request
-    const cartItem = generateHeavyPayload().cart[Math.floor(Math.random() * 1000)];
-
-    const addItemRes = http.post(`${BASE_URL}/cart/addItem`, JSON.stringify(cartItem), {
-        headers: { 'Content-Type': 'application/json' }, // no Authorization
-        tags: { type: 'cart', operation: 'addItem' },
-    });
-
-    cartTrend.add(addItemRes.timings.duration);
-    const addOk = check(addItemRes, { 'add item status is 200': (r) => r.status === 200 });
-    recordError(cartErrors, !addOk);
-}
-
-// ============================================
-// CHECKOUT 
-// ============================================
-function testCheckout() {
-    const checkoutRes = http.post(`${BASE_URL}/checkout`, JSON.stringify(generateHeavyPayload()), {
-        headers: { 'Content-Type': 'application/json' }, // no Authorization
-        tags: { type: 'checkout', operation: 'process' },
-    });
-
-    checkoutTrend.add(checkoutRes.timings.duration);
-
-    const checkoutOk = check(checkoutRes, {
-        'checkout received a response': (r) => r.status !== 0,
-        'checkout response has message': (r) => r.body && r.body.includes('message'),
-    });
-
-    recordError(checkoutErrors, !checkoutOk);
-}
-
-// ============================================
-// MOVIES
-// ============================================
-function testMovies() {
-    const searchUrl = `${BASE_URL}/movies/search?title=The+Matrix&year=1999&director=The+Wachowskis&page=1&pageSize=5000`;
-    const searchRes = http.get(searchUrl, {
-        tags: { type: 'movie', operation: 'search' },
-    });
-
-    searchTrend.add(searchRes.timings.duration);
-    recordError(movieErrors, searchRes.status !== 200);
-    check(searchRes, { 'search status is 200': (r) => r.status === 200 });
-}
-
-// ============================================
-// MAIN TEST FUNCTION
+// MAIN VU LOOP
 // ============================================
 export default function () {
-    try {
-        testAuth();
-        testCart();
-        testCheckout();
-        testMovies();
-    } catch (e) {
-        console.log(`Unhandled error in VU ${__VU}: ${e}`);
-        errorRate.add(1);
+    if (breakdownDetected) {
+        sleep(0.5);
+        return;
     }
 
-    sleep(Math.random() * 0.4 + 0.1);
+    var anyFailed = false;
+    try {
+        // Realistic traffic mix: 50% search, 30% browse, 20% genres
+        var roll = Math.random();
+        var failed;
+        if (roll < 0.5) {
+            failed = testMovieSearch();
+        } else if (roll < 0.8) {
+            failed = testBrowse();
+        } else {
+            failed = testGenres();
+        }
+        anyFailed = failed;
+    } catch (e) {
+        console.error('[VU ' + __VU + '] Exception: ' + (e.message || e));
+        errorRate.add(1);
+        totalFailures.add(1);
+        anyFailed = true;
+    }
+
+    var result = recordResult(!anyFailed);
+    var localErrRate = result.localErrorRate;
+    var cf = result.consecutiveFailures;
+
+    if (cf >= CONSECUTIVE_FAIL_LIMIT && !breakdownDetected) {
+        breakdownDetected = true;
+        console.error('[BREAKDOWN] VU=' + __VU + ' | consecutive_failures=' + cf + ' | error_rate=' + (localErrRate * 100).toFixed(1) + '% | time=' + new Date().toISOString());
+    }
+
+    if (localErrRate >= FAILURE_RATE_THRESHOLD && recentResults.length >= WINDOW_SIZE && !breakdownDetected) {
+        breakdownDetected = true;
+        console.error('[HIGH ERROR RATE] VU=' + __VU + ' | rate=' + (localErrRate * 100).toFixed(1) + '% | time=' + new Date().toISOString());
+    }
+
+    sleep(Math.random() * 0.3 + 0.1);
 }
 
 // ============================================
 // TEARDOWN
 // ============================================
 export function teardown(data) {
-    console.log('STRESS TEST COMPLETED');
-    console.log(`Environment: ${ENVIRONMENT}`);
-    console.log(`Target URL: ${BASE_URL}`);
-    console.log(`Started at: ${data.startTime}`);
-    console.log(`Finished at: ${new Date().toISOString()}`);
+    var durationS = ((Date.now() - (data.startEpoch || Date.now())) / 1000).toFixed(1);
+    console.log('');
+    console.log('==========================================');
+    console.log('      STRESS TEST COMPLETED               ');
+    console.log('==========================================');
+    console.log('Environment : ' + ENVIRONMENT);
+    console.log('Target URL  : ' + BASE_URL);
+    console.log('Started at  : ' + data.startTime);
+    console.log('Finished at : ' + new Date().toISOString());
+    console.log('Duration    : ' + durationS + 's');
+    console.log('');
+    console.log('Error rate limit       : ' + (FAILURE_RATE_THRESHOLD * 100) + '%');
+    console.log('p95 latency limit      : ' + SLOW_RESPONSE_THRESHOLD + 'ms');
+    console.log('Consecutive fail limit : ' + CONSECUTIVE_FAIL_LIMIT);
+    console.log('==========================================');
+}
+
+// ============================================
+// SUMMARY
+// ============================================
+export function handleSummary(data) {
+    var errRate = data.metrics['errors'] ? (data.metrics['errors'].values['rate'] * 100).toFixed(2) : 'N/A';
+    var p95 = data.metrics['http_req_duration'] ? data.metrics['http_req_duration'].values['p(95)'].toFixed(0) : 'N/A';
+    var p99 = data.metrics['http_req_duration'] ? data.metrics['http_req_duration'].values['p(99)'].toFixed(0) : 'N/A';
+    var totalReq = data.metrics['http_reqs'] ? data.metrics['http_reqs'].values['count'] : 'N/A';
+
+    var lines = [
+        '',
+        '╔══════════════════════════════════════════╗',
+        '║        BREAKDOWN POINT REPORT            ║',
+        '╚══════════════════════════════════════════╝',
+        '  Total Requests  : ' + totalReq,
+        '  Error Rate      : ' + errRate + '%',
+        '  p95 Latency     : ' + p95 + 'ms',
+        '  p99 Latency     : ' + p99 + 'ms',
+        '',
+        '  Threshold Results:',
+    ];
+
+    if (data.thresholds) {
+        var names = Object.keys(data.thresholds);
+        for (var i = 0; i < names.length; i++) {
+            var name = names[i];
+            var result = data.thresholds[name];
+            lines.push('    ' + name + ' : ' + (result.ok ? 'PASS' : 'FAIL <- BREAKDOWN POINT'));
+        }
+    }
+
+    lines.push('');
+    lines.push('  FAIL = the system could not keep up at this load.');
+    lines.push('  Check VU count in stage timings for exact breakdown point.');
+    lines.push('==========================================');
+
+
+    return {
+        stdout: lines.join('\n'),
+        'breakdown-report.json': JSON.stringify({
+            test_type: 'stress-failfast',
+            environment: ENVIRONMENT,
+            target_url: BASE_URL,
+            finished_at: new Date().toISOString(),
+            error_rate_pct: errRate,
+            p95_latency_ms: p95,
+            p99_latency_ms: p99,
+            total_requests: totalReq,
+            thresholds: data.thresholds,
+        }, null, 2),
+    };
 }

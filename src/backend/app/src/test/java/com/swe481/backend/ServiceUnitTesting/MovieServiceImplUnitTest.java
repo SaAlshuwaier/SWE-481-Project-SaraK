@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -53,7 +52,8 @@ class MovieServiceImplUnitTest {
         Mockito.when(mockRow.get(2, Integer.class)).thenReturn(2006);
         Mockito.when(mockRow.get(3, String.class)).thenReturn("Clint Eastwood");
         Mockito.when(mockRow.get(4, Double.class)).thenReturn(4.5);
-
+Mockito.when(movieRepository.findMovieRowById("tt0422896"))
+        .thenReturn(java.util.Optional.of(mockRow));
         Mockito.when(movieRepository.countMovies(Mockito.any(Condition.class)))
                 .thenReturn(1);
 
@@ -183,33 +183,54 @@ class MovieServiceImplUnitTest {
     }
     // end of test suite for browseMoviesByFirstLetter()
 
-    @Disabled("Uses DSLContext directly and needs separate refactor")
-    // test suite for getMovieById()
-    @Test
-    void getMovieByIdReturnsMovieDetails() {
+   @Test
+void getMovieByIdReturnsMovieDetails() {
+    String movieId = "tt0422896";
 
-        String movieId = "tt0422896";
+    Record5<String, String, Integer, String, Double> movieRow = Mockito.mock(Record5.class);
+    Mockito.when(movieRow.get(0, String.class)).thenReturn(movieId);
+    Mockito.when(movieRow.get(1, String.class)).thenReturn("Study");
+    Mockito.when(movieRow.get(2, Integer.class)).thenReturn(2004);
+    Mockito.when(movieRow.get(3, String.class)).thenReturn("Layan");
+    Mockito.when(movieRow.get(4, Double.class)).thenReturn(4.2);
 
-        Movie result = movieService.getMovieById(movieId);
+    Mockito.when(movieRepository.findMovieRowById(movieId))
+            .thenReturn(java.util.Optional.of(movieRow));
 
-        assertNotNull(result);
-        assertEquals(movieId, result.getId());
-        assertEquals("Study", result.getTitle());
-        assertEquals(2004, result.getYear());
-        assertEquals("Layan", result.getDirector());
+    Mockito.when(movieRepository.findGenresByMovieId(movieId))
+            .thenReturn(List.of(new Genre(1L, "Drama")));
 
-        // check genres and stars exist
-        assertFalse(result.getGenres().isEmpty());
-        assertFalse(result.getStars().isEmpty());
-    }
 
-    @Disabled("Uses DSLContext directly and needs separate refactor")
-    @Test
-    void getMovieByIdWithNullId_stillReturnsObjectForNow() {
+    Mockito.when(movieRepository.findStarsByMovieId(movieId))
+            .thenReturn(List.of(new Star("1", "Actor Name", 1990)));
 
-        Movie result = movieService.getMovieById(null);
 
-        // current behavior (until real validation added)
-        assertNotNull(result);
-    }
+    Movie result = movieService.getMovieById(movieId);
+
+    assertNotNull(result);
+    assertEquals(movieId, result.getId());
+    assertEquals("Study", result.getTitle());
+    assertEquals(2004, result.getYear());
+    assertEquals("Layan", result.getDirector());
+    assertEquals(4.2, result.getRating());
+
+    assertFalse(result.getGenres().isEmpty());
+    assertFalse(result.getStars().isEmpty());
+}
+ @Test
+void getMovieByIdWithNullId_shouldThrowException() {
+    assertThrows(IllegalArgumentException.class, () ->
+            movieService.getMovieById(null));
+}
+@Test
+void getMovieById_shouldReturnNull_whenMovieDoesNotExist() {
+    String movieId = "tt9999999";
+
+    Mockito.when(movieRepository.findMovieRowById(movieId))
+            .thenReturn(java.util.Optional.empty());
+
+    Movie result = movieService.getMovieById(movieId);
+
+    assertEquals(null, result);
+}
 }

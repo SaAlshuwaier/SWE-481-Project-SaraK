@@ -49,7 +49,10 @@
       >
         {{ isLoading() ? 'Signing in…' : 'Login' }}
       </button>
-
+      
+      <p class="register-link">
+        Don't have an account? <a routerLink="/register">Register here</a>
+      </p>
 
       <div *ngIf="error()" class="err-box" data-testid="login-error">
         {{ error() }}

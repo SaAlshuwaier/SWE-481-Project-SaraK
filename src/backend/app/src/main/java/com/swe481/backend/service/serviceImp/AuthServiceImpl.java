@@ -1,5 +1,5 @@
 package com.swe481.backend.service.serviceImp;
-
+import com.swe481.backend.Dto.Repo.CustomerRepository;
 import com.jooq.swe481.generated.tables.records.CustomersRecord;
 import com.swe481.backend.Dto.Auth.LoginRequest;
 import com.swe481.backend.Dto.Auth.LoginResponse;
@@ -7,6 +7,8 @@ import com.swe481.backend.Dto.Auth.RegisterRequest;
 import com.swe481.backend.Dto.Auth.RegisterResponse;
 import com.swe481.backend.service.serviceInterface.AuthService;
 import static com.jooq.swe481.generated.tables.Customers.CUSTOMERS;
+
+import java.time.LocalDate;
 
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Service;
@@ -18,9 +20,11 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
     private final DSLContext dsl; // enable JOOQ type-safe queries
+    private final CustomerRepository customerRepository;
 
-    public AuthServiceImpl(DSLContext dsl) {
+    public AuthServiceImpl(DSLContext dsl, CustomerRepository customerRepository) {
         this.dsl = dsl;
+        this.customerRepository = customerRepository;
     }
 
     /**
@@ -56,10 +60,7 @@ public class AuthServiceImpl implements AuthService {
             return new LoginResponse("Email and password required", false, null);
         }
 
-        CustomersRecord user = dsl
-                .selectFrom(CUSTOMERS)
-                .where(CUSTOMERS.EMAIL.eq(request.getEmail()))
-                .fetchOne();
+        CustomersRecord user = customerRepository.findByEmail(request.getEmail());
 
         //wrong credentials or user not found
         if (user == null || !user.getPassword().equals(request.getPassword())) {
@@ -75,16 +76,15 @@ public class AuthServiceImpl implements AuthService {
      *
      * Logic:
      * - Receives: RegisterRequest (firstName, lastName, email, password, address,
-     * ccId)
-     * - Phase 2 (Dummy):
-     * - Always returns success = true
+     *             ccNumber, ccExpiration, ccFirstName, ccLastName)
      *
-     * Phase 3 (Real Implementation):
-     * 1) Validate all required fields
-     * 2) Check if email already exists in customers table
-     * 3) Validate ccId exists in creditcards table
-     * 4) Insert new customer into customers table
-     * 5) Return generated customerId with success response
+     * 1) Validate all required fields are not null/blank
+     * 2) Validate ccExpiration is a parseable date (yyyy-MM-dd)
+     * 3) Validate ccExpiration is not in the past
+     * 4) Validate ccNumber is exactly 16 digits
+     * 5) Check email is not already taken
+     * 6) Insert credit card and customer into DB via CustomerRepository
+     * 7) Return generated customerId with success response
      *
      * @param request {
      *                "firstName": "Loba",
@@ -92,9 +92,11 @@ public class AuthServiceImpl implements AuthService {
      *                "email": "loba@email.com",
      *                "password": "1234",
      *                "address": "Riyadh",
-     *                "ccId": "1234567890123456"
+     *                "ccNumber": "1111222233334444",
+     *                "ccExpiration": "2026-01-01",
+     *                "ccFirstName": "Loba",
+     *                "ccLastName": "Alyahya"
      *                }
-     *
      * @return {
      *         "message": "User registered successfully",
      *         "customerId": 12,
@@ -104,11 +106,60 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public RegisterResponse register(RegisterRequest request) {
 
-        RegisterResponse response = new RegisterResponse();
+        // 1) Validate all required fields are not null/blank
+        if (request.getFirstName() == null || request.getFirstName().isBlank()
+                || request.getLastName() == null || request.getLastName().isBlank()
+                || request.getEmail() == null || request.getEmail().isBlank()
+                || request.getPassword() == null || request.getPassword().isBlank()
+                || request.getAddress() == null || request.getAddress().isBlank()
+                || request.getCcNumber() == null || request.getCcNumber().isBlank()
+                || request.getCcExpiration() == null || request.getCcExpiration().isBlank()
+                || request.getCcFirstName() == null || request.getCcFirstName().isBlank()
+                || request.getCcLastName() == null || request.getCcLastName().isBlank()) {
 
-        // Phase 2: always successful
-        response.setSuccess(true);
-        response.setMessage("User registered successfully");
-        return response;
+            return new RegisterResponse("All fields are required", null, false);
+        }
+
+        // 2) Normalize ccNumber: strip all spaces so "0011 2233 4455 6677" -> "0011223344556677"
+        request.setCcNumber(request.getCcNumber().replace(" ", ""));
+
+        // 3) Validate ccExpiration is a parseable date (yyyy-MM-dd)
+        LocalDate expiration;
+        try {
+            expiration = LocalDate.parse(request.getCcExpiration());
+        } catch (Exception e) {
+            return new RegisterResponse("Invalid expiration date format, use yyyy-MM-dd", null, false);
+        }
+
+        // 4) Validate expiration is not in the past
+        if (expiration.isBefore(LocalDate.now())) {
+            return new RegisterResponse("Credit card is expired", null, false);
+        }
+
+        // 5) Validate card number is exactly 16 digits (on clean no-space version)
+        if (!request.getCcNumber().matches("\\d{16}")) {
+            return new RegisterResponse("Credit card number must be exactly 16 digits", null, false);
+        }
+
+        // 6) Reformat ccNumber to "XXXX XXXX XXXX XXXX" for DB storage
+        request.setCcNumber(request.getCcNumber().replaceAll("(\\d{4})(\\d{4})(\\d{4})(\\d{4})", "$1 $2 $3 $4"));
+
+        // 7) Check email is not already taken
+        if (customerRepository.emailExists(request.getEmail())) {
+            return new RegisterResponse("Email already in use", null, false);
+        }
+
+        // 8) Check credit card number is not already registered
+        if (customerRepository.creditCardExists(request.getCcNumber())) {
+            return new RegisterResponse("Credit card already in use", null, false);
+        }
+
+        // 9) Insert CC + customer, get back the new customerId
+        Integer newCustomerId = customerRepository.insertCustomerWithCreditCard(request);
+
+        System.out.println("[Registered new customer with ID:] " + newCustomerId);
+
+        // 10) Return success response
+        return new RegisterResponse("User registered successfully", newCustomerId, true);
     }
 }

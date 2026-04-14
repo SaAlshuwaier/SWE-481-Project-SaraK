@@ -1,6 +1,7 @@
 package com.swe481.backend.Dto.Repo;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -155,6 +156,7 @@ public List<String> findMovieIdsByFirstLetter(String startsWith, int page, int p
 
 
 
+
 public int countMoviesByGenre(Integer genreId) {
     return dsl
             .selectCount()
@@ -176,6 +178,22 @@ public List<String> findMovieIdsByGenre(Integer genreId, int page, int pageSize)
             .limit(pageSize)
             .offset(offset)
             .fetch(MOVIES.ID);
+}
+
+
+public Optional<Record5<String, String, Integer, String, Double>> findMovieRowById(String movieId) {
+    return dsl
+            .select(
+                    MOVIES.ID,
+                    MOVIES.TITLE,
+                    MOVIES.YEAR,
+                    MOVIES.DIRECTOR,
+                    DSL.coalesce(RATINGS.RATING.cast(Double.class), DSL.inline(0.0)).as("rating")
+            )
+            .from(MOVIES)
+            .leftJoin(RATINGS).on(RATINGS.MOVIEID.eq(MOVIES.ID))
+            .where(MOVIES.ID.eq(movieId))
+            .fetchOptional();
 }
 
 }
