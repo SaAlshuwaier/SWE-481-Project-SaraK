@@ -53,6 +53,20 @@ In this phase, we focused on developing  comprehensive test cases across backend
 - Robustness testing implemented using k6 to evaluate system behavior under failure conditions.
 - **Testing detailed explanation and execution instructions are defind under the '/docs' directory in Testing.md**
 
+## Phase 4 Status
+In this phase, we focused on implementing the system features based on the defined architecture and API specifications.
+
+### Completed in Phase 4:
+- Backend services fully implemented using Spring Boot.
+- Dynamic movie search functionality implemented.
+- Browse movies by genre implemented.
+- Browse movies by first letter implemented.
+- Movie details feature (getMovieById) implemented.
+- Star details feature implemented.
+- Authentication functionality implemented (login and registration).
+- Dynamic data rendering implemented across all pages.
+- Pagination, sorting, and filtering functionality implemented.
+  
 ## Team Members
 - Layan Alhugbani
 - Sara Alshuwaier
