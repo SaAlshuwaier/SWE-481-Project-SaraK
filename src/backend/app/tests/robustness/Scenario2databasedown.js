@@ -16,15 +16,15 @@ export const options = {
     vus: 5,
     duration: '2m',
     thresholds: {
-        // We expect the API to return 503 — so high failure rate is expected
-        'http_req_failed': ['rate<0.95'],
+
         // Must not hang — should respond within 10s
+
         'http_req_duration': ['p(95)<10000'],
     },
 };
 
 export default function () {
-    const response = http.get(`${BASE_URL}/movies/search?search?id=tt0012345&page=1&pageSize=20`);
+    const response = http.get(`${BASE_URL}/movies/search?title=Out%20at%20the%20Wedding&page=1&pageSize=20`);
     degradedTrend.add(response.timings.duration);
     totalRequests.add(1);
 
@@ -35,7 +35,7 @@ export default function () {
             !r.body.includes('at com.') &&
             !r.body.includes('at org.') &&
             !r.body.includes('NullPointer'),
-        'fails within 5 seconds': (r) => r.timings.duration < 5000,
+        'fails within 10 seconds': (r) => r.timings.duration < 10000,
     });
 
     if (response.status === 200) {

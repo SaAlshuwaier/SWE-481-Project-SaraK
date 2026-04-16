@@ -23,7 +23,7 @@ export const options = {
 
 export default function () {
     // Hit movies search
-    const moviesRes = http.get(`${BASE_URL}/movies/search?search?id=tt0012345&page=1&pageSize=20`);
+    const moviesRes = http.get(`${BASE_URL}/movies/search?title=Out%20at%20the%20Wedding&page=1&pageSize=20`);
     normalTrend.add(moviesRes.timings.duration);
     const moviesOk = check(moviesRes, {
         'movies endpoint returns 200': (r) => r.status === 200,

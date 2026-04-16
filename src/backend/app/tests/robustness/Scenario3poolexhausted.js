@@ -22,7 +22,7 @@ export const options = {
 };
 
 export default function () {
-    const response = http.get(`${BASE_URL}/movies/search?id=tt0012345&page=1&pageSize=20`);
+    const response = http.get(`${BASE_URL}/movies/search?title=Out%20at%20the%20Wedding&page=1&pageSize=20`);
     degradedTrend.add(response.timings.duration);
     totalRequests.add(1);
 
