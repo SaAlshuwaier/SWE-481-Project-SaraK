@@ -42,6 +42,17 @@ a:hover {
   color: #e50914 ;
 }
 
+/* Footer */
+.api-stack {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.api-stack router-outlet + * {
+  flex: 1;
+}
+
 /* Card */
 .card {
   border-radius: 12px;
