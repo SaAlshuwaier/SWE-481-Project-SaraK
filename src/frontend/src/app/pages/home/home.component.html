@@ -9,42 +9,46 @@
 
       <div class="row g-3 align-items-end">
 
-        <div class="col-md-3">
+        <div class="col-md-2">
           <label class="form-label">Title</label>
           <input
             class="form-control"
             placeholder="Search by title"
+            name="title"
             [(ngModel)]="filters.title" />
         </div>
 
         <div class="col-md-2">
           <label class="form-label">Year</label>
           <input
+            type="number"
             class="form-control"
             placeholder="e.g. 1994"
             [(ngModel)]="filters.year" />
-          <div class="error-text" *ngIf="yearError">
+          <div class="text-danger small mt-1" *ngIf="yearError">
   {{ yearError }}
 </div>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-2">
           <label class="form-label">Director</label>
           <input
             class="form-control"
             placeholder="Search by director..."
+            name="director"
             [(ngModel)]="filters.director" />
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-2">
           <label class="form-label">Star Name</label>
           <input
             class="form-control"
             placeholder="Search by star..."
+            name="star"
             [(ngModel)]="filters.star" />
         </div>
 
-        <div class="col-md-1 d-grid">
+        <div class="col-md-2 d-grid">
           <button
             class="btn btn-primary"
             (click)="goToSearchResults()"
