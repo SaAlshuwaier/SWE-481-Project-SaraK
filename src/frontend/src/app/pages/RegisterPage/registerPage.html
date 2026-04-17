@@ -1,156 +1,138 @@
-<header class="app-header">
-  <img class="app-logo" src="/favicon.ico" alt="PLOT BOX logo" />
-  <div class="app-title">
-    <h1>PLOT BOX</h1>
-    <p>Create Account</p>
-  </div>
+<header class="px-4 py-3 border-bottom d-flex align-items-center gap-2">
+  <img src="/favicon.ico" alt="PLOT BOX logo" width="64" height="64" />
+  <span class="fw-bold fs-5">PLOT BOX</span>
 </header>
 
-<section class="page-wrap">
-  <div class="card" data-testid="register-page">
-    <h2 class="title" data-testid="register-title">Register</h2>
+<section class="page-wrap container d-flex justify-content-center py-4">
+  <div class="card shadow-sm p-5 col-12" data-testid="register-page">
+    <p class="text-muted text-center mb-0 fs-5">Millions of movies. One account.</p>
+    <h2 class="title text-center mb-4 mt-3 fs-3" data-testid="register-title">Let's create your account</h2>
 
-    <div class="form">
+    <div class="form d-flex flex-column gap-3">
+      <p class="fw-semibold text-secondary small mb-0">Personal Information</p>
 
       <!-- Customer fields -->
-      <label class="label">First Name</label>
-      <input
-        class="input"
-        [value]="firstName()"
-        (input)="setFirstName(($any($event.target).value))"
-        data-testid="reg-firstname"
-        maxlength="50"
-      />
+      <div>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="label form-label fw-semibold text-secondary small">First Name</label>
+            <input class="input form-control" [value]="firstName()" (input)="setFirstName(($any($event.target).value))"
+              data-testid="reg-firstname" maxlength="50" />
+          </div>
+          <div class="col-md-6">
+            <label class="label form-label fw-semibold text-secondary small">Last Name</label>
+            <input class="input form-control" [value]="lastName()" (input)="setLastName(($any($event.target).value))"
+              data-testid="reg-lastname" maxlength="50" />
+          </div>
+        </div>
+      </div>
 
-      <label class="label">Last Name</label>
-      <input
-        class="input"
-        [value]="lastName()"
-        (input)="setLastName(($any($event.target).value))"
-        data-testid="reg-lastname"
-        maxlength="50"
-      />
+      <div>
 
-      <label class="label">Email</label>
-      <input
-        class="input"
-        type="email"
-        [value]="email()"
-        (input)="setEmail(($any($event.target).value))"
-        (blur)="emailTouched.set(true)"
-        placeholder="name@example.com"
-        data-testid="reg-email"
-        maxlength="50"
-      />
-      <div *ngIf="emailTouched() && !isValidEmail(email())" class="err-box">
+        <label class="label form-label fw-semibold text-secondary small">Email</label>
+        <input class="input form-control" type="email" [value]="email()" (input)="setEmail(($any($event.target).value))"
+          (blur)="emailTouched.set(true)" placeholder="name@example.com" data-testid="reg-email" maxlength="50" />
+      </div>
+      <div *ngIf="emailTouched() && !isValidEmail(email())" class="err-box text-danger small">
         Invalid email format
       </div>
 
-      <label class="label">Password</label>
-      <input
-        class="input"
-        type="password"
-        [value]="password()"
-        (input)="setPassword(($any($event.target).value))"
-        placeholder="••••••••"
-        data-testid="reg-password"
-        maxlength="20"
-      />
+      <div>
+        <div class="row g-3">
+          <div class="col-md-6">
 
-       <!--confirm password field -->
-      <label class="label">Confirm Password</label>
-      <input
-        class="input"
-        type="password"
-        [value]="confirmPassword()"
-        (input)="setConfirmPassword(($any($event.target).value))"
-        (blur)="confirmTouched.set(true)"
-        placeholder="••••••••"
-        data-testid="reg-confirm-password"
-        maxlength="20"
-      />
+            <label class="label form-label fw-semibold text-secondary small">Password</label>
+            <input class="input form-control" type="password" [value]="password()"
+              (input)="setPassword(($any($event.target).value))" placeholder="••••••••" data-testid="reg-password"
+              maxlength="20" />
+          </div>
+
+
+          <!--confirm password field -->
+          <div class="col-md-6">
+            <label class="label form-label fw-semibold text-secondary small">Confirm Password</label>
+            <input class="input form-control" type="password" [value]="confirmPassword()"
+              (input)="setConfirmPassword(($any($event.target).value))" (blur)="confirmTouched.set(true)"
+              placeholder="••••••••" data-testid="reg-confirm-password" maxlength="20" />
+          </div>
+        </div>
+      </div>
       <!-- confirm password error -->
-      <div *ngIf="confirmTouched() && confirmPassword() && !passwordsMatch()" class="err-box">
+      <div *ngIf="confirmTouched() && confirmPassword() && !passwordsMatch()" class="err-box text-danger small">
         Passwords do not match
       </div>
+      <div>
+        <label class="label form-label fw-semibold text-secondary small">Address</label>
+        <input class="input form-control" [value]="address()" (input)="setAddress(($any($event.target).value))"
+          data-testid="reg-address" maxlength="200" />
+      </div>
 
-      <label class="label">Address</label>
-      <input
-        class="input"
-        [value]="address()"
-        (input)="setAddress(($any($event.target).value))"
-        data-testid="reg-address"
-        maxlength="200"
-      />
+      <hr class="my-2" />
+      <p class="fw-semibold text-secondary small mb-0">Payment Details</p>
 
       <!-- Credit card fields -->
-      <label class="label">Card Number</label>
-      <input
-        class="input"
-        [value]="ccNumber()"
-        (input)="setCcNumber(($any($event.target).value))"
-        (blur)="ccNumberTouched.set(true)"
-        placeholder="0000 0000 0000 0000"
-        data-testid="reg-ccnumber"
-        maxlength="20"
-      />
+      <div>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="label form-label fw-semibold text-secondary small">Card Number</label>
+            <input class="input form-control" [value]="ccNumber()" (input)="setCcNumber(($any($event.target).value))"
+              (blur)="ccNumberTouched.set(true)" placeholder="0000 0000 0000 0000" data-testid="reg-ccnumber"
+              maxlength="20" />
+          </div>
 
-      <div *ngIf="ccNumberTouched() && ccNumber() && !isValidCcNumber(ccNumber())" class="err-box">
-        Card number must be exactly 16 digits (numbers only)
+          <div *ngIf="ccNumberTouched() && ccNumber() && !isValidCcNumber(ccNumber())"
+            class="err-box text-danger small">
+            Card number must be exactly 16 digits (numbers only)
+          </div>
+          <div class="col-md-6">
+            <label class="label form-label fw-semibold text-secondary small">Card Expiration Date</label>
+            <input class="input form-control" type="date" [value]="ccExpiration()" [min]="today"
+              (input)="setCcExpiration(($any($event.target).value))" data-testid="reg-ccexpiration" maxlength="50" />
+          </div>
+        </div>
       </div>
 
-      <label class="label">Card Expiration Date</label>
-      <input
-        class="input"
-        type="date"
-        [value]="ccExpiration()"
-        [min]="today"
-        (input)="setCcExpiration(($any($event.target).value))"
-        data-testid="reg-ccexpiration"
-        maxlength="50"
-      />
 
-      <label class="label">Name on Card (First Name)</label>
-      <input
-        class="input"
-        [value]="ccFirstName()"
-        (input)="setCcFirstName(($any($event.target).value))"
-        (blur)="ccFirstNameTouched.set(true)"
-        data-testid="reg-ccfirstname"
-        maxlength="50"
-      />
+      <div>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="label form-label fw-semibold text-secondary small">Name on Card (First Name)</label>
+            <input class="input form-control" [value]="ccFirstName()"
+              (input)="setCcFirstName(($any($event.target).value))" (blur)="ccFirstNameTouched.set(true)"
+              data-testid="reg-ccfirstname" maxlength="50" />
+          </div>
 
-      <!-- cc first name error -->
-      <div *ngIf="ccFirstNameTouched() && ccFirstName() && !isValidCardName(ccFirstName())" class="err-box">
-        Name on card must contain letters only
+          <!-- cc first name error -->
+          <div *ngIf="ccFirstNameTouched() && ccFirstName() && !isValidCardName(ccFirstName())"
+            class="err-box text-danger small">
+            Name on card must contain letters only
+          </div>
+
+          <div class="col-md-6">
+            <label class="label form-label fw-semibold text-secondary small">Name on Card (Last Name)</label>
+            <input class="input form-control" [value]="ccLastName()"
+              (input)="setCcLastName(($any($event.target).value))" (blur)="ccLastNameTouched.set(true)"
+              data-testid="reg-cclastname" />
+          </div>
+        </div>
       </div>
-
-      <label class="label">Name on Card (Last Name)</label>
-      <input
-        class="input"
-        [value]="ccLastName()"
-        (input)="setCcLastName(($any($event.target).value))"
-        (blur)="ccLastNameTouched.set(true)"
-        data-testid="reg-cclastname"
-      />
       <!--cc last name error -->
-      <div *ngIf="ccLastNameTouched() && ccLastName() && !isValidCardName(ccLastName())" class="err-box">
+      <div *ngIf="ccLastNameTouched() && ccLastName() && !isValidCardName(ccLastName())"
+        class="err-box text-danger small">
         Name on card must contain letters only
       </div>
 
-      <button
-        class="btn"
-        (click)="submit()"
-        data-testid="reg-submit"
-      >
+      <button class="btn btn-primary btn-lg mt-2 w-50 d-block mx-auto" (click)="submit()"
+        [disabled]="isLoading() || !firstName() || !lastName() || !isValidEmail(email()) || !password() || !passwordsMatch() || !address() || !ccNumber() || !ccExpiration() || !ccFirstName() || !ccLastName()"
+        data-testid="reg-submit">
         {{ isLoading() ? 'Creating…' : 'Create Account' }}
       </button>
 
-      <p class="register-link">
+      <p class="register-link text-center small text-muted mt-2">
         Already have an account? <a routerLink="/login">Sign in here</a>
       </p>
 
-      <div *ngIf="error()" class="err-box" data-testid="reg-error">
+      <div *ngIf="error()" class="err-box text-danger small" data-testid="reg-error">
         {{ error() }}
       </div>
 

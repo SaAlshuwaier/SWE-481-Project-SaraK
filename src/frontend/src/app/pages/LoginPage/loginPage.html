@@ -1,80 +1,62 @@
-<header class="app-header container d-flex align-items-center gap-3 mt-4">
-  <div class="app-title">
-    <h1 class="mb-0 fw-bold">PLOT BOX</h1>
-  </div>
-
+<header class="px-4 py-3 border-bottom d-flex align-items-center gap-2">
+  <img src="/favicon.ico" alt="PLOT BOX logo" width="64" height="64" />
+  <span class="fw-bold fs-5">PLOT BOX</span>
 </header>
+<section class="page-wrap container d-flex justify-content-center align-items-center pt-5">
+  <div class="row w-100 justify-content-center">
 
-<section class="page-wrap container d-flex justify-content-center mt-4">
+    <div class="card shadow-sm p-5 col-12 col-md-7 col-lg-6 mb-5">
 
-  <div class="card shadow p-4 w-100" style="max-width: 400px;" data-testid="login-page">
+      <p class="text-muted text-center mb-0 fs-5">Welcome back </p>
+      <h2 class="title text-center mb-4 mt-3 fs-3" data-testid=" login-title">Sign in</h2>
 
-    <h2 class="title text-center mb-3" data-testid="login-title">Sign in</h2>
+      <div class="form d-flex flex-column gap-3">
 
-    <div class="form d-flex flex-column gap-3">
+        <!-- Email -->
+        <div>
+          <label class="label form-label fw-semibold text-secondary small">Email</label>
+          <input class="input form-control" type="email" [value]="email()"
+            (input)="onEmailInput(($any($event.target).value))" (blur)="emailTouched.set(true)"
+            placeholder="name@example.com" data-testid="login-email" />
+        </div>
 
-      <!-- Email -->
-      <div>
-        <label class="label form-label">Email</label>
-        <input
-          class="input form-control"
-          type="email"
-          [value]="email()"
-          (input)="onEmailInput(($any($event.target).value))"
-          (blur)="emailTouched.set(true)"
-          placeholder="name@example.com"
-          data-testid="login-email"
-        />
-      </div>
+        <div *ngIf="emailTouched() && !isValidEmail(email())" class="err-box text-danger small">
+          Invalid email format
+        </div>
 
-      <div
-        *ngIf="emailTouched() && !isValidEmail(email())"
-        class="err-box text-danger small"
-      >
-        Invalid email format
-      </div>
+        <!-- Password -->
+        <div>
+          <label class="label form-label fw-semibold text-secondary small">Password</label>
+          <input class="input form-control" type="password" [value]="password()"
+            (input)="onPasswordInput(($any($event.target).value))" placeholder="••••••••"
+            data-testid="login-password" />
+        </div>
 
-      <!-- Password -->
-      <div>
-        <label class="label form-label">Password</label>
-        <input
-          class="input form-control"
-          type="password"
-          [value]="password()"
-          (input)="onPasswordInput(($any($event.target).value))"
-          placeholder="••••••••"
-          data-testid="login-password"
-        />
-      </div>
+        <!-- Button -->
+        <button class="btn btn-primary w-100" (click)="submit()"
+          [disabled]="isLoading() || !isValidEmail(email()) || !password()" data-testid="login-submit">
+          {{ isLoading() ? 'Signing in…' : 'Sign in' }}
+        </button>
 
-      <!-- Button -->
-      <button
-        class="btn btn-primary w-100"
-        (click)="submit()"
-        [disabled]="isLoading() || !isValidEmail(email()) || !password()"
-        data-testid="login-submit"
-      >
-        {{ isLoading() ? 'Signing in…' : 'Login' }}
-      </button>
+        <!-- Register -->
+        <p class="register-link text-center small text-muted mt-2">
+          Don't have an account?
+          <a routerLink="/register">Register here</a>
+        </p>
 
-      <!-- Register -->
-      <p class="register-link text-center small mt-2">
-        Don't have an account?
-        <a routerLink="/register">Register here</a>
-      </p>
+        <!-- Error -->
+        <div *ngIf="error()" class="err-box text-danger small mt-2">
+          {{ error() }}
+        </div>
 
-      <!-- Error -->
-      <div *ngIf="error()" class="err-box text-danger small mt-2">
-        {{ error() }}
-      </div>
+        <!-- Success -->
+        <div *ngIf="result()" class="ok-box alert alert-success mt-2">
+          {{ result()?.message }}
+        </div>
 
-      <!-- Success -->
-      <div *ngIf="result()" class="ok-box alert alert-success mt-2">
-        {{ result()?.message }}
       </div>
 
     </div>
-
   </div>
 
 </section>
