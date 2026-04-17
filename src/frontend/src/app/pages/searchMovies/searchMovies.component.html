@@ -1,66 +1,93 @@
-<div class="container">
+<div class="container py-4">
 
-  <div class="page-header">
-    <h1>Search Results</h1>
-
+  <div class="mb-4">
+    <h1 class="mb-3">Search Results</h1>
   </div>
 
-  <div class="context" *ngIf="query.title || query.year || query.director || query.star">
+  <div
+    class="alert alert-light border d-flex flex-wrap gap-3"
+    *ngIf="query.title || query.year || query.director || query.star"
+  >
     <span><b>Title:</b> {{ query.title || '-' }}</span>
     <span><b>Year:</b> {{ query.year || '-' }}</span>
     <span><b>Director:</b> {{ query.director || '-' }}</span>
     <span><b>Star:</b> {{ query.star || '-' }}</span>
   </div>
 
-  <div class="loading" *ngIf="loading()">
+  <div class="text-center my-4" *ngIf="loading()">
     Loading...
   </div>
 
-  <div class="error" *ngIf="!loading() && errorMessage()">
+  <div class="alert alert-danger" *ngIf="!loading() && errorMessage()">
     {{ errorMessage() }}
   </div>
 
-  <div class="empty" *ngIf="!loading() && !errorMessage() && pageState() && movies().length === 0">
+  <div
+    class="alert alert-warning"
+    *ngIf="!loading() && !errorMessage() && pageState() && movies().length === 0"
+  >
     No movies found.
   </div>
 
-  <div class="movies" *ngIf="!loading() && movies().length > 0">
-    <div class="movie-card" *ngFor="let movie of movies()">
-      <h3>
-        <a [routerLink]="['/movies', movie.id]">
-          {{ movie.title }}
-        </a>
-      </h3>
+  <div class="row g-4" *ngIf="!loading() && movies().length > 0">
+    <div class="col-12" *ngFor="let movie of movies()">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h3 class="h5 card-title mb-3">
+            <a [routerLink]="['/movies', movie.id]" class="text-decoration-none">
+              {{ movie.title }}
+            </a>
+          </h3>
 
-      <p>Year: {{ movie.year }}</p>
-      <p>Director: {{ movie.director }}</p>
-      <p>Rating: {{ movie.rating }}</p>
+          <p class="mb-1"><strong>Year:</strong> {{ movie.year }}</p>
+          <p class="mb-1"><strong>Director:</strong> {{ movie.director }}</p>
+          <p class="mb-2"><strong>Rating:</strong> {{ movie.rating }}</p>
 
-      <p>
-        Genres:
-        <ng-container *ngFor="let g of movie.genres; let last = last">
-          <a [routerLink]="['/movies/genre', g.id]" [queryParams]="{ genreName: g.name }">
-            {{ g.name }}
-          </a><span *ngIf="!last">, </span>
-        </ng-container>
-      </p>
+          <p class="mb-2">
+            <strong>Genres:</strong>
+            <ng-container *ngFor="let g of movie.genres; let last = last">
+              <a
+                [routerLink]="['/movies/genre', g.id]"
+                [queryParams]="{ genreName: g.name }"
+                class="text-decoration-none"
+              >
+                {{ g.name }}
+              </a><span *ngIf="!last">, </span>
+            </ng-container>
+          </p>
 
-      <p>
-        Stars:
-        <ng-container *ngFor="let s of movie.stars; let last = last">
-          <a [routerLink]="['/stars', s.id]">{{ s.name }}</a><span *ngIf="!last">, </span>
-        </ng-container>
-      </p>
+          <p class="mb-0">
+            <strong>Stars:</strong>
+            <ng-container *ngFor="let s of movie.stars; let last = last">
+              <a [routerLink]="['/stars', s.id]" class="text-decoration-none">
+                {{ s.name }}
+              </a><span *ngIf="!last">, </span>
+            </ng-container>
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="pagination" *ngIf="!loading() && pageState()">
-    <button (click)="previousPage()" [disabled]="!pageState()?.hasPrev">
+  <div
+    class="d-flex justify-content-center align-items-center gap-3 mt-4"
+    *ngIf="!loading() && pageState()"
+  >
+    <button
+      class="btn btn-primary"
+      (click)="previousPage()"
+      [disabled]="!pageState()?.hasPrev"
+    >
       Previous
     </button>
 
-    <span>Page {{ pageState()?.page }}</span>
-    <button (click)="nextPage()" [disabled]="!pageState()?.hasNext">
+    <span class="fw-semibold">Page {{ pageState()?.page }}</span>
+
+    <button
+      class="btn btn-primary"
+      (click)="nextPage()"
+      [disabled]="!pageState()?.hasNext"
+    >
       Next
     </button>
   </div>

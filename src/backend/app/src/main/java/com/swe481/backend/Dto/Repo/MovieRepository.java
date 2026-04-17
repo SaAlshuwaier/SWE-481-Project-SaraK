@@ -9,6 +9,9 @@ import org.jooq.Record5;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 import static com.jooq.swe481.generated.tables.Genres.GENRES;
 import static com.jooq.swe481.generated.tables.GenresInMovies.GENRES_IN_MOVIES;
 import static com.jooq.swe481.generated.tables.Movies.MOVIES;
@@ -195,5 +198,4 @@ public Optional<Record5<String, String, Integer, String, Double>> findMovieRowBy
             .where(MOVIES.ID.eq(movieId))
             .fetchOptional();
 }
-
 }
