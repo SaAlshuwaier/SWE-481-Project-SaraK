@@ -1,60 +1,51 @@
-<header class="app-header">
-  <img class="app-logo" src="/favicon.ico" alt="PLOT BOX logo" />
-
-  <div class="app-title">
-    <h1>PLOT BOX</h1>
-    <p>Cart</p>
-  </div>
-</header>
-
-<section class="page-wrap">
-  <div class="cart-card" data-testid="cart-page">
+<section class="container py-5">
+  <div class="card shadow-sm p-4" data-testid="cart-page">
     <h2 class="cart-title">Shopping Cart</h2>
 
     <!-- When cart is not loaded yet -->
-    <div *ngIf="!cart()" class="empty-block" data-testid="cart-not-loaded">
-      <div class="empty" data-testid="cart-not-loaded-text">No cart loaded.</div>
+    <div *ngIf="!cart()" class="text-center py-5" data-testid="cart-not-loaded">
+      <div class="text-muted" data-testid="cart-not-loaded-text">No cart loaded.</div>
     </div>
 
     <!-- When cart exists -->
     <div *ngIf="cart() as c" data-testid="cart-loaded">
-      <div class="meta" data-testid="cart-meta">
+      <div class="d-flex justify-content-between align-items-center mb-3" data-testid="cart-meta">
         <div class="meta-row">
-          <span class="meta-label">Total Quantity</span>
-          <span class="meta-value" data-testid="cart-total-qty">
+          <span class="text-muted">Total Quantity</span>
+          <span class="fw-bold" data-testid="cart-total-qty">
             {{ c.totalQuantity }}
           </span>
         </div>
       </div>
 
-      <div class="table-wrap" data-testid="cart-table-wrap">
+      <div class="table-responsive" data-testid="cart-table-wrap">
         <table
-          class="cart-table"
+          class="table align-middle"
           *ngIf="c.items && c.items.length > 0; else emptyCart"
           data-testid="cart-table"
         >
-          <thead>
+          <thead class="table-light">
             <tr>
               <th>Movie</th>
-              <th class="col-qty">Quantity</th>
-              <th class="col-actions">Actions</th>
+              <th class="text-center">Quantity</th>
+              <th class="text-end">Actions</th>
             </tr>
           </thead>
 
           <tbody data-testid="cart-tbody">
             <tr *ngFor="let it of c.items" data-testid="cart-row">
-              <td class="movie-cell">
-                <span class="movie-title" data-testid="cart-item-title">
+              <td>
+                <span class="fw-medium" data-testid="cart-item-title">
                   {{ it.title }}
                 </span>
-                <span class="movie-id" data-testid="cart-item-id">
+                <span class="text-muted ms-2" data-testid="cart-item-id">
                   {{ it.movieId }}
                 </span>
               </td>
 
-              <td class="qty-cell">
+              <td class="text-center" style="max-width: 120px;">
                 <input
-                  class="qty-input"
+                  class="form-control text-center"
                   type="number"
                   min="0"
                   [value]="it.quantity"
@@ -65,9 +56,9 @@
                 />
               </td>
 
-              <td class="actions-cell">
+              <td class="text-end">
                 <button
-                  class="btn btn-danger"
+                  class="btn btn-danger btn-sm"
                   (click)="deleteItemById(it.movieId)"
                   [disabled]="isLoading()"
                   data-testid="remove-item"
@@ -80,13 +71,13 @@
         </table>
 
         <ng-template #emptyCart>
-          <div class="empty" data-testid="cart-empty">Cart is empty.</div>
+          <div class="text-center py-4 text-muted" data-testid="cart-empty">Cart is empty.</div>
         </ng-template>
       </div>
 
-      <div class="cart-footer" data-testid="cart-footer">
+      <div class="d-flex align-items-center mt-4">
         <button
-          class="btn btn-ghost"
+          class="btn btn-danger"
           (click)="clearCartLocal()"
           [disabled]="isLoading()"
           data-testid="clear-cart"
@@ -94,31 +85,31 @@
           Clear Cart
         </button>
 
-<button
-  class="btn btn-ghost"
-  type="button"
-  routerLink="/movies"
-  data-testid="continue-shopping"
->
-  Continue Shopping
-</button>
-
-<button
-  class="btn btn-primary"
-  type="button"
-  routerLink="/checkout"
-  data-testid="proceed-checkout"
->
-  Proceed to Checkout
-</button>
-      </div>
+          <div class="d-flex gap-2 ms-auto">
+            <button
+            class="btn btn-outline-secondary"
+            type="button"
+            routerLink="/movies"
+           data-testid="continue-shopping" >
+           Continue Shopping
+            </button>
+            <button
+              class="btn btn-primary"
+               type="button"
+                routerLink="/checkout"
+                data-testid="proceed-checkout"
+                >
+                Proceed to Checkout
+              </button>
+            </div>
+          </div>
 
       <!-- Loading / Error -->
-      <div *ngIf="isLoading()" class="muted" data-testid="cart-loading">
+      <div *ngIf="isLoading()" class="text-muted mt-3" data-testid="cart-loading">
         Loading…
       </div>
 
-      <div *ngIf="error()" class="err-box" data-testid="cart-error">
+      <div *ngIf="error()" class="alert alert-danger mt-3" data-testid="cart-error">
         {{ error() }}
       </div>
     </div>

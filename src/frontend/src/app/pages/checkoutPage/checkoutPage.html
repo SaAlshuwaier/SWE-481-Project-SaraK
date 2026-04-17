@@ -1,47 +1,38 @@
-<header class="app-header">
-  <img class="app-logo" src="/favicon.ico" alt="PLOT BOX logo" />
+<section class="container py-5 d-flex justify-content-center">
+  <div class="card p-4 shadow-sm w-100" style="max-width: 500px;">
+    <h2 class="h4 mb-4 fw-bold" data-testid="checkout-title">Checkout</h2>
 
-  <div class="app-title">
-    <h1>PLOT BOX</h1>
-    <p>Checkout</p>
-  </div>
-</header>
-
-<section class="page-wrap">
-  <div class="card">
-    <h2 class="title" data-testid="checkout-title">Checkout</h2>
-
-    <div class="form">
-      <label class="label">First Name</label>
+    <div class="d-flex flex-column gap-3">
+      <label class="form-label">First Name</label>
       <input
-        class="input"
+        class="form-control"
         data-testid="checkout-firstname"
         [value]="firstName()"
         (input)="setFirstName(($any($event.target).value))"
         placeholder="First name"
       />
 
-      <label class="label">Last Name</label>
+      <label class="form-label">Last Name</label>
       <input
-        class="input"
+        class="form-control"
         data-testid="checkout-lastname"
         [value]="lastName()"
         (input)="setLastName(($any($event.target).value))"
         placeholder="Last name"
       />
 
-      <label class="label">Card Number</label>
+      <label class="form-label">Card Number</label>
       <input
-        class="input"
+        class="form-control"
         data-testid="checkout-cardnumber"
         [value]="cardNumber()"
         (input)="setCardNumber(($any($event.target).value))"
         placeholder="1234-5678-9012-3456"
       />
 
-      <label class="label">Expiration</label>
+      <label class="form-label">Expiration</label>
       <input
-        class="input"
+        class="form-control"
         data-testid="checkout-expiration"
         [value]="expiration()"
         (input)="setExpiration(($any($event.target).value))"
@@ -49,7 +40,7 @@
       />
 
       <button
-        class="btn"
+        class="btn btn-primary mt-2"
         data-testid="checkout-submit"
         (click)="submit()"
         [disabled]="isLoading()"
@@ -57,13 +48,13 @@
         {{ isLoading() ? 'Processing…' : 'Pay Now' }}
       </button>
 
-      <div *ngIf="error()" class="err-box" data-testid="checkout-error">
+      <div *ngIf="error()" class="alert alert-danger mt-2" data-testid="checkout-error">
         {{ error() }}
       </div>
 
-      <div *ngIf="result()" class="ok-box" data-testid="checkout-success">
-        <div class="ok-title">Response</div>
-        <div class="ok-text" data-testid="checkout-success-message">
+      <div *ngIf="result()" class="alert alert-success mt-2" data-testid="checkout-success">
+        <div class="fw-bold">Response</div>
+        <div data-testid="checkout-success-message">
           {{ result()?.message }}
         </div>
       </div>
