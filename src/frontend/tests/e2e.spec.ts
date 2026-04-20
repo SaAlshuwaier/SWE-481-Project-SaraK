@@ -441,6 +441,7 @@ test('E2E: Cart page loads, Load Cart works, update/delete work, clear local wor
   await expect(page).toHaveURL(/\/checkout(\?.*)?$/);
 });
 test('E2E: Checkout success flow (valid card)', async ({ page }) => {
+  await login(page);
   // Add item to cart first
   const context = await page.context();
   const request = context.request;
@@ -460,10 +461,10 @@ test('E2E: Checkout success flow (valid card)', async ({ page }) => {
 
   await expect(page.getByTestId('checkout-title')).toBeVisible();
 
-  await page.getByTestId('checkout-firstname').fill('Janet');
-  await page.getByTestId('checkout-lastname').fill('Trink');
-  await page.getByTestId('checkout-card').fill('1354895485215896548');
-  await page.getByTestId('checkout-expiration').fill('2004-03-25');
+  await page.getByTestId('checkout-firstname').fill('Chris');
+  await page.getByTestId('checkout-lastname').fill('Carr');
+  await page.getByTestId('checkout-card').fill('755003');
+  await page.getByTestId('checkout-expiration').fill('2007-01-01');
 
   await page.getByTestId('checkout-submit').click();
 
@@ -475,6 +476,7 @@ test('E2E: Checkout success flow (valid card)', async ({ page }) => {
 });
 
 test('E2E: Checkout fails with invalid card', async ({ page }) => {
+  await login(page);
   const context = await page.context();
   const request = context.request;
 

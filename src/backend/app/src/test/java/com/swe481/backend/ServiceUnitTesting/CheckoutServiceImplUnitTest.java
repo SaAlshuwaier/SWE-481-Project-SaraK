@@ -1,22 +1,29 @@
 package com.swe481.backend.ServiceUnitTesting;
 
-import com.swe481.backend.Dto.Cart;
-import com.swe481.backend.Dto.CheckoutResult;
-import com.swe481.backend.Dto.Repo.CheckoutRepository;
-import com.swe481.backend.service.serviceImp.CheckoutServiceImpl;
-import jakarta.servlet.http.HttpSession;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import org.mockito.Mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.swe481.backend.Dto.Cart;
+import com.swe481.backend.Dto.CheckoutResult;
+import com.swe481.backend.Dto.Repo.CheckoutRepository;
+import com.swe481.backend.service.serviceImp.CheckoutServiceImpl;
+
+import jakarta.servlet.http.HttpSession;
 
 @ExtendWith(MockitoExtension.class)
 public class CheckoutServiceImplUnitTest {
@@ -86,10 +93,31 @@ public class CheckoutServiceImplUnitTest {
         assertEquals("No customer account is linked to this card.", result.getMessage());
     }
 
+
+// new test to verify that the card's customer ID matches the logged-in user
+    @Test
+    void processCheckoutShouldReturnInvalidCardWhenCardBelongsToDifferentLoggedInUser() {
+        when(checkoutRepository.isValidCreditCard(any(), any(), any(), any())).thenReturn(true);
+        when(checkoutRepository.findCustomerId("Janet", "Trink", "1354895485215896548")).thenReturn(135002);
+        when(httpSession.getAttribute("customerId")).thenReturn(755003);
+
+    CheckoutResult result = checkoutService.processCheckout(
+            "Janet",
+            "Trink",
+            "1354895485215896548",
+            "2004-03-25"
+    );
+
+    assertFalse(result.isSuccess());
+    assertEquals("INVALID_CARD", result.getCode());
+    assertEquals("The card information does not match our records.", result.getMessage());
+}
+
     @Test
     void processCheckoutShouldReturnEmptyCartWhenCartSessionIsMissing() {
         when(checkoutRepository.isValidCreditCard(any(), any(), any(), any())).thenReturn(true);
         when(checkoutRepository.findCustomerId("Janet", "Trink", "1354895485215896548")).thenReturn(1);
+        when(httpSession.getAttribute("customerId")).thenReturn(1); // Simulate logged-in user with ID 1
         when(httpSession.getAttribute("cart")).thenReturn(null);
 
         CheckoutResult result = checkoutService.processCheckout(
@@ -111,6 +139,7 @@ public class CheckoutServiceImplUnitTest {
 
         when(checkoutRepository.isValidCreditCard(any(), any(), any(), any())).thenReturn(true);
         when(checkoutRepository.findCustomerId("Janet", "Trink", "1354895485215896548")).thenReturn(1);
+        when(httpSession.getAttribute("customerId")).thenReturn(1); // Simulate logged-in user with ID 1
         when(httpSession.getAttribute("cart")).thenReturn(cart);
 
         CheckoutResult result = checkoutService.processCheckout(

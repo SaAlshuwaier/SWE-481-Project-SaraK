@@ -21,10 +21,11 @@
         placeholder="Last name"
       />
 
+      <!-- update data-testid="checkout-cardnumber" to ata-testid="checkout-card" -->
       <label class="form-label">Card Number</label>
       <input
         class="form-control"
-        data-testid="checkout-cardnumber"
+        data-testid="checkout-card"
         [value]="cardNumber()"
         (input)="setCardNumber(($any($event.target).value))"
         placeholder="1234-5678-9012-3456"
@@ -60,4 +61,4 @@
       </div>
     </div>
   </div>
-</section>
+</section> */
