@@ -142,7 +142,7 @@ describe('HomeComponent', () => {
  
 	expect(component.filters).toEqual({
   	title: '',
-  	year: '',
+  	year: null,
   	director: '',
   	star: '',
 	});
