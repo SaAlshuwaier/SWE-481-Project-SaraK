@@ -31,8 +31,11 @@ describe('MovieDetailsPageComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             paramMap: of(convertToParamMap(movieId ? { movieId } : {})),
+          snapshot: {                              
+            queryParamMap: convertToParamMap({}),
           },
         },
+       },
       ],
     }).compileComponents();
 
@@ -40,16 +43,13 @@ describe('MovieDetailsPageComponent', () => {
     component = fixture.componentInstance;
   }
 
-  beforeEach(() => {
-    vi.clearAllMocks();
+ beforeEach(() => {
+  vi.clearAllMocks(); 
 
-    movieService = {
-      getMovieById: vi.fn(),
-    };
+  movieService = { getMovieById: vi.fn() };
+  cartService = { addItem: vi.fn() };
 
-    cartService = {
-      addItem: vi.fn(),
-    };
+  movieService.getMovieById.mockReturnValue(of(null)); 
 
     mockMovie = {
       id: 'tt0413051',
