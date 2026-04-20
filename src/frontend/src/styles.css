@@ -66,7 +66,7 @@ a:hover {
 
 /* Navbar */
 .navbar {
-  background-color: #111 ;
+  background-color: #103552 ;
 }
 
 .navbar .nav-link {
@@ -74,7 +74,18 @@ a:hover {
 }
 
 .navbar .nav-link:hover {
-  color: #103552 ;
+  color: #bfd8ec ;
+}
+
+/* Footer */
+.api-stack {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.api-stack router-outlet + * {
+  flex: 1;
 }
 
 /* Footer */
