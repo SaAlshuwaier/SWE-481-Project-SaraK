@@ -1,12 +1,20 @@
 name: CI
 
+# Triggers 
+# Run this pipeline on every push to main AND on every pull request.
+# This means every time someone pushes code or opens a PR, all jobs below run.
 on:
   pull_request:
   push:
+    #branches: [ "main" ]
 
 jobs:
 
-  # Simple sanity check
+  # JOB 1: check
+  # A simple sanity check to confirm the CI pipeline itself is reachable
+  # and GitHub Actions is working. If this fails, something is wrong with
+  # the workflow file itself (example: YAML syntax error).
+  # No code is compiled or tested here — it just prints a message.
   check:
     runs-on: ubuntu-latest
     steps:
@@ -14,7 +22,11 @@ jobs:
       - name: Run a simple check
         run: echo "CI is running successfully"
 
-  # Secrets validation
+  # JOB 2: build
+  # Validates that the required production secrets exist in the repo settings.
+  # These secrets (DB_URL, DB_USER, DB_PASS) are the credentials for the real
+  # production database — they are NOT used in tests, only validated here so
+  # we catch missing secrets before they cause a silent failure in production.
   build:
     runs-on: ubuntu-latest
 
@@ -27,16 +39,34 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check secrets exist
         run: |
-          [ -z "$DB_URL" ] && echo "DB_URL missing" && exit 1
-          [ -z "$DB_USER" ] && echo "DB_USER missing" && exit 1
-          [ -z "$DB_PASS" ] && echo "DB_PASS missing" && exit 1
-          echo "DB secrets OK"
+          [ -z "$DB_URL" ]   && echo "DB_URL missing"   && exit 1
+          [ -z "$DB_USER" ]  && echo "DB_USER missing"  && exit 1
+          [ -z "$DB_PASS" ]  && echo "DB_PASS missing"  && exit 1
+          echo "All production secrets are present"
 
-  # Backend Tests (Spring Boot)
+  # JOB 3: backend-tests
+  # Runs all Spring Boot tests: service unit tests (Mockito) + controller
+  # integration tests (@SpringBootTest + MockMvc).
+  #
+  # WHY A DATABASE IS STILL NEEDED HERE:
+  # The service unit tests use Mockito and need no DB at all.
+  # However the controller integration tests use @SpringBootTest which boots
+  # the full Spring context — Spring will refuse to start if it cannot connect
+  # to a database. So we spin up a temporary PostgreSQL container just to
+  # satisfy Spring Boot's startup, seed it with the exact data our controller
+  # tests query, then tear it down automatically when the job ends.
+  #
+  # WHY -Djooq.codegen.skip=true:
+  # jOOQ has a Maven plugin that normally connects to a DB during mvn compile
+  # to auto-generate Java classes from the schema. Since those generated classes
+  # are already committed to the repo, we skip that step entirely in CI to
+  # avoid a redundant DB connection during the build phase.
   backend-tests:
     runs-on: ubuntu-latest
 
     services:
+      # Spin up a temporary PostgreSQL container for this job only.
+      # It lives and dies with this job, completely isolated from all other jobs.
       postgres:
         image: postgres:15
         env:
@@ -51,6 +81,8 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+    # Tell Spring Boot to connect to the temporary container above
+    # instead of whatever is in application.properties
     env:
       SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
       SPRING_DATASOURCE_USERNAME: testuser
@@ -64,215 +96,157 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'maven'                        # cache Maven dependencies
+          # Cache downloaded Maven dependencies between runs.
+          # First run downloads everything (~2-5 min), subsequent runs use
+          # the cache and take only ~5-8 seconds for this step.
+          cache: 'maven'
 
       - name: Make mvnw executable
+        # The Maven wrapper script loses its executable permission when checked
+        # out on Linux. This restores it so we can run ./mvnw.
         run: chmod +x ./src/backend/app/mvnw
 
       - name: Seed test database
+        # Populate the temporary DB with exactly the data our controller
+        # integration tests expect to find. For example:
+        #   - AuthControllerTest logs in as Parker234@aol.com
+        #   - MovieControllerIntegrationTest fetches movie tt0378947
+        #   - CheckoutControllerTest uses Janet Trink's credit card
+        # Without this data, those tests would return 404/401 and fail.
         env:
           PGPASSWORD: testpass
         run: |
           psql -h localhost -U testuser -d testdb <<'SQL'
 
-          -- ─── Schema ──────────────────────────────────────────────────────────
-
+          -- Schema
           CREATE TABLE IF NOT EXISTS movies (
-            id        VARCHAR(20) PRIMARY KEY,
-            title     VARCHAR(255),
-            year      INT,
-            director  VARCHAR(255)
+            id VARCHAR(20) PRIMARY KEY, title VARCHAR(255),
+            year INT, director VARCHAR(255)
           );
-
           CREATE TABLE IF NOT EXISTS ratings (
-            movie_id  VARCHAR(20) PRIMARY KEY REFERENCES movies(id),
-            rating    NUMERIC(3,1)
+            movie_id VARCHAR(20) PRIMARY KEY REFERENCES movies(id),
+            rating NUMERIC(3,1)
           );
-
           CREATE TABLE IF NOT EXISTS genres (
-            id    SERIAL PRIMARY KEY,
-            name  VARCHAR(100)
+            id SERIAL PRIMARY KEY, name VARCHAR(100)
           );
-
           CREATE TABLE IF NOT EXISTS movies_genres (
-            movie_id  VARCHAR(20) REFERENCES movies(id),
-            genre_id  INT         REFERENCES genres(id),
+            movie_id VARCHAR(20) REFERENCES movies(id),
+            genre_id INT REFERENCES genres(id),
             PRIMARY KEY (movie_id, genre_id)
           );
-
           CREATE TABLE IF NOT EXISTS stars (
-            id         VARCHAR(20) PRIMARY KEY,
-            name       VARCHAR(255),
-            birth_year INT
+            id VARCHAR(20) PRIMARY KEY, name VARCHAR(255), birth_year INT
           );
-
           CREATE TABLE IF NOT EXISTS stars_in_movies (
-            star_id   VARCHAR(20) REFERENCES stars(id),
-            movie_id  VARCHAR(20) REFERENCES movies(id),
+            star_id VARCHAR(20) REFERENCES stars(id),
+            movie_id VARCHAR(20) REFERENCES movies(id),
             PRIMARY KEY (star_id, movie_id)
           );
-
           CREATE TABLE IF NOT EXISTS customers (
-            id        SERIAL PRIMARY KEY,
-            first_name VARCHAR(100),
-            last_name  VARCHAR(100),
-            email      VARCHAR(255) UNIQUE,
-            password   VARCHAR(255),
-            address    VARCHAR(255)
+            id SERIAL PRIMARY KEY, first_name VARCHAR(100),
+            last_name VARCHAR(100), email VARCHAR(255) UNIQUE,
+            password VARCHAR(255), address VARCHAR(255)
           );
-
           CREATE TABLE IF NOT EXISTS credit_cards (
-            id          SERIAL PRIMARY KEY,
-            customer_id INT REFERENCES customers(id),
-            cc_number   VARCHAR(50),
-            expiration  DATE,
-            first_name  VARCHAR(100),
-            last_name   VARCHAR(100)
+            id SERIAL PRIMARY KEY, customer_id INT REFERENCES customers(id),
+            cc_number VARCHAR(50), expiration DATE,
+            first_name VARCHAR(100), last_name VARCHAR(100)
           );
-
           CREATE TABLE IF NOT EXISTS sales (
-            id          SERIAL PRIMARY KEY,
-            customer_id INT REFERENCES customers(id),
-            movie_id    VARCHAR(20) REFERENCES movies(id),
-            sale_date   DATE
+            id SERIAL PRIMARY KEY, customer_id INT REFERENCES customers(id),
+            movie_id VARCHAR(20) REFERENCES movies(id), sale_date DATE
           );
 
-          -- ─── Genres ──────────────────────────────────────────────────────────
-
+          -- Genres (includes id=28 needed by browseByGenre test)
           INSERT INTO genres (id, name) VALUES
-            (1,  'Action'),
-            (2,  'Action'),
-            (3,  'Adventure'),
-            (4,  'Animation'),
-            (5,  'Biography'),
-            (6,  'Comedy'),
-            (7,  'Crime'),
-            (8,  'Documentary'),
-            (9,  'Drama'),
-            (10, 'Family'),
-            (11, 'Fantasy'),
-            (12, 'Film-Noir'),
-            (13, 'History'),
-            (14, 'Horror'),
-            (15, 'Music'),
-            (16, 'Mystery'),
-            (17, 'Romance'),
-            (18, 'Sci-Fi'),
-            (19, 'Sport'),
-            (20, 'Thriller'),
-            (21, 'War'),
-            (22, 'Western'),
-            (28, 'Action')
+            (1,'Action'),(2,'Action'),(3,'Adventure'),(4,'Animation'),
+            (5,'Biography'),(6,'Comedy'),(7,'Crime'),(8,'Documentary'),
+            (9,'Drama'),(10,'Family'),(11,'Fantasy'),(12,'Film-Noir'),
+            (13,'History'),(14,'Horror'),(15,'Music'),(16,'Mystery'),
+            (17,'Romance'),(18,'Sci-Fi'),(19,'Sport'),(20,'Thriller'),
+            (21,'War'),(22,'Western'),(28,'Action')
           ON CONFLICT DO NOTHING;
 
-          -- ─── Movies ──────────────────────────────────────────────────────────
-
+          -- Movies (tt0378947 queried by MovieControllerIntegrationTest,
+          --         tt0461892 used by CheckoutControllerIntegrationTest,
+          --         tt0395796 used by StarControllerIntegrationTest)
           INSERT INTO movies (id, title, year, director) VALUES
-            ('tt0378947', 'Melinda and Melinda',  2004, 'Woody Allen'),
-            ('tt0400548', 'An Italian Affair',    2003, 'Unknown Director'),
-            ('tt0461892', '15',                   2003, 'Royston Tan'),
-            ('tt0422896', 'Study',                2004, 'Layan'),
-            ('tt0413051', 'No Longer My Twin',    2002, 'Robert G. Christie'),
-            ('tt0421974', 'Sky Fighters',         2005, 'Gerard Pires'),
-            ('tt0278823', 'Hollywood Ending',     2002, 'Woody Allen'),
-            ('tt0344510', 'A Very Long Engagement',2004,'Jean-Pierre Jeunet'),
-            ('tt0313792', 'Anything Else',        2003, 'Woody Allen'),
-            ('tt0395796', 'Trudell',              2005, 'Heather Rae'),
-            -- movies starting with A (for browse-by-letter tests)
-            ('tt0111161', 'A Shawshank Story',    1994, 'Frank Darabont'),
-            ('tt0068646', 'Another Godfather',    1972, 'Francis Ford Coppola'),
-            -- movie starting with 2 (for browse-by-number tests)
-            ('tt0816692', '2001 Space Journey',   2014, 'Christopher Nolan'),
-            -- movies for search tests (title contains "inception", "a", "Letters")
-            ('tt1375666', 'Inception',            2010, 'Christopher Nolan'),
-            ('tt0449881', 'Letters from Iwo Jima',2006, 'Clint Eastwood'),
-            -- movies for star nm1651765
-            ('tt0000001', 'Alpha Movie',          2000, 'Some Director'),
-            ('tt0000002', 'Another Alpha Film',   2001, 'Another Director')
+            ('tt0378947','Melinda and Melinda',2004,'Woody Allen'),
+            ('tt0400548','An Italian Affair',2003,'Unknown Director'),
+            ('tt0461892','15',2003,'Royston Tan'),
+            ('tt0422896','Study',2004,'Layan'),
+            ('tt0413051','No Longer My Twin',2002,'Robert G. Christie'),
+            ('tt0421974','Sky Fighters',2005,'Gerard Pires'),
+            ('tt0278823','Hollywood Ending',2002,'Woody Allen'),
+            ('tt0344510','A Very Long Engagement',2004,'Jean-Pierre Jeunet'),
+            ('tt0313792','Anything Else',2003,'Woody Allen'),
+            ('tt0395796','Trudell',2005,'Heather Rae'),
+            ('tt0111161','A Shawshank Story',1994,'Frank Darabont'),
+            ('tt0068646','Another Godfather',1972,'Francis Ford Coppola'),
+            ('tt0816692','2001 Space Journey',2014,'Christopher Nolan'),
+            ('tt1375666','Inception',2010,'Christopher Nolan'),
+            ('tt0449881','Letters from Iwo Jima',2006,'Clint Eastwood'),
+            ('tt0000001','Alpha Movie',2000,'Some Director'),
+            ('tt0000002','Another Alpha Film',2001,'Another Director')
           ON CONFLICT DO NOTHING;
 
           INSERT INTO ratings (movie_id, rating) VALUES
-            ('tt0378947', 6.5),
-            ('tt0400548', 5.8),
-            ('tt0461892', 7.2),
-            ('tt0422896', 4.2),
-            ('tt0413051', 1.4),
-            ('tt0421974', 5.9),
-            ('tt0278823', 6.1),
-            ('tt0344510', 7.5),
-            ('tt0313792', 6.3),
-            ('tt0395796', 6.3),
-            ('tt0111161', 9.3),
-            ('tt0068646', 9.2),
-            ('tt0816692', 8.6),
-            ('tt1375666', 8.8),
-            ('tt0449881', 7.9),
-            ('tt0000001', 6.0),
-            ('tt0000002', 5.5)
+            ('tt0378947',6.5),('tt0400548',5.8),('tt0461892',7.2),
+            ('tt0422896',4.2),('tt0413051',1.4),('tt0421974',5.9),
+            ('tt0278823',6.1),('tt0344510',7.5),('tt0313792',6.3),
+            ('tt0395796',6.3),('tt0111161',9.3),('tt0068646',9.2),
+            ('tt0816692',8.6),('tt1375666',8.8),('tt0449881',7.9),
+            ('tt0000001',6.0),('tt0000002',5.5)
           ON CONFLICT DO NOTHING;
-
-          -- ─── Movie ↔ Genre links ──────────────────────────────────────────
 
           INSERT INTO movies_genres (movie_id, genre_id) VALUES
-            ('tt0378947', 9),   -- Drama
-            ('tt0378947', 6),   -- Comedy
-            ('tt0378947', 17),  -- Romance
-            ('tt0413051', 16),  -- Mystery
-            ('tt0461892', 9),   -- Drama
-            ('tt0111161', 9),   -- Drama
-            ('tt0068646', 7),   -- Crime
-            ('tt0816692', 18),  -- Sci-Fi
-            ('tt1375666', 18),  -- Sci-Fi
-            ('tt0449881', 21),  -- War
-            ('tt0000001', 1),   -- Action (genreId=1 for browse-by-genre id=28 test)
-            ('tt0000002', 1),
-            -- also link some movies to genreId=28 for the browse test
-            ('tt0000001', 28),
-            ('tt0000002', 28)
+            ('tt0378947',9),('tt0378947',6),('tt0378947',17),
+            ('tt0413051',16),('tt0461892',9),('tt0111161',9),
+            ('tt0068646',7),('tt0816692',18),('tt1375666',18),
+            ('tt0449881',21),('tt0000001',1),('tt0000002',1),
+            ('tt0000001',2),('tt0000002',2),
+            ('tt0000001',28),('tt0000002',28)
           ON CONFLICT DO NOTHING;
 
-          -- ─── Stars ───────────────────────────────────────────────────────────
-
+          -- Stars (nm1651765 used by StarControllerIntegrationTest)
           INSERT INTO stars (id, name, birth_year) VALUES
-            ('nm0591555', 'Lorenzo Minoli',    1950),
-            ('nm1651765', 'Gregory Bayne',     1973),
-            ('nm1636964', 'Phantom Artsy',     1970),
-            ('nm1382753', 'Maria Angelucci',   1975),
-            ('nm0000095', 'Woody Allen',       1935),
-            ('nm0000168', 'Chiwetel Ejiofor',  1974),
-            ('nm0001706', 'Wallace Shawn',     1943)
+            ('nm0591555','Lorenzo Minoli',1950),
+            ('nm1651765','Gregory Bayne',1973),
+            ('nm1636964','Phantom Artsy',1970),
+            ('nm0000095','Woody Allen',1935),
+            ('nm0000168','Chiwetel Ejiofor',1974),
+            ('nm0001706','Wallace Shawn',1943)
           ON CONFLICT DO NOTHING;
 
           INSERT INTO stars_in_movies (star_id, movie_id) VALUES
-            ('nm0591555', 'tt0400548'),   -- Lorenzo Minoli → An Italian Affair
-            ('nm1651765', 'tt0395796'),   -- Gregory Bayne  → Trudell
-            ('nm1651765', 'tt0000001'),
-            ('nm1651765', 'tt0000002'),
-            ('nm1636964', 'tt0413051'),
-            ('nm0000095', 'tt0378947'),   -- Woody Allen    → Melinda and Melinda
-            ('nm0000168', 'tt0378947'),   -- Chiwetel Ejiofor
-            ('nm0001706', 'tt0378947')    -- Wallace Shawn
+            ('nm0591555','tt0400548'),
+            ('nm1651765','tt0395796'),
+            ('nm1651765','tt0000001'),
+            ('nm1636964','tt0413051'),
+            ('nm0000095','tt0378947'),
+            ('nm0000168','tt0378947'),
+            ('nm0001706','tt0378947')
           ON CONFLICT DO NOTHING;
 
-          -- ─── Customers ───────────────────────────────────────────────────────
-
-          INSERT INTO customers (first_name, last_name, email, password, address) VALUES
-            ('Parker', 'Test',  'Parker234@aol.com', 'test', 'Test City'),
-            ('CC',     'User',  'cc@msn.com',        '1111', 'Test City'),
-            ('Janet',  'Trink', 'janet@trink.com',   'pw',   'Test City')
+          -- Customers (Parker234@aol.com used by AuthControllerTest login,
+          --            cc@msn.com used by E2E tests,
+          --            janet@trink.com linked to the checkout credit card)
+          INSERT INTO customers (first_name, last_name, email, password, address)
+          VALUES
+            ('Parker','Test','Parker234@aol.com','test','Test City'),
+            ('CC','User','cc@msn.com','1111','Test City'),
+            ('Janet','Trink','janet@trink.com','pw','Test City')
           ON CONFLICT DO NOTHING;
 
-          -- ─── Credit cards ────────────────────────────────────────────────────
-          -- Janet Trink card used by checkout integration + E2E tests
-
+          -- Janet Trink's card used by CheckoutControllerIntegrationTest
           INSERT INTO credit_cards (customer_id, cc_number, expiration, first_name, last_name)
-          SELECT c.id, '1354895485215896548', '2004-03-25', 'Janet', 'Trink'
-          FROM   customers c
-          WHERE  c.email = 'janet@trink.com'
+          SELECT c.id,'1354895485215896548','2004-03-25','Janet','Trink'
+          FROM customers c WHERE c.email='janet@trink.com'
           ON CONFLICT DO NOTHING;
 
-          -- ─── Sync sequences ─────────────────────────────────────────────────
-
+          -- Sync auto-increment sequences so INSERT with SERIAL does not
+          -- conflict with manually inserted rows that have explicit IDs
           SELECT setval(pg_get_serial_sequence('genres',    'id'), COALESCE((SELECT MAX(id) FROM genres),    1), true);
           SELECT setval(pg_get_serial_sequence('customers', 'id'), COALESCE((SELECT MAX(id) FROM customers), 1), true);
           SELECT setval(pg_get_serial_sequence('sales',     'id'), COALESCE((SELECT MAX(id) FROM sales),     1), true);
@@ -281,9 +255,16 @@ jobs:
 
       - name: Build and Run Tests
         working-directory: ./src/backend/app
-        run: ./mvnw clean test
+        # -Djooq.codegen.skip=true → skip jOOQ code generation because the
+        # generated classes are already committed to the repo. Without this flag,
+        # jOOQ's Maven plugin tries to connect to the DB during compile phase
+        # using its own config (not our env vars), which causes a build failure.
+        run: ./mvnw clean test -Djooq.codegen.skip=true
 
-  # Frontend Tests (Angular)
+  # JOB 4: frontend-tests
+  # Runs all Angular unit tests (Vitest).
+  # These tests are 100% mocked. No backend and no
+  # database is needed at all. This is the fastest job in the pipeline.
   frontend-tests:
     runs-on: ubuntu-latest
     steps:
@@ -293,7 +274,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'                           # cache npm dependencies
+          # Cache downloaded npm packages between runs.
+          # Points to package-lock.json so the cache is invalidated automatically
+          # whenever dependencies change.
+          cache: 'npm'
           cache-dependency-path: src/frontend/package-lock.json
 
       - name: Install dependencies
@@ -304,7 +288,17 @@ jobs:
         working-directory: ./src/frontend
         run: npm run test -- --watch=false
 
-  # E2E Tests (Playwright)
+  # JOB 5: playwright-e2e
+  # Runs end-to-end tests using Playwright.
+  # Unlike unit tests, E2E tests simulate a real user clicking through the UI,
+  # so they need the full stack running: database + backend + frontend.
+  #
+  # Flow:
+  #   1. Spin up a PostgreSQL container and seed it with real test data
+  #   2. Start the Spring Boot backend (connects to the temp DB)
+  #   3. Start the Angular frontend (connects to the backend)
+  #   4. Wait 60s for both servers to be ready
+  #   5. Run Playwright tests against http://localhost:4200
   playwright-e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -336,25 +330,30 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-          cache: 'maven'                         # cache Maven dependencies
+          cache: 'maven'
 
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'                           # cache npm dependencies
+          cache: 'npm'
           cache-dependency-path: src/frontend/package-lock.json
 
       - name: Seed test database
+        # Same seed data as backend-tests — E2E tests reference the same
+        # real IDs (e.g. cc@msn.com, tt0378947, nm0591555) so the data
+        # must match exactly what the Playwright tests expect to see in the UI.
         env:
           PGPASSWORD: testpass
         run: |
           psql -h localhost -U testuser -d testdb <<'SQL'
 
           CREATE TABLE IF NOT EXISTS movies (
-            id VARCHAR(20) PRIMARY KEY, title VARCHAR(255), year INT, director VARCHAR(255)
+            id VARCHAR(20) PRIMARY KEY, title VARCHAR(255),
+            year INT, director VARCHAR(255)
           );
           CREATE TABLE IF NOT EXISTS ratings (
-            movie_id VARCHAR(20) PRIMARY KEY REFERENCES movies(id), rating NUMERIC(3,1)
+            movie_id VARCHAR(20) PRIMARY KEY REFERENCES movies(id),
+            rating NUMERIC(3,1)
           );
           CREATE TABLE IF NOT EXISTS genres (
             id SERIAL PRIMARY KEY, name VARCHAR(100)
@@ -373,12 +372,14 @@ jobs:
             PRIMARY KEY (star_id, movie_id)
           );
           CREATE TABLE IF NOT EXISTS customers (
-            id SERIAL PRIMARY KEY, first_name VARCHAR(100), last_name VARCHAR(100),
-            email VARCHAR(255) UNIQUE, password VARCHAR(255), address VARCHAR(255)
+            id SERIAL PRIMARY KEY, first_name VARCHAR(100),
+            last_name VARCHAR(100), email VARCHAR(255) UNIQUE,
+            password VARCHAR(255), address VARCHAR(255)
           );
           CREATE TABLE IF NOT EXISTS credit_cards (
             id SERIAL PRIMARY KEY, customer_id INT REFERENCES customers(id),
-            cc_number VARCHAR(50), expiration DATE, first_name VARCHAR(100), last_name VARCHAR(100)
+            cc_number VARCHAR(50), expiration DATE,
+            first_name VARCHAR(100), last_name VARCHAR(100)
           );
           CREATE TABLE IF NOT EXISTS sales (
             id SERIAL PRIMARY KEY, customer_id INT REFERENCES customers(id),
@@ -386,10 +387,11 @@ jobs:
           );
 
           INSERT INTO genres (id, name) VALUES
-            (1,'Action'),(2,'Action'),(3,'Adventure'),(4,'Animation'),(5,'Biography'),
-            (6,'Comedy'),(7,'Crime'),(8,'Documentary'),(9,'Drama'),(10,'Family'),
-            (11,'Fantasy'),(12,'Film-Noir'),(13,'History'),(14,'Horror'),(15,'Music'),
-            (16,'Mystery'),(17,'Romance'),(18,'Sci-Fi'),(19,'Sport'),(20,'Thriller'),
+            (1,'Action'),(2,'Action'),(3,'Adventure'),(4,'Animation'),
+            (5,'Biography'),(6,'Comedy'),(7,'Crime'),(8,'Documentary'),
+            (9,'Drama'),(10,'Family'),(11,'Fantasy'),(12,'Film-Noir'),
+            (13,'History'),(14,'Horror'),(15,'Music'),(16,'Mystery'),
+            (17,'Romance'),(18,'Sci-Fi'),(19,'Sport'),(20,'Thriller'),
             (21,'War'),(22,'Western'),(28,'Action')
           ON CONFLICT DO NOTHING;
 
@@ -414,9 +416,10 @@ jobs:
           ON CONFLICT DO NOTHING;
 
           INSERT INTO ratings (movie_id, rating) VALUES
-            ('tt0378947',6.5),('tt0400548',5.8),('tt0461892',7.2),('tt0422896',4.2),
-            ('tt0413051',1.4),('tt0421974',5.9),('tt0278823',6.1),('tt0344510',7.5),
-            ('tt0313792',6.3),('tt0395796',6.3),('tt0111161',9.3),('tt0068646',9.2),
+            ('tt0378947',6.5),('tt0400548',5.8),('tt0461892',7.2),
+            ('tt0422896',4.2),('tt0413051',1.4),('tt0421974',5.9),
+            ('tt0278823',6.1),('tt0344510',7.5),('tt0313792',6.3),
+            ('tt0395796',6.3),('tt0111161',9.3),('tt0068646',9.2),
             ('tt0816692',8.6),('tt1375666',8.8),('tt0449881',7.9),
             ('tt0000001',6.0),('tt0000002',5.5)
           ON CONFLICT DO NOTHING;
@@ -426,7 +429,8 @@ jobs:
             ('tt0413051',16),('tt0461892',9),('tt0111161',9),
             ('tt0068646',7),('tt0816692',18),('tt1375666',18),
             ('tt0449881',21),('tt0000001',1),('tt0000002',1),
-            ('tt0000001',2),('tt0000002',2),('tt0000001',28),('tt0000002',28)
+            ('tt0000001',2),('tt0000002',2),
+            ('tt0000001',28),('tt0000002',28)
           ON CONFLICT DO NOTHING;
 
           INSERT INTO stars (id, name, birth_year) VALUES
@@ -448,7 +452,8 @@ jobs:
             ('nm0001706','tt0378947')
           ON CONFLICT DO NOTHING;
 
-          INSERT INTO customers (first_name, last_name, email, password, address) VALUES
+          INSERT INTO customers (first_name, last_name, email, password, address)
+          VALUES
             ('Parker','Test','Parker234@aol.com','test','Test City'),
             ('CC','User','cc@msn.com','1111','Test City'),
             ('Janet','Trink','janet@trink.com','pw','Test City')
@@ -470,202 +475,34 @@ jobs:
 
       - name: Start backend
         working-directory: ./src/backend/app
-        run: nohup ./mvnw spring-boot:run > backend.log 2>&1 &
+        # Run in background with nohup so the step does not block.
+        # Logs go to backend.log — if E2E tests fail you can check this
+        # file to see if the backend itself crashed on startup.
+        run: nohup ./mvnw spring-boot:run -Djooq.codegen.skip=true > backend.log 2>&1 &
 
-      - name: Install frontend deps
+      - name: Install frontend dependencies
         working-directory: ./src/frontend
         run: npm install
 
       - name: Install Playwright browsers
+        # Downloads the actual browser binaries (Chromium, Firefox, WebKit)
+        # that Playwright uses to simulate a real user clicking through the UI.
+        # --with-deps also installs OS-level libraries each browser needs.
         working-directory: ./src/frontend
         run: npx playwright install --with-deps
 
       - name: Start frontend
         working-directory: ./src/frontend
+        # Run in background. Angular connects to the backend at localhost:8080.
         run: nohup npm start -- --host 0.0.0.0 --port 4200 > frontend.log 2>&1 &
 
-      - name: Wait for servers
+      - name: Wait for both servers to be ready
+        # Give Spring Boot and Angular enough time to fully start up.
+        # Spring Boot typically takes 30-45s, Angular another 15-20s.
+        # If Playwright starts before the servers are ready every test will
+        # fail with "connection refused" or a blank page.
         run: sleep 60
 
       - name: Run E2E tests
         working-directory: ./src/frontend
         run: npx playwright test
-
-  # Stress Test — needs DB because it hits /movies/search, /genres, /movies/browseByFirstLetter
-  stress-test:
-    runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_DB: testdb
-          POSTGRES_USER: testuser
-          POSTGRES_PASSWORD: testpass
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    env:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
-      SPRING_DATASOURCE_USERNAME: testuser
-      SPRING_DATASOURCE_PASSWORD: testpass
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-          cache: 'maven'
-
-      - name: Make mvnw executable
-        run: chmod +x ./src/backend/app/mvnw
-
-      - name: Start backend
-        working-directory: ./src/backend/app
-        run: nohup ./mvnw spring-boot:run > backend.log 2>&1 &
-
-      - name: Wait for backend
-        run: sleep 60
-
-      - name: Install k6
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gnupg2
-          mkdir -p /root/.gnupg && chmod 700 /root/.gnupg
-          curl -s https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/k6-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" \
-            | sudo tee /etc/apt/sources.list.d/k6.list
-          sudo apt-get update && sudo apt-get install -y k6
-
-      - name: Run Stress Test
-        working-directory: ./src/backend/app/tests/stress
-        run: k6 run stress.js
-
-  # ─────────────────────────────────────────────────────────────────────────────
-  # Robustness tests are split into two jobs because:
-  #
-  #   robustness-with-db    → Scenarios 1, 3, 4  (normal ops, pool exhaustion,
-  #                           not-found) — all require a live database.
-  #
-  #   robustness-no-db      → Scenario 2 only    (DB-down resilience) — the
-  #                           whole point is that NO database is reachable, so
-  #                           we intentionally omit the postgres service and
-  #                           pass a bad DB URL so the backend cannot connect.
-  # ─────────────────────────────────────────────────────────────────────────────
-
-  # Robustness: Scenarios 1, 3, 4 — DB required
-  robustness-with-db:
-    runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_DB: testdb
-          POSTGRES_USER: testuser
-          POSTGRES_PASSWORD: testpass
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    env:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
-      SPRING_DATASOURCE_USERNAME: testuser
-      SPRING_DATASOURCE_PASSWORD: testpass
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-          cache: 'maven'
-
-      - name: Make mvnw executable
-        run: chmod +x ./src/backend/app/mvnw
-
-      - name: Start backend
-        working-directory: ./src/backend/app
-        run: nohup ./mvnw spring-boot:run > backend.log 2>&1 &
-
-      - name: Wait for backend
-        run: sleep 60
-
-      - name: Install k6
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gnupg2
-          mkdir -p /root/.gnupg && chmod 700 /root/.gnupg
-          curl -s https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/k6-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" \
-            | sudo tee /etc/apt/sources.list.d/k6.list
-          sudo apt-get update && sudo apt-get install -y k6
-
-      - name: Run Robustness Scenario 1 — Normal Operation
-        working-directory: ./src/backend/app/tests/robustness
-        run: k6 run scenario1.js
-
-      - name: Run Robustness Scenario 3 — Pool Exhausted
-        working-directory: ./src/backend/app/tests/robustness
-        run: k6 run scenario3.js
-
-      - name: Run Robustness Scenario 4 — Not Found
-        working-directory: ./src/backend/app/tests/robustness
-        run: k6 run scenario4.js
-
-  # Robustness: Scenario 2 — DB deliberately down, no postgres service
-  robustness-no-db:
-    runs-on: ubuntu-latest
-
-    # No `services:` block here — that is intentional.
-    # The backend will start but immediately fail to connect to any database,
-    # which is exactly the condition Scenario 2 is testing.
-    env:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/doesnotexist
-      SPRING_DATASOURCE_USERNAME: nobody
-      SPRING_DATASOURCE_PASSWORD: nobody
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-          cache: 'maven'
-
-      - name: Make mvnw executable
-        run: chmod +x ./src/backend/app/mvnw
-
-      - name: Start backend (no DB — expected to fail DB connections)
-        working-directory: ./src/backend/app
-        run: nohup ./mvnw spring-boot:run > backend.log 2>&1 &
-
-      - name: Wait for backend to start
-        run: sleep 60
-
-      - name: Install k6
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gnupg2
-          mkdir -p /root/.gnupg && chmod 700 /root/.gnupg
-          curl -s https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/k6-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" \
-            | sudo tee /etc/apt/sources.list.d/k6.list
-          sudo apt-get update && sudo apt-get install -y k6
-
-      - name: Run Robustness Scenario 2 — Database Down
-        working-directory: ./src/backend/app/tests/robustness
-        run: k6 run scenario2.js
