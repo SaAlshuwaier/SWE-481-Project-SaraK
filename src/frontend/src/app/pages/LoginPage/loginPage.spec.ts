@@ -46,7 +46,7 @@ describe('LoginPageComponent', () => {
 
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelectorAll('input').length).toBe(2);
-    expect(el.querySelector('button')?.textContent).toContain('Login');
+    expect(el.querySelector('button')?.textContent).toContain('Sign in');
   });
 
   it('should login successfully', () => {
