@@ -3,7 +3,6 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [ "main" ]
 
 jobs:
 
@@ -17,7 +16,6 @@ jobs:
 
   # Secrets validation
   build:
-    if: github.event_name == 'push'
     runs-on: ubuntu-latest
 
     env:
@@ -37,6 +35,27 @@ jobs:
   # Backend Tests (Spring Boot)
   backend-tests:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: testdb
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
+      SPRING_DATASOURCE_USERNAME: testuser
+      SPRING_DATASOURCE_PASSWORD: testpass
+
     steps:
       - uses: actions/checkout@v4
 
@@ -45,9 +64,220 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+          cache: 'maven'                        # cache Maven dependencies
 
       - name: Make mvnw executable
         run: chmod +x ./src/backend/app/mvnw
+
+      - name: Seed test database
+        env:
+          PGPASSWORD: testpass
+        run: |
+          psql -h localhost -U testuser -d testdb <<'SQL'
+
+          -- ─── Schema ──────────────────────────────────────────────────────────
+
+          CREATE TABLE IF NOT EXISTS movies (
+            id        VARCHAR(20) PRIMARY KEY,
+            title     VARCHAR(255),
+            year      INT,
+            director  VARCHAR(255)
+          );
+
+          CREATE TABLE IF NOT EXISTS ratings (
+            movie_id  VARCHAR(20) PRIMARY KEY REFERENCES movies(id),
+            rating    NUMERIC(3,1)
+          );
+
+          CREATE TABLE IF NOT EXISTS genres (
+            id    SERIAL PRIMARY KEY,
+            name  VARCHAR(100)
+          );
+
+          CREATE TABLE IF NOT EXISTS movies_genres (
+            movie_id  VARCHAR(20) REFERENCES movies(id),
+            genre_id  INT         REFERENCES genres(id),
+            PRIMARY KEY (movie_id, genre_id)
+          );
+
+          CREATE TABLE IF NOT EXISTS stars (
+            id         VARCHAR(20) PRIMARY KEY,
+            name       VARCHAR(255),
+            birth_year INT
+          );
+
+          CREATE TABLE IF NOT EXISTS stars_in_movies (
+            star_id   VARCHAR(20) REFERENCES stars(id),
+            movie_id  VARCHAR(20) REFERENCES movies(id),
+            PRIMARY KEY (star_id, movie_id)
+          );
+
+          CREATE TABLE IF NOT EXISTS customers (
+            id        SERIAL PRIMARY KEY,
+            first_name VARCHAR(100),
+            last_name  VARCHAR(100),
+            email      VARCHAR(255) UNIQUE,
+            password   VARCHAR(255),
+            address    VARCHAR(255)
+          );
+
+          CREATE TABLE IF NOT EXISTS credit_cards (
+            id          SERIAL PRIMARY KEY,
+            customer_id INT REFERENCES customers(id),
+            cc_number   VARCHAR(50),
+            expiration  DATE,
+            first_name  VARCHAR(100),
+            last_name   VARCHAR(100)
+          );
+
+          CREATE TABLE IF NOT EXISTS sales (
+            id          SERIAL PRIMARY KEY,
+            customer_id INT REFERENCES customers(id),
+            movie_id    VARCHAR(20) REFERENCES movies(id),
+            sale_date   DATE
+          );
+
+          -- ─── Genres ──────────────────────────────────────────────────────────
+
+          INSERT INTO genres (id, name) VALUES
+            (1,  'Action'),
+            (2,  'Action'),
+            (3,  'Adventure'),
+            (4,  'Animation'),
+            (5,  'Biography'),
+            (6,  'Comedy'),
+            (7,  'Crime'),
+            (8,  'Documentary'),
+            (9,  'Drama'),
+            (10, 'Family'),
+            (11, 'Fantasy'),
+            (12, 'Film-Noir'),
+            (13, 'History'),
+            (14, 'Horror'),
+            (15, 'Music'),
+            (16, 'Mystery'),
+            (17, 'Romance'),
+            (18, 'Sci-Fi'),
+            (19, 'Sport'),
+            (20, 'Thriller'),
+            (21, 'War'),
+            (22, 'Western'),
+            (28, 'Action')
+          ON CONFLICT DO NOTHING;
+
+          -- ─── Movies ──────────────────────────────────────────────────────────
+
+          INSERT INTO movies (id, title, year, director) VALUES
+            ('tt0378947', 'Melinda and Melinda',  2004, 'Woody Allen'),
+            ('tt0400548', 'An Italian Affair',    2003, 'Unknown Director'),
+            ('tt0461892', '15',                   2003, 'Royston Tan'),
+            ('tt0422896', 'Study',                2004, 'Layan'),
+            ('tt0413051', 'No Longer My Twin',    2002, 'Robert G. Christie'),
+            ('tt0421974', 'Sky Fighters',         2005, 'Gerard Pires'),
+            ('tt0278823', 'Hollywood Ending',     2002, 'Woody Allen'),
+            ('tt0344510', 'A Very Long Engagement',2004,'Jean-Pierre Jeunet'),
+            ('tt0313792', 'Anything Else',        2003, 'Woody Allen'),
+            ('tt0395796', 'Trudell',              2005, 'Heather Rae'),
+            -- movies starting with A (for browse-by-letter tests)
+            ('tt0111161', 'A Shawshank Story',    1994, 'Frank Darabont'),
+            ('tt0068646', 'Another Godfather',    1972, 'Francis Ford Coppola'),
+            -- movie starting with 2 (for browse-by-number tests)
+            ('tt0816692', '2001 Space Journey',   2014, 'Christopher Nolan'),
+            -- movies for search tests (title contains "inception", "a", "Letters")
+            ('tt1375666', 'Inception',            2010, 'Christopher Nolan'),
+            ('tt0449881', 'Letters from Iwo Jima',2006, 'Clint Eastwood'),
+            -- movies for star nm1651765
+            ('tt0000001', 'Alpha Movie',          2000, 'Some Director'),
+            ('tt0000002', 'Another Alpha Film',   2001, 'Another Director')
+          ON CONFLICT DO NOTHING;
+
+          INSERT INTO ratings (movie_id, rating) VALUES
+            ('tt0378947', 6.5),
+            ('tt0400548', 5.8),
+            ('tt0461892', 7.2),
+            ('tt0422896', 4.2),
+            ('tt0413051', 1.4),
+            ('tt0421974', 5.9),
+            ('tt0278823', 6.1),
+            ('tt0344510', 7.5),
+            ('tt0313792', 6.3),
+            ('tt0395796', 6.3),
+            ('tt0111161', 9.3),
+            ('tt0068646', 9.2),
+            ('tt0816692', 8.6),
+            ('tt1375666', 8.8),
+            ('tt0449881', 7.9),
+            ('tt0000001', 6.0),
+            ('tt0000002', 5.5)
+          ON CONFLICT DO NOTHING;
+
+          -- ─── Movie ↔ Genre links ──────────────────────────────────────────
+
+          INSERT INTO movies_genres (movie_id, genre_id) VALUES
+            ('tt0378947', 9),   -- Drama
+            ('tt0378947', 6),   -- Comedy
+            ('tt0378947', 17),  -- Romance
+            ('tt0413051', 16),  -- Mystery
+            ('tt0461892', 9),   -- Drama
+            ('tt0111161', 9),   -- Drama
+            ('tt0068646', 7),   -- Crime
+            ('tt0816692', 18),  -- Sci-Fi
+            ('tt1375666', 18),  -- Sci-Fi
+            ('tt0449881', 21),  -- War
+            ('tt0000001', 1),   -- Action (genreId=1 for browse-by-genre id=28 test)
+            ('tt0000002', 1),
+            -- also link some movies to genreId=28 for the browse test
+            ('tt0000001', 28),
+            ('tt0000002', 28)
+          ON CONFLICT DO NOTHING;
+
+          -- ─── Stars ───────────────────────────────────────────────────────────
+
+          INSERT INTO stars (id, name, birth_year) VALUES
+            ('nm0591555', 'Lorenzo Minoli',    1950),
+            ('nm1651765', 'Gregory Bayne',     1973),
+            ('nm1636964', 'Phantom Artsy',     1970),
+            ('nm1382753', 'Maria Angelucci',   1975),
+            ('nm0000095', 'Woody Allen',       1935),
+            ('nm0000168', 'Chiwetel Ejiofor',  1974),
+            ('nm0001706', 'Wallace Shawn',     1943)
+          ON CONFLICT DO NOTHING;
+
+          INSERT INTO stars_in_movies (star_id, movie_id) VALUES
+            ('nm0591555', 'tt0400548'),   -- Lorenzo Minoli → An Italian Affair
+            ('nm1651765', 'tt0395796'),   -- Gregory Bayne  → Trudell
+            ('nm1651765', 'tt0000001'),
+            ('nm1651765', 'tt0000002'),
+            ('nm1636964', 'tt0413051'),
+            ('nm0000095', 'tt0378947'),   -- Woody Allen    → Melinda and Melinda
+            ('nm0000168', 'tt0378947'),   -- Chiwetel Ejiofor
+            ('nm0001706', 'tt0378947')    -- Wallace Shawn
+          ON CONFLICT DO NOTHING;
+
+          -- ─── Customers ───────────────────────────────────────────────────────
+
+          INSERT INTO customers (first_name, last_name, email, password, address) VALUES
+            ('Parker', 'Test',  'Parker234@aol.com', 'test', 'Test City'),
+            ('CC',     'User',  'cc@msn.com',        '1111', 'Test City'),
+            ('Janet',  'Trink', 'janet@trink.com',   'pw',   'Test City')
+          ON CONFLICT DO NOTHING;
+
+          -- ─── Credit cards ────────────────────────────────────────────────────
+          -- Janet Trink card used by checkout integration + E2E tests
+
+          INSERT INTO credit_cards (customer_id, cc_number, expiration, first_name, last_name)
+          SELECT c.id, '1354895485215896548', '2004-03-25', 'Janet', 'Trink'
+          FROM   customers c
+          WHERE  c.email = 'janet@trink.com'
+          ON CONFLICT DO NOTHING;
+
+          -- ─── Sync sequences ─────────────────────────────────────────────────
+
+          SELECT setval(pg_get_serial_sequence('genres',    'id'), COALESCE((SELECT MAX(id) FROM genres),    1), true);
+          SELECT setval(pg_get_serial_sequence('customers', 'id'), COALESCE((SELECT MAX(id) FROM customers), 1), true);
+          SELECT setval(pg_get_serial_sequence('sales',     'id'), COALESCE((SELECT MAX(id) FROM sales),     1), true);
+
+          SQL
 
       - name: Build and Run Tests
         working-directory: ./src/backend/app
@@ -63,6 +293,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'                           # cache npm dependencies
+          cache-dependency-path: src/frontend/package-lock.json
 
       - name: Install dependencies
         working-directory: ./src/frontend
@@ -76,6 +308,27 @@ jobs:
   playwright-e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: testdb
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
+      SPRING_DATASOURCE_USERNAME: testuser
+      SPRING_DATASOURCE_PASSWORD: testpass
+
     steps:
       - uses: actions/checkout@v4
 
@@ -83,10 +336,134 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+          cache: 'maven'                         # cache Maven dependencies
 
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'                           # cache npm dependencies
+          cache-dependency-path: src/frontend/package-lock.json
+
+      - name: Seed test database
+        env:
+          PGPASSWORD: testpass
+        run: |
+          psql -h localhost -U testuser -d testdb <<'SQL'
+
+          CREATE TABLE IF NOT EXISTS movies (
+            id VARCHAR(20) PRIMARY KEY, title VARCHAR(255), year INT, director VARCHAR(255)
+          );
+          CREATE TABLE IF NOT EXISTS ratings (
+            movie_id VARCHAR(20) PRIMARY KEY REFERENCES movies(id), rating NUMERIC(3,1)
+          );
+          CREATE TABLE IF NOT EXISTS genres (
+            id SERIAL PRIMARY KEY, name VARCHAR(100)
+          );
+          CREATE TABLE IF NOT EXISTS movies_genres (
+            movie_id VARCHAR(20) REFERENCES movies(id),
+            genre_id INT REFERENCES genres(id),
+            PRIMARY KEY (movie_id, genre_id)
+          );
+          CREATE TABLE IF NOT EXISTS stars (
+            id VARCHAR(20) PRIMARY KEY, name VARCHAR(255), birth_year INT
+          );
+          CREATE TABLE IF NOT EXISTS stars_in_movies (
+            star_id VARCHAR(20) REFERENCES stars(id),
+            movie_id VARCHAR(20) REFERENCES movies(id),
+            PRIMARY KEY (star_id, movie_id)
+          );
+          CREATE TABLE IF NOT EXISTS customers (
+            id SERIAL PRIMARY KEY, first_name VARCHAR(100), last_name VARCHAR(100),
+            email VARCHAR(255) UNIQUE, password VARCHAR(255), address VARCHAR(255)
+          );
+          CREATE TABLE IF NOT EXISTS credit_cards (
+            id SERIAL PRIMARY KEY, customer_id INT REFERENCES customers(id),
+            cc_number VARCHAR(50), expiration DATE, first_name VARCHAR(100), last_name VARCHAR(100)
+          );
+          CREATE TABLE IF NOT EXISTS sales (
+            id SERIAL PRIMARY KEY, customer_id INT REFERENCES customers(id),
+            movie_id VARCHAR(20) REFERENCES movies(id), sale_date DATE
+          );
+
+          INSERT INTO genres (id, name) VALUES
+            (1,'Action'),(2,'Action'),(3,'Adventure'),(4,'Animation'),(5,'Biography'),
+            (6,'Comedy'),(7,'Crime'),(8,'Documentary'),(9,'Drama'),(10,'Family'),
+            (11,'Fantasy'),(12,'Film-Noir'),(13,'History'),(14,'Horror'),(15,'Music'),
+            (16,'Mystery'),(17,'Romance'),(18,'Sci-Fi'),(19,'Sport'),(20,'Thriller'),
+            (21,'War'),(22,'Western'),(28,'Action')
+          ON CONFLICT DO NOTHING;
+
+          INSERT INTO movies (id, title, year, director) VALUES
+            ('tt0378947','Melinda and Melinda',2004,'Woody Allen'),
+            ('tt0400548','An Italian Affair',2003,'Unknown Director'),
+            ('tt0461892','15',2003,'Royston Tan'),
+            ('tt0422896','Study',2004,'Layan'),
+            ('tt0413051','No Longer My Twin',2002,'Robert G. Christie'),
+            ('tt0421974','Sky Fighters',2005,'Gerard Pires'),
+            ('tt0278823','Hollywood Ending',2002,'Woody Allen'),
+            ('tt0344510','A Very Long Engagement',2004,'Jean-Pierre Jeunet'),
+            ('tt0313792','Anything Else',2003,'Woody Allen'),
+            ('tt0395796','Trudell',2005,'Heather Rae'),
+            ('tt0111161','A Shawshank Story',1994,'Frank Darabont'),
+            ('tt0068646','Another Godfather',1972,'Francis Ford Coppola'),
+            ('tt0816692','2001 Space Journey',2014,'Christopher Nolan'),
+            ('tt1375666','Inception',2010,'Christopher Nolan'),
+            ('tt0449881','Letters from Iwo Jima',2006,'Clint Eastwood'),
+            ('tt0000001','Alpha Movie',2000,'Some Director'),
+            ('tt0000002','Another Alpha Film',2001,'Another Director')
+          ON CONFLICT DO NOTHING;
+
+          INSERT INTO ratings (movie_id, rating) VALUES
+            ('tt0378947',6.5),('tt0400548',5.8),('tt0461892',7.2),('tt0422896',4.2),
+            ('tt0413051',1.4),('tt0421974',5.9),('tt0278823',6.1),('tt0344510',7.5),
+            ('tt0313792',6.3),('tt0395796',6.3),('tt0111161',9.3),('tt0068646',9.2),
+            ('tt0816692',8.6),('tt1375666',8.8),('tt0449881',7.9),
+            ('tt0000001',6.0),('tt0000002',5.5)
+          ON CONFLICT DO NOTHING;
+
+          INSERT INTO movies_genres (movie_id, genre_id) VALUES
+            ('tt0378947',9),('tt0378947',6),('tt0378947',17),
+            ('tt0413051',16),('tt0461892',9),('tt0111161',9),
+            ('tt0068646',7),('tt0816692',18),('tt1375666',18),
+            ('tt0449881',21),('tt0000001',1),('tt0000002',1),
+            ('tt0000001',2),('tt0000002',2),('tt0000001',28),('tt0000002',28)
+          ON CONFLICT DO NOTHING;
+
+          INSERT INTO stars (id, name, birth_year) VALUES
+            ('nm0591555','Lorenzo Minoli',1950),
+            ('nm1651765','Gregory Bayne',1973),
+            ('nm1636964','Phantom Artsy',1970),
+            ('nm0000095','Woody Allen',1935),
+            ('nm0000168','Chiwetel Ejiofor',1974),
+            ('nm0001706','Wallace Shawn',1943)
+          ON CONFLICT DO NOTHING;
+
+          INSERT INTO stars_in_movies (star_id, movie_id) VALUES
+            ('nm0591555','tt0400548'),
+            ('nm1651765','tt0395796'),
+            ('nm1651765','tt0000001'),
+            ('nm1636964','tt0413051'),
+            ('nm0000095','tt0378947'),
+            ('nm0000168','tt0378947'),
+            ('nm0001706','tt0378947')
+          ON CONFLICT DO NOTHING;
+
+          INSERT INTO customers (first_name, last_name, email, password, address) VALUES
+            ('Parker','Test','Parker234@aol.com','test','Test City'),
+            ('CC','User','cc@msn.com','1111','Test City'),
+            ('Janet','Trink','janet@trink.com','pw','Test City')
+          ON CONFLICT DO NOTHING;
+
+          INSERT INTO credit_cards (customer_id, cc_number, expiration, first_name, last_name)
+          SELECT c.id,'1354895485215896548','2004-03-25','Janet','Trink'
+          FROM customers c WHERE c.email='janet@trink.com'
+          ON CONFLICT DO NOTHING;
+
+          SELECT setval(pg_get_serial_sequence('genres',    'id'), COALESCE((SELECT MAX(id) FROM genres),    1), true);
+          SELECT setval(pg_get_serial_sequence('customers', 'id'), COALESCE((SELECT MAX(id) FROM customers), 1), true);
+          SELECT setval(pg_get_serial_sequence('sales',     'id'), COALESCE((SELECT MAX(id) FROM sales),     1), true);
+
+          SQL
 
       - name: Make mvnw executable
         run: chmod +x ./src/backend/app/mvnw
@@ -114,9 +491,30 @@ jobs:
         working-directory: ./src/frontend
         run: npx playwright test
 
-  # Stress Test
-  sstress-test:
+  # Stress Test — needs DB because it hits /movies/search, /genres, /movies/browseByFirstLetter
+  stress-test:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: testdb
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
+      SPRING_DATASOURCE_USERNAME: testuser
+      SPRING_DATASOURCE_PASSWORD: testpass
+
     steps:
       - uses: actions/checkout@v4
 
@@ -124,6 +522,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+          cache: 'maven'
 
       - name: Make mvnw executable
         run: chmod +x ./src/backend/app/mvnw
@@ -149,11 +548,60 @@ jobs:
         working-directory: ./src/backend/app/tests/stress
         run: k6 run stress.js
 
-  # Robustness Test
-  robustness-test:
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Robustness tests are split into two jobs because:
+  #
+  #   robustness-with-db    → Scenarios 1, 3, 4  (normal ops, pool exhaustion,
+  #                           not-found) — all require a live database.
+  #
+  #   robustness-no-db      → Scenario 2 only    (DB-down resilience) — the
+  #                           whole point is that NO database is reachable, so
+  #                           we intentionally omit the postgres service and
+  #                           pass a bad DB URL so the backend cannot connect.
+  # ─────────────────────────────────────────────────────────────────────────────
+
+  # Robustness: Scenarios 1, 3, 4 — DB required
+  robustness-with-db:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: testdb
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
+      SPRING_DATASOURCE_USERNAME: testuser
+      SPRING_DATASOURCE_PASSWORD: testpass
+
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: 'maven'
+
+      - name: Make mvnw executable
+        run: chmod +x ./src/backend/app/mvnw
+
+      - name: Start backend
+        working-directory: ./src/backend/app
+        run: nohup ./mvnw spring-boot:run > backend.log 2>&1 &
+
+      - name: Wait for backend
+        run: sleep 60
 
       - name: Install k6
         run: |
@@ -165,6 +613,59 @@ jobs:
             | sudo tee /etc/apt/sources.list.d/k6.list
           sudo apt-get update && sudo apt-get install -y k6
 
-      - name: Run Robustness Test
+      - name: Run Robustness Scenario 1 — Normal Operation
         working-directory: ./src/backend/app/tests/robustness
-        run: k6 run robustness.js
+        run: k6 run scenario1.js
+
+      - name: Run Robustness Scenario 3 — Pool Exhausted
+        working-directory: ./src/backend/app/tests/robustness
+        run: k6 run scenario3.js
+
+      - name: Run Robustness Scenario 4 — Not Found
+        working-directory: ./src/backend/app/tests/robustness
+        run: k6 run scenario4.js
+
+  # Robustness: Scenario 2 — DB deliberately down, no postgres service
+  robustness-no-db:
+    runs-on: ubuntu-latest
+
+    # No `services:` block here — that is intentional.
+    # The backend will start but immediately fail to connect to any database,
+    # which is exactly the condition Scenario 2 is testing.
+    env:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/doesnotexist
+      SPRING_DATASOURCE_USERNAME: nobody
+      SPRING_DATASOURCE_PASSWORD: nobody
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: 'maven'
+
+      - name: Make mvnw executable
+        run: chmod +x ./src/backend/app/mvnw
+
+      - name: Start backend (no DB — expected to fail DB connections)
+        working-directory: ./src/backend/app
+        run: nohup ./mvnw spring-boot:run > backend.log 2>&1 &
+
+      - name: Wait for backend to start
+        run: sleep 60
+
+      - name: Install k6
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gnupg2
+          mkdir -p /root/.gnupg && chmod 700 /root/.gnupg
+          curl -s https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/k6-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" \
+            | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update && sudo apt-get install -y k6
+
+      - name: Run Robustness Scenario 2 — Database Down
+        working-directory: ./src/backend/app/tests/robustness
+        run: k6 run scenario2.js
