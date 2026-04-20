@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit, OnDestroy {
  
   filters = {
 	title: '',
-	year: '',
+  	year: null as number | null,  
 	director: '',
 	star: ''
   };
@@ -108,7 +108,7 @@ titleSuggestions: MovieSuggestionDto[] = [];
  
   get isSearchDisabled(): boolean {
 	return !this.filters.title.trim() &&
-       	!this.filters.year.trim() &&
+         !String(this.filters.year ?? '').trim() &&
        	!this.filters.director.trim() &&
        	!this.filters.star.trim();
   }
@@ -158,7 +158,7 @@ titleSuggestions: MovieSuggestionDto[] = [];
 	this.showSuggestions = false;
  
 	const title = this.filters.title.trim();
-	const year = this.filters.year.trim();
+	const year = this.filters.year != null ? String(this.filters.year).trim() : '';
 	const director = this.filters.director.trim();
 	const star = this.filters.star.trim();
  
@@ -190,7 +190,7 @@ titleSuggestions: MovieSuggestionDto[] = [];
   onClear(): void {
 	this.filters = {
   	title: '',
-  	year: '',
+  	year: null,
   	director: '',
 	  star: ''
 	};
