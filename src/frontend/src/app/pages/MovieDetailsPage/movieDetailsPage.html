@@ -1,101 +1,114 @@
-<!-- Header -->
-<header class="app-header">
-  <img class="app-logo" src="/favicon.ico" alt="PLOT BOX logo" />
+<div class="container my-4">
+  <div class="card shadow-sm">
+    <div class="card-body">
 
-  <div class="app-title">
-    <h1>PLOT BOX</h1>
-    <p>Movie Details</p>
-  </div>
-</header>
+      <div *ngIf="isLoading()" class="text-muted" data-testid="movie-loading">
+        Loading movie details…
+      </div>
 
-<!-- Main card area -->
-<section class="page-wrap">
-  <div class="card">
+      <div *ngIf="error()" class="text-danger mb-3" data-testid="movie-error">
+        {{ error() }}
+      </div>
 
+      <ng-container *ngIf="!isLoading() && movie() as m">
+        <h2 class="fw-bold mb-4" data-testid="movie-title">
+          {{ m.title }}
+        </h2>
 
+        <div class="mb-4">
+          <p class="mb-2">
+            <strong>Year:</strong>
+            <span data-testid="movie-year">{{ m.year }}</span>
+          </p>
 
-    <!-- Loading / Error -->
-    <div *ngIf="isLoading()" class="muted" data-testid="movie-loading">Loading movie details…</div>
+          <p class="mb-2">
+            <strong>Director:</strong>
+            <span data-testid="movie-director">{{ m.director }}</span>
+          </p>
 
-    <div *ngIf="error()" class="err-box" data-testid="movie-error">
-      {{ error() }}
+          <p class="mb-2">
+            <strong>Rating:</strong>
+            <span data-testid="movie-rating">{{ formatRating(m.rating) }}</span>
+          </p>
+
+          <p class="mb-0">
+            <strong>Genres:</strong>
+            <span data-testid="movie-genres">
+              <ng-container *ngIf="m.genres?.length; else noGenres">
+                <span *ngFor="let g of m.genres; let last = last" data-testid="genre-item">
+                  {{ g.name }}<span *ngIf="!last">, </span>
+                </span>
+              </ng-container>
+              <ng-template #noGenres>
+                <span data-testid="no-genres">-</span>
+              </ng-template>
+            </span>
+          </p>
+        </div>
+
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3">Stars</h5>
+
+          <div *ngIf="!m.stars?.length" class="text-muted" data-testid="no-stars">
+            No stars found.
+          </div>
+
+          <ul class="link-list ps-3 mb-0" *ngIf="m.stars?.length" data-testid="stars-list">
+            <li *ngFor="let s of m.stars" class="mb-1">
+              <a
+                class="link"
+                data-testid="star-link"
+                [routerLink]="['/stars', s.id]">
+                {{ s.name }}
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h5 class="fw-bold mb-3">Add to Cart</h5>
+
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="decQty()"
+              data-testid="qty-dec">
+              -
+            </button>
+
+            <input
+              class="form-control text-center"
+              style="max-width: 100px;"
+              data-testid="qty-input"
+              type="number"
+              min="1"
+              [value]="quantity()"
+              (input)="onQtyInput(($any($event.target)).value)" />
+
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="incQty()"
+              data-testid="qty-inc">
+              +
+            </button>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="addToCart()"
+            data-testid="add-to-cart">
+            Add to Cart
+          </button>
+
+          <div *ngIf="cartError()" class="text-danger mt-2" data-testid="cart-error">
+            {{ cartError() }}
+          </div>
+        </div>
+      </ng-container>
+
     </div>
-
-    <!-- Movie Details -->
-    <ng-container *ngIf="!isLoading() && movie() as m">
-      <h2 class="title" data-testid="movie-title">{{ m.title }}</h2>
-
-      <div class="meta">
-        <div class="meta-row">
-          <span class="label">Year:</span>
-          <span class="value" data-testid="movie-year">{{ m.year }}</span>
-        </div>
-
-        <div class="meta-row">
-          <span class="label">Director:</span>
-          <span class="value" data-testid="movie-director">{{ m.director }}</span>
-        </div>
-
-        <div class="meta-row">
-          <span class="label">Rating:</span>
-          <span class="value" data-testid="movie-rating">{{ formatRating(m.rating) }}</span>
-        </div>
-
-        <div class="meta-row">
-          <span class="label">Genres:</span>
-          <span class="value" data-testid="movie-genres">
-            <ng-container *ngIf="m.genres?.length; else noGenres">
-              <span *ngFor="let g of m.genres; let last = last" data-testid="genre-item">
-                {{ g.name }}<span *ngIf="!last">, </span>
-              </span>
-            </ng-container>
-            <ng-template #noGenres><span data-testid="no-genres">-</span></ng-template>
-          </span>
-        </div>
-      </div>
-
-      <!-- Stars list -->
-      <div class="section">
-        <h3 class="section-title">Stars:</h3>
-
-        <div *ngIf="!m.stars?.length" class="muted" data-testid="no-stars">No stars found.</div>
-
-        <ul class="link-list" *ngIf="m.stars?.length" data-testid="stars-list">
-          <!-- Clicking star navigates to /stars/:starId -->
-          <li *ngFor="let s of m.stars">
-            <a class="link" data-testid="star-link"
-             [routerLink]="['/stars', s.id]">{{ s.name }}            
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Add to Cart -->
-      <div class="section">
-        <h3 class="section-title">Add to Cart</h3>
-
-        <div class="qty-row">
-          <button class="qty-btn" (click)="decQty()" data-testid="qty-dec">-</button>
-
-          <input class="qty-input"
-                 data-testid="qty-input"
-                 type="number"
-                 min="1"
-                 [value]="quantity()"
-                 (input)="onQtyInput(($any($event.target)).value)" />
-
-          <button class="qty-btn" (click)="incQty()" data-testid="qty-inc">+</button>
-        </div>
-
-        <button class="primary-btn" (click)="addToCart()" data-testid="add-to-cart">
-          Add to Cart
-        </button>
-
-        <!-- cart error -->
-        <div *ngIf="cartError()" class="err-box" data-testid="cart-error">
-          {{ cartError() }}
-        </div>
-      </div>
-    </ng-container>
   </div>
-</section>
+</div>
