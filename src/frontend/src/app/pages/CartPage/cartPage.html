@@ -98,6 +98,7 @@
                type="button"
                 routerLink="/checkout"
                 data-testid="proceed-checkout"
+                [disabled]="c.items.length === 0"
                 >
                 Proceed to Checkout
               </button>
