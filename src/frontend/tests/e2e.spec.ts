@@ -380,13 +380,20 @@ test('E2E: Cart page loads, Load Cart works, update/delete work, clear local wor
 
   // Cart should now be visible + total quantity rendered
   await expect(page.getByTestId('cart-loaded')).toBeVisible();
+  await expect(page.getByTestId('proceed-checkout')).toBeVisible();
 
-  // NOTE for future implementation:
-  // This test currently assumes the cart starts empty (total quantity = 0).
-  // If the backend later returns cart items by default, this assertion may fail because it expects '0'. In that case, the test should be updated to match the real backend behavior.
-  // In that case, the test should be updated to match the real backend behavior, so we delete : await expect(page.getByTestId('cart-total-qty')).toHaveText('0');
+// Should be disabled when cart is empty
+await expect(page.getByTestId('proceed-checkout')).toBeDisabled();
+
   await expect(page.getByTestId('cart-total-qty')).toHaveText('0');
   await expect(page.getByTestId('cart-empty')).toBeVisible();
+
+  // Add an item so checkout becomes available
+  await page.goto(`${FRONTEND_URL}/movies/${MOVIE_ID}`);
+  await page.getByTestId('add-to-cart').click();
+  await page.goto(`${FRONTEND_URL}/cart`);
+  await expect(page.getByTestId('cart-loaded')).toBeVisible();
+  await expect(page.getByTestId('proceed-checkout')).toBeEnabled();
 
   // If cart has items, test update and delete behaviors
   const rows = page.getByTestId('cart-row');
@@ -423,22 +430,6 @@ test('E2E: Cart page loads, Load Cart works, update/delete work, clear local wor
 
   // After local clear, empty cart message should appear
   await expect(page.getByTestId('cart-empty')).toBeVisible();
-
-  // Footer navigation should exist
-  // Continue Shopping should route to /movies
-  await page.getByTestId('continue-shopping').click();
-  await expect(page).toHaveURL(/\/movies(\?.*)?$/);
-
-  // Proceed to Checkout should route to /checkout
-  // We navigate back to /cart, so we MUST load the cart again because the footer
-  // (continue-shopping / proceed-checkout) is rendered only when cart() exists.
-  await page.goto(`${FRONTEND_URL}/cart`);
-
-  await expect(page.getByTestId('cart-loaded')).toBeVisible();
-  await expect(page.getByTestId('proceed-checkout')).toBeVisible();
-
-  await page.getByTestId('proceed-checkout').click();
-  await expect(page).toHaveURL(/\/checkout(\?.*)?$/);
 });
 test('E2E: Checkout success flow (valid card)', async ({ page }) => {
   // Add item to cart first

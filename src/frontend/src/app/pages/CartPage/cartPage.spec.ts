@@ -140,4 +140,32 @@ it('should render footer actions (Clear Cart, Continue Shopping, Proceed to Chec
     expect((c as any).items.length).toBe(0);
     expect((c as any).totalQuantity).toBe(0);
   });
+
+    it('should disable Proceed to Checkout button when cart is empty', () => {
+    cartService.getCart.mockReturnValue(of({
+      items: [],
+      totalQuantity: 0,
+    }));
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+
+    const checkoutBtn = el.querySelector('[data-testid="proceed-checkout"]');
+    expect(checkoutBtn).toBeTruthy();
+    expect(checkoutBtn?.getAttribute('disabled')).not.toBeNull();
+  });
+
+  it('should enable Proceed to Checkout button when cart has items', () => {
+    cartService.getCart.mockReturnValue(of({
+      items: [{ movieId: 'tt1', title: 'Dummy Movie', quantity: 2 }],
+      totalQuantity: 2,
+    }));
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+
+    const checkoutBtn = el.querySelector('[data-testid="proceed-checkout"]');
+    expect(checkoutBtn).toBeTruthy();
+    expect(checkoutBtn?.getAttribute('disabled')).toBeNull();
+  });
+  
 });
+
