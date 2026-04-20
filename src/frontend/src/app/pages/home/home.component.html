@@ -1,96 +1,129 @@
 <div class="container my-4">
 
-  <h2 class="text-center fw-bold mb-1">IMDB Movie Store</h2>
 
-  <div class="card shadow-sm mb-4">
-    <div class="card-body">
+ <h2 class="text-center fw-bold mb-1">IMDB Movie Store</h2>
 
-      <h5 class="fw-bold mb-3">Search Movies</h5>
 
-      <div class="row g-3 align-items-end">
+ <div class="card shadow-sm mb-4">
+   <div class="card-body">
 
-        <div class="col-md-2">
-          <label class="form-label">Title</label>
-          <input
-            class="form-control"
-            placeholder="Search by title"
-            name="title"
-            [(ngModel)]="filters.title" />
-        </div>
 
-        <div class="col-md-2">
-          <label class="form-label">Year</label>
-          <input
-            type="number"
-            class="form-control"
-            placeholder="e.g. 1994"
-            [(ngModel)]="filters.year" />
-          <div class="text-danger small mt-1" *ngIf="yearError">
-  {{ yearError }}
+     <h5 class="fw-bold mb-3">Search Movies</h5>
+
+
+     <div class="row g-3 align-items-end">
+
+
+       <div class="col-md-2 position-relative">
+         <label class="form-label">Title</label>
+         <input
+           class="form-control"
+           placeholder="Search by title"
+           name="title"
+           [(ngModel)]="filters.title"
+           (ngModelChange)="onTitleInputChange($event)"
+           autocomplete="off" />
+
+
+        <div
+ class="list-group position-absolute w-100 shadow-sm z-3"
+ *ngIf="showSuggestions"
+ style="top: 100%; left: 0;"
+>
+ <button
+   type="button"
+   class="list-group-item list-group-item-action"
+   *ngFor="let suggestion of titleSuggestions"
+   (click)="selectSuggestion(suggestion)"
+ >
+   {{ suggestion.title }}
+ </button>
 </div>
-        </div>
+       </div>
 
-        <div class="col-md-2">
-          <label class="form-label">Director</label>
-          <input
-            class="form-control"
-            placeholder="Search by director..."
-            name="director"
-            [(ngModel)]="filters.director" />
-        </div>
 
-        <div class="col-md-2">
-          <label class="form-label">Star Name</label>
-          <input
-            class="form-control"
-            placeholder="Search by star..."
-            name="star"
-            [(ngModel)]="filters.star" />
-        </div>
+       <div class="col-md-2">
+         <label class="form-label">Year</label>
+         <input
+           type="number"
+           class="form-control"
+           placeholder="e.g. 1994"
+           [(ngModel)]="filters.year" />
+         <div class="text-danger small mt-1" *ngIf="yearError">
+           {{ yearError }}
+         </div>
+       </div>
 
-        <div class="col-md-2 d-grid">
-          <button
-            class="btn btn-primary"
-            (click)="goToSearchResults()"
-            [disabled]="isSearchDisabled">
-            Search
-          </button>
-        </div>
 
-        <div class="col-md-2 d-grid">
-          <button class="btn btn-outline-secondary" (click)="onClear()">
-            Clear
-          </button>
-        </div>
-      </div>
+       <div class="col-md-2">
+         <label class="form-label">Director</label>
+         <input
+           class="form-control"
+           placeholder="Search by director..."
+           name="director"
+           [(ngModel)]="filters.director" />
+       </div>
 
-      <div class="text-danger mt-2" *ngIf="searchError">
-        {{ searchError }}
-      </div>
 
-      <small class="text-muted d-block mt-2">
-        * Enter at least one search criterion.
-      </small>
+       <div class="col-md-2">
+         <label class="form-label">Star Name</label>
+         <input
+           class="form-control"
+           placeholder="Search by star..."
+           name="star"
+           [(ngModel)]="filters.star" />
+       </div>
 
-    </div>
-  </div>
 
-  <h6 class="fw-bold mb-2">Browse by Genre</h6>
-  <div class="d-flex flex-wrap gap-2 mb-4">
-    <button *ngFor="let g of genres"
-            class="btn btn-sm btn-outline-secondary"
-            (click)="goToBrowseGenre(g)">
-      {{ g.name }}
-    </button>
-  </div>
+       <div class="col-md-2 d-grid">
+         <button
+           class="btn btn-primary"
+           (click)="goToSearchResults()"
+           [disabled]="isSearchDisabled">
+           Search
+         </button>
+       </div>
 
-  <h6 class="fw-bold mb-2">Browse by Title</h6>
-  <div class="d-flex flex-wrap gap-2">
-    <button *ngFor="let t of titleFilters"
-            class="btn btn-sm btn-outline-secondary"
-            (click)="goToBrowseTitle(t)">
-      {{ t }}
-    </button>
-  </div>
+
+       <div class="col-md-2 d-grid">
+         <button class="btn btn-outline-secondary" (click)="onClear()">
+           Clear
+         </button>
+       </div>
+     </div>
+
+
+     <div class="text-danger mt-2" *ngIf="searchError">
+       {{ searchError }}
+     </div>
+
+
+     <small class="text-muted d-block mt-2">
+       * Enter at least one search criterion.
+     </small>
+
+
+   </div>
+ </div>
+
+
+ <h6 class="fw-bold mb-2">Browse by Genre</h6>
+ <div class="d-flex flex-wrap gap-2 mb-4">
+   <button *ngFor="let g of genres"
+           class="btn btn-sm btn-outline-secondary"
+           (click)="goToBrowseGenre(g)">
+     {{ g.name }}
+   </button>
+ </div>
+
+
+ <h6 class="fw-bold mb-2">Browse by Title</h6>
+ <div class="d-flex flex-wrap gap-2">
+   <button *ngFor="let t of titleFilters"
+           class="btn btn-sm btn-outline-secondary"
+           (click)="goToBrowseTitle(t)">
+     {{ t }}
+   </button>
+ </div>
 
 </div>

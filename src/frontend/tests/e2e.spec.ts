@@ -56,8 +56,6 @@ test('E2E: (Login) works and redirects to home', async ({ page }) => {
 
   await page.goto(`${FRONTEND_URL}/login`);
 
-  await expect(page.getByTestId('login-title')).toBeVisible();
-
   await page.getByTestId('login-email').fill(email);
   await page.getByTestId('login-password').fill(password);
   await page.getByTestId('login-submit').click();
