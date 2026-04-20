@@ -76,13 +76,13 @@ describe('HomeComponent', () => {
  
   it('onClear should reset filters', () => {
 	component.filters.title = 'x';
-	component.filters.year = '1994';
+	component.filters.year = 1994;
  
 	component.onClear();
  
 	expect(component.filters).toEqual({
   	title: '',
-  	year: '',
+  	year: null,
   	director: '',
   	star: '',
 	});
@@ -109,7 +109,7 @@ describe('HomeComponent', () => {
   });
  
   it('isSearchDisabled should be true when all filters are empty', () => {
-	component.filters = { title: '', year: '', director: '', star: '' };
+	component.filters = { title: '', year: null, director: '', star: '' };
 	expect(component.isSearchDisabled).toBe(true);
   });
  
@@ -121,27 +121,17 @@ describe('HomeComponent', () => {
   it('goToSearchResults should not navigate and should set searchError when all filters are empty', () => {
 	const navSpy = vi.spyOn(router, 'navigate');
  
-	component.filters = { title: '', year: '', director: '', star: '' };
+	component.filters = { title: '', year: null, director: '', star: '' };
 	component.goToSearchResults();
  
 	expect(navSpy).not.toHaveBeenCalled();
 	expect(component.searchError).toBe('Please enter at least one search field.');
   });
  
-  it('goToSearchResults should not navigate and should set yearError when year is invalid', () => {
-	const navSpy = vi.spyOn(router, 'navigate');
- 
-	component.filters.year = 'abcd';
-	component.goToSearchResults();
- 
-	expect(navSpy).not.toHaveBeenCalled();
-	expect(component.yearError).toBe('Year must be a valid number.');
-  });
- 
   it('onClear should reset filters and clear errors', () => {
 	component.filters = {
   	title: 'x',
-  	year: '1994',
+  	year: 1994,
   	director: 'y',
   	star: 'z',
 	};
@@ -152,7 +142,7 @@ describe('HomeComponent', () => {
  
 	expect(component.filters).toEqual({
   	title: '',
-  	year: '',
+  	year: null,
   	director: '',
   	star: '',
 	});

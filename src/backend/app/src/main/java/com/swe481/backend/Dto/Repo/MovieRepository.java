@@ -19,7 +19,6 @@ import static com.jooq.swe481.generated.tables.StarsInMovies.STARS_IN_MOVIES;
 import com.swe481.backend.Dto.Genre;
 import com.swe481.backend.Dto.MovieSuggestion;
 import com.swe481.backend.Dto.Star;
-import com.swe481.backend.Dto.MovieSuggestion;
 @Repository
 public class MovieRepository {
  
@@ -71,7 +70,7 @@ public List<MovieSuggestion> findTitleSuggestions(String query, int limit) {
         	.from(MOVIES)
         	.leftJoin(RATINGS).on(RATINGS.MOVIEID.eq(MOVIES.ID))
    	     .where(MOVIES.TITLE.containsIgnoreCase(query))
-        	.orderBy(RATINGS.RATING.desc(), MOVIES.TITLE.asc())
+        	.orderBy(MOVIES.TITLE.asc())
         	.limit(limit)
         	.fetch(record -> new MovieSuggestion(
                 	record.get(MOVIES.ID),

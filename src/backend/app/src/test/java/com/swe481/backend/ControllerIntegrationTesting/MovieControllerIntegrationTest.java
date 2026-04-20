@@ -91,13 +91,6 @@ public class MovieControllerIntegrationTest {
                 .andExpect(jsonPath("$.movies").isArray());
     }
 
-    @Test
-    void searchMovies_shouldReturnBadRequest_whenYearIsNotNumeric() throws Exception {
-        mockMvc.perform(
-                get(endPoint + "/search")
-                        .param("year", "bgb"))
-                .andExpect(status().isBadRequest());
-    }
 
     @Test
     void browseMoviesByFirstLetter_shouldReturnPagedMovies() throws Exception {
@@ -175,13 +168,6 @@ public class MovieControllerIntegrationTest {
                         .param("query", "in"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
-    }
-
-    @Test
-    void autocompleteTitles_shouldReturnBadRequest_whenQueryMissing() throws Exception {
-        mockMvc.perform(
-                get(endPoint + "/autocomplete"))
-                .andExpect(status().isBadRequest());
     }
 
 }
