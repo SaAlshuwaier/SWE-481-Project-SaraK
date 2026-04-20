@@ -170,3 +170,7 @@ a:hover {
   color: #3b3b3b;
   font-weight: 700;
 }
+.autocomplete-dropdown {
+  top: 100%;
+  left: 0;
+}

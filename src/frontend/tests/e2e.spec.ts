@@ -100,20 +100,21 @@ test('E2E(Search): Search results page requires login and loads from query param
     waitUntil: 'networkidle'
   });
 
-  // Not redirected to login
   await expect(page).not.toHaveURL(/\/login$/);
 
-  // Basic assertion that search results page is loaded (adjust selector to what exists)
   await expect(page.getByRole('heading', { name: 'Search Results' })).toBeVisible();
 
-  // Assert that the search query is reflected in the UI (in a "context" box or similar)
-  await expect(page.locator('.context')).toContainText('Title:');
-  await expect(page.locator('.context')).toContainText('inception');
-  await expect(page.locator('.context')).toContainText('2010');
+  const contextBox = page.locator('.alert.alert-light.border');
+  await expect(contextBox).toBeVisible();
+  await expect(contextBox).toContainText('Title:');
+  await expect(contextBox).toContainText('inception');
+  await expect(contextBox).toContainText('2010');
 
-  // Assert that results are rendered (at least one movie card or an empty state message)
-  const movieCards = page.locator('.movie-card');
-  const emptyState = page.locator('.empty');
+  const movieCards = page.locator('.card.shadow-sm');
+  const emptyState = page.getByText('No movies found.');
+  const errorState = page.locator('.alert.alert-danger');
+
+  await expect(errorState).toHaveCount(0);
 
   if (await movieCards.count() > 0) {
     await expect(movieCards.first()).toBeVisible();
@@ -121,6 +122,7 @@ test('E2E(Search): Search results page requires login and loads from query param
     await expect(emptyState).toBeVisible();
   }
 });
+
 
 test('E2E(browse movies): Browse works for first letter or number', async ({ page }) => {
   // Login once with existing account
@@ -501,4 +503,37 @@ test('E2E: Checkout fails with invalid card', async ({ page }) => {
   await expect(page.getByTestId('checkout-error')).toBeVisible();
   await expect(page.getByTestId('checkout-error'))
     .toContainText('card information');
+});
+test('E2E(Search Autocomplete): suggestions appear and selecting navigates to movie', async ({ page }) => {
+  await login(page);
+
+  await page.goto(`${FRONTEND_URL}/home`);
+
+  const titleInput = page.locator('input[name="title"]');
+
+ 
+  await titleInput.fill('mel');
+
+
+  await page.waitForTimeout(500);
+
+  const suggestions = page.locator('.autocomplete-dropdown button');
+
+
+  await expect(suggestions.first()).toBeVisible();
+
+
+  const firstSuggestion = suggestions.first();
+
+  const text = await firstSuggestion.textContent();
+
+  await firstSuggestion.click();
+
+
+  await expect(page).toHaveURL(/\/movies\/.+/);
+
+
+  if (text) {
+    await expect(page.getByTestId('movie-title')).toContainText(text.trim());
+  }
 });
