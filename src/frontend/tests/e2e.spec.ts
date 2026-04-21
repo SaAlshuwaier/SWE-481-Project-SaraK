@@ -10,9 +10,11 @@ async function login(page: any) {
   await expect(page.getByTestId('login-error')).toHaveCount(0);
   await expect(page).not.toHaveURL(/\/login$/);
 }
+
 // REAL IDs that exist in DB:
 const MOVIE_ID = 'tt0378947';
 const STAR_ID = 'nm0591555';
+
 
 // E2E Auth Tests:
 // These tests validate the full user authentication flow from the UI.
@@ -22,6 +24,7 @@ const STAR_ID = 'nm0591555';
 // 1) Registration succeeds and shows the success response.
 // 2) Login succeeds using the newly created account.
 // Note: This approach keeps the tests stable even if the database state changes.
+
 test('E2E: Register works and shows success response', async ({ page }) => {
   // Use unique email each run to avoid "already exists"
   const email = `e2e_${Date.now()}@test.com`;
@@ -35,22 +38,20 @@ test('E2E: Register works and shows success response', async ({ page }) => {
   await page.getByTestId('reg-lastname').fill('Alshreef');
   await page.getByTestId('reg-email').fill(email);
   await page.getByTestId('reg-password').fill(password);
-  await page.getByTestId('reg-confirm-password').fill(password); 
+  await page.getByTestId('reg-confirm-password').fill(password);
   await page.getByTestId('reg-address').fill('Riyadh');
   await page.getByTestId('reg-ccnumber').fill('0011 2233 4455 6677');
-   await page.getByTestId('reg-ccexpiration').fill('2027-12-31'); 
-  await page.getByTestId('reg-ccfirstname').fill('Jana');         
-  await page.getByTestId('reg-cclastname').fill('Alshreef');  
+  await page.getByTestId('reg-ccexpiration').fill('2027-12-31');
+  await page.getByTestId('reg-ccfirstname').fill('Jana');
+  await page.getByTestId('reg-cclastname').fill('Alshreef');
 
   await page.getByTestId('reg-submit').click();
 
   // Assert no error box is shown
   await expect(page.getByTestId('reg-error')).toHaveCount(0);
-
 });
 
 test('E2E: (Login) works and redirects to home', async ({ page }) => {
-
   const email = 'Parker234@aol.com';
   const password = 'test';
 
@@ -60,19 +61,22 @@ test('E2E: (Login) works and redirects to home', async ({ page }) => {
   await page.getByTestId('login-password').fill(password);
   await page.getByTestId('login-submit').click();
 
-  //Assert no error
+  // Assert no error
   await expect(page.getByTestId('login-error')).toHaveCount(0);
 
-  //redirect
+  // redirect
   await expect(page).toHaveURL(/home/);
 });
+
+
+
+//////// HOME E2E TESTS \\\\\\\
 
 test('E2E(Home): Home page loads and navigation to Search / Cart / Browse works', async ({ page }) => {
   await page.goto(`${FRONTEND_URL}/home`);
 
   // Basic assertion that home is loaded (adjust selector to what exists)
   await expect(page.getByTestId('home-title')).toBeVisible();
-  // or: await expect(page.locator('h2')).toContainText('IMDB Movie Store');
 
   // Go to Search (from home)
   await page.getByTestId('home-go-search').click();
@@ -89,9 +93,13 @@ test('E2E(Home): Home page loads and navigation to Search / Cart / Browse works'
   await page.goto(`${FRONTEND_URL}/home`);
 
   // Go to Cart
-  /*await page.getByTestId('home-go-cart').click();
-  await expect(page).toHaveURL(/\/cart(\?.*)?$/);*/
+  await page.getByTestId('home-go-cart').click();
+  await expect(page).toHaveURL(/\/cart(\?.*)?$/);
 });
+
+
+
+//////// SEARCH MOVIES E2E TESTS \\\\\\\
 
 test('E2E(Search): Search results page requires login and loads from query params', async ({ page }) => {
   await login(page);
@@ -123,111 +131,37 @@ test('E2E(Search): Search results page requires login and loads from query param
   }
 });
 
-// Verify browse by first letter/number flow works
-// Example: browse movies that start with A, then browse titles starting with number 2
-test('E2E(browse movies): Browse works for first letter or number', async ({ page }) => {
-  // Login once with existing account
-  await page.goto(`${FRONTEND_URL}/login`);
-  await page.getByTestId('login-email').fill('cc@msn.com');
-  await page.getByTestId('login-password').fill('1111');
-  await page.getByTestId('login-submit').click();
-  await expect(page.getByTestId('login-error')).toHaveCount(0);
-
-  // Browse by letter
-  await page.goto(`${FRONTEND_URL}/movies?letter=A`, { waitUntil: 'networkidle' });
-  await expect(page).not.toHaveURL(/\/login$/);
-
-  await expect(page.getByTestId('browse-title')).toBeVisible();
-  await expect(page.getByTestId('movie-card').first()).toBeVisible();
-  await expect(page.getByTestId('movie-link').first()).toBeVisible();
-  await expect(page.getByTestId('movie-year').first()).toBeVisible();
-  await expect(page.getByTestId('movie-director').first()).toBeVisible();
-  await expect(page.getByTestId('movie-rating').first()).toBeVisible();
-
-  const titlesForA = await page.getByTestId('movie-link').allTextContents();
-  expect(titlesForA.length).toBeGreaterThan(0);
-  expect(
-    titlesForA.every(title => title.trim().toUpperCase().startsWith('A'))
-  ).toBeTruthy();
-
-  // Browse by number
-  await page.goto(`${FRONTEND_URL}/movies?letter=2`, { waitUntil: 'networkidle' });
-  await expect(page).not.toHaveURL(/\/login$/);
-
-  await expect(page.getByTestId('browse-title')).toBeVisible();
-  await expect(page.getByTestId('movie-card').first()).toBeVisible();
-  await expect(page.getByTestId('movie-link').first()).toBeVisible();
-  await expect(page.getByTestId('movie-year').first()).toBeVisible();
-  await expect(page.getByTestId('movie-director').first()).toBeVisible();
-  await expect(page.getByTestId('movie-rating').first()).toBeVisible();
-
-  const titlesFor2 = await page.getByTestId('movie-link').allTextContents();
-  expect(titlesFor2.length).toBeGreaterThan(0);
-  expect(
-    titlesFor2.every(title => title.trim().startsWith('2'))
-  ).toBeTruthy();
-});
-
-// Verify browse by genre flow works
-// Example: click a genre link from browse page and load filtered results
-test('E2E(browse movies): Browse works for Genre', async ({ page }) => {
-
-  // Login with existing account
-  await page.goto(`${FRONTEND_URL}/login`);
-
-  await page.getByTestId('login-email').fill('cc@msn.com');
-  await page.getByTestId('login-password').fill('1111');
-  await page.getByTestId('login-submit').click();
-
-  await expect(page.getByTestId('login-error')).toHaveCount(0);
-
-  // Now open genre page
-  await page.goto(`${FRONTEND_URL}/movies/genre/2?genreName=Action`);
-
-  await expect(page.getByTestId('browse-title')).toBeVisible();
-
-  await expect(page.getByTestId('movie-link').first()).toBeVisible();
-  await expect(page.getByTestId('movie-year').first()).toBeVisible();
-  await expect(page.getByTestId('movie-director').first()).toBeVisible();
-  await expect(page.getByTestId('movie-rating').first()).toBeVisible();
-
-  await expect(page.getByTestId('movie-card').first()).toBeVisible();
-
-
-});
-
-
-// Verify movies page loads and movies are displayed
-// Example: open /movies page and confirm at least one movie card appears
-test('E2E(browse movies): Movies page opens and movies load', async ({ page }) => {
+test('E2E(Search Autocomplete): suggestions appear and selecting navigates to movie', async ({ page }) => {
   await login(page);
 
-  await page.goto(`${FRONTEND_URL}/movies`);
+  await page.goto(`${FRONTEND_URL}/home`);
 
-  await expect(page).toHaveURL(/movies/);
+  const titleInput = page.locator('input[name="title"]');
 
-  await expect(page.locator('body')).toContainText('Browse Movies');
+  await titleInput.fill('mel');
 
-  await expect(page.getByTestId('movie-card').first()).toBeVisible();
+  await page.waitForTimeout(500);
+
+  const suggestions = page.locator('.autocomplete-dropdown button');
+
+  await expect(suggestions.first()).toBeVisible();
+
+  const firstSuggestion = suggestions.first();
+
+  const text = await firstSuggestion.textContent();
+
+  await firstSuggestion.click();
+
+  await expect(page).toHaveURL(/\/movies\/.+/);
+
+  if (text) {
+    await expect(page.getByTestId('movie-title')).toContainText(text.trim());
+  }
 });
 
 
-// Verify sorting control works
-// Example: change sorting from Title to Rating and verify dropdown responds
-test('E2E(browse movies): Sort dropdown exists and can change', async ({ page }) => {
-  await login(page);
 
-  await page.goto(`${FRONTEND_URL}/movies`);
-
-  const sort = page.locator('select').first();
-
-  await expect(sort).toBeVisible();
-
-  await sort.selectOption({ index: 1 });
-});
-
-
-
+/////// MOVIE DETAILS E2E TESTS \\\\\\\
 
 test('E2E(Movie Details): Movie details requires login and loads from DB', async ({ page }) => {
   await login(page);
@@ -290,8 +224,11 @@ test('E2E: Navigation flow Movie -> Star -> Movie works', async ({ page }) => {
 
   await expect(page).toHaveURL(/\/movies\/[^/]+$/);
   await expect(page.getByTestId('movie-title')).toBeVisible();
-
 });
+
+
+
+/////// STAR DETAILS E2E TESTS \\\\\\\
 
 test('E2E: Star Details loads from DB, renders fields, and has valid movie links', async ({ page }) => {
   await page.goto(`${FRONTEND_URL}/login`);
@@ -305,7 +242,6 @@ test('E2E: Star Details loads from DB, renders fields, and has valid movie links
   // Assert real DB values
   await expect(page.getByTestId('star-name')).toHaveText('Lorenzo Minoli');
 
-
   // Movies list should be visible and contain his one known movie
   const moviesList = page.getByTestId('movies-list');
   await expect(moviesList).toBeVisible();
@@ -315,10 +251,123 @@ test('E2E: Star Details loads from DB, renders fields, and has valid movie links
   const firstMovieLink = page.getByTestId('movie-link').first();
   await expect(firstMovieLink).toBeVisible();
   await expect(firstMovieLink).toHaveAttribute('href', /.*\/movies\/tt0400548$/);
-
-
 });
 
+
+
+//////// BROWSE MOVIES E2E TESTS \\\\\\\
+
+// Verify browse by first letter/number flow works
+// Example: browse movies that start with A, then browse titles starting with number 2
+test('E2E(browse movies): Browse works for first letter or number', async ({ page }) => {
+  await page.goto(`${FRONTEND_URL}/login`);
+  await page.getByTestId('login-email').fill('cc@msn.com');
+  await page.getByTestId('login-password').fill('1111');
+  await page.getByTestId('login-submit').click();
+  await expect(page.getByTestId('login-error')).toHaveCount(0);
+
+  // Browse by letter
+  await page.goto(`${FRONTEND_URL}/movies?letter=A`, { waitUntil: 'networkidle' });
+  await expect(page).not.toHaveURL(/\/login$/);
+
+  await expect(page.getByTestId('browse-title')).toBeVisible();
+  await expect(page.getByTestId('movie-card').first()).toBeVisible();
+  await expect(page.getByTestId('movie-link').first()).toBeVisible();
+  await expect(page.getByTestId('movie-year').first()).toBeVisible();
+  await expect(page.getByTestId('movie-director').first()).toBeVisible();
+  await expect(page.getByTestId('movie-rating').first()).toBeVisible();
+
+  const titlesForA = await page.getByTestId('movie-link').allTextContents();
+  expect(titlesForA.length).toBeGreaterThan(0);
+  expect(titlesForA.every(title => title.trim().toUpperCase().startsWith('A'))).toBeTruthy();
+
+  // Browse by number
+  await page.goto(`${FRONTEND_URL}/movies?letter=2`, { waitUntil: 'networkidle' });
+  await expect(page).not.toHaveURL(/\/login$/);
+
+  await expect(page.getByTestId('browse-title')).toBeVisible();
+  await expect(page.getByTestId('movie-card').first()).toBeVisible();
+  await expect(page.getByTestId('movie-link').first()).toBeVisible();
+  await expect(page.getByTestId('movie-year').first()).toBeVisible();
+  await expect(page.getByTestId('movie-director').first()).toBeVisible();
+  await expect(page.getByTestId('movie-rating').first()).toBeVisible();
+
+  const titlesFor2 = await page.getByTestId('movie-link').allTextContents();
+  expect(titlesFor2.length).toBeGreaterThan(0);
+  expect(titlesFor2.every(title => title.trim().startsWith('2'))).toBeTruthy();
+});
+
+// Verify browse by genre flow works
+// Example: click a genre link from browse page and load filtered results
+test('E2E(browse movies): Browse works for Genre', async ({ page }) => {
+  await page.goto(`${FRONTEND_URL}/login`);
+
+  await page.getByTestId('login-email').fill('cc@msn.com');
+  await page.getByTestId('login-password').fill('1111');
+  await page.getByTestId('login-submit').click();
+
+  await expect(page.getByTestId('login-error')).toHaveCount(0);
+
+  // Now open genre page
+  await page.goto(`${FRONTEND_URL}/movies/genre/2?genreName=Action`);
+
+  await expect(page.getByTestId('browse-title')).toBeVisible();
+
+  await expect(page.getByTestId('movie-link').first()).toBeVisible();
+  await expect(page.getByTestId('movie-year').first()).toBeVisible();
+  await expect(page.getByTestId('movie-director').first()).toBeVisible();
+  await expect(page.getByTestId('movie-rating').first()).toBeVisible();
+
+  await expect(page.getByTestId('movie-card').first()).toBeVisible();
+});
+
+// Verify movies page loads and movies are displayed
+// Example: open /movies page and confirm at least one movie card appears
+test('E2E(browse movies): Movies page opens and movies load', async ({ page }) => {
+  await login(page);
+
+  await page.goto(`${FRONTEND_URL}/movies`);
+
+  await expect(page).toHaveURL(/movies/);
+
+  await expect(page.locator('body')).toContainText('Browse Movies');
+
+  await expect(page.getByTestId('movie-card').first()).toBeVisible();
+});
+
+// Verify sorting control works
+// Example: change sorting from Title to Rating and verify dropdown responds
+test('E2E(browse movies): Sort dropdown exists and can change', async ({ page }) => {
+  await login(page);
+
+  await page.goto(`${FRONTEND_URL}/movies`);
+
+  const sort = page.locator('select').first();
+
+  await expect(sort).toBeVisible();
+
+  await sort.selectOption({ index: 1 });
+});
+
+// Verify movie details page loads
+// Example: open first movie page, then confirm star links are visible
+test('E2E(browse movies): Movie and star links navigate', async ({ page }) => {
+  await login(page);
+
+  await page.goto(`${FRONTEND_URL}/movies`);
+
+  const movie = page.getByTestId('movie-link').first();
+  await movie.click();
+
+  await expect(page).toHaveURL(/\/movies\/tt/);
+
+  const star = page.getByTestId('star-link').first();
+  await expect(star).toBeVisible();
+});
+
+
+
+/////// CHECKOUT E2E TESTS \\\\\\\
 
 test('E2E: Cart page loads, Load Cart works, update/delete work, clear local works, navigation works', async ({ page }) => {
   await page.goto(`${FRONTEND_URL}/login`);
@@ -337,8 +386,8 @@ test('E2E: Cart page loads, Load Cart works, update/delete work, clear local wor
   await expect(page.getByTestId('cart-loaded')).toBeVisible();
   await expect(page.getByTestId('proceed-checkout')).toBeVisible();
 
-// Should be disabled when cart is empty
-await expect(page.getByTestId('proceed-checkout')).toBeDisabled();
+  // Should be disabled when cart is empty
+  await expect(page.getByTestId('proceed-checkout')).toBeDisabled();
 
   await expect(page.getByTestId('cart-total-qty')).toHaveText('0');
   await expect(page.getByTestId('cart-empty')).toBeVisible();
@@ -350,120 +399,30 @@ await expect(page.getByTestId('proceed-checkout')).toBeDisabled();
   await expect(page.getByTestId('cart-loaded')).toBeVisible();
   await expect(page.getByTestId('proceed-checkout')).toBeEnabled();
 
-  // If cart has items, test update and delete behaviors
   const rows = page.getByTestId('cart-row');
   const rowCount = await rows.count();
 
   if (rowCount > 0) {
-    //  Update quantity for the first item 
     const firstQtyInput = page.getByTestId('cart-qty-input').first();
 
-    // Read current input value
     const oldVal = await firstQtyInput.inputValue();
 
-    // Choose a new value different from the old value
     const newVal = oldVal === '2' ? '3' : '2';
 
-    // Fill new value (triggers Angular (input) handler)
     await firstQtyInput.fill(newVal);
 
-    // Blur helps stability across browsers and ensures events settle
     await firstQtyInput.blur();
 
-    // No error after update
     await expect(page.getByTestId('cart-error')).toHaveCount(0);
 
-    // --- Delete the first item ---
     await page.getByTestId('remove-item').first().click();
 
-    // No error after delete
     await expect(page.getByTestId('cart-error')).toHaveCount(0);
   }
 
-  // Clear cart locally 
+  // Clear cart locally
   await page.getByTestId('clear-cart').click();
 
   // After local clear, empty cart message should appear
   await expect(page.getByTestId('cart-empty')).toBeVisible();
-});
-test('E2E: Checkout success flow (valid card)', async ({ page }) => {
-  // Add item to cart first
-  const context = await page.context();
-  const request = context.request;
-
-  await request.post('http://localhost:8080/api/cart/addItem', {
-
-  
-    data: {
-      movieId: 'tt0378947',
-      title: 'Test Movie',
-      quantity: 1,
-    },
-    headers: { 'Content-Type': 'application/json' },
-  });
-
-  await page.goto(`${FRONTEND_URL}/checkout`);
-
-  await expect(page.getByTestId('checkout-title')).toBeVisible();
-
-  await page.getByTestId('checkout-firstname').fill('Janet');
-  await page.getByTestId('checkout-lastname').fill('Trink');
-  await page.getByTestId('checkout-card').fill('1354895485215896548');
-  await page.getByTestId('checkout-expiration').fill('2004-03-25');
-
-  await page.getByTestId('checkout-submit').click();
-
-  // Success
-  await expect(page.getByTestId('checkout-error')).toHaveCount(0);
-  await expect(page.getByTestId('checkout-success')).toBeVisible();
-  await expect(page.getByTestId('checkout-success'))
-    .toContainText('Payment completed successfully');
-});
-
-test('E2E: Checkout fails with invalid card', async ({ page }) => {
-  const context = await page.context();
-  const request = context.request;
-
-  await request.post('http://localhost:8080/api/cart/addItem', {
-
-  
-    data: {
-      movieId: 'tt0378947',
-      title: 'Test Movie',
-      quantity: 1,
-    },
-    headers: { 'Content-Type': 'application/json' },
-  });
-
-  // invvalid card
-  await page.goto(`${FRONTEND_URL}/checkout`);
-
-  await page.getByTestId('checkout-firstname').fill('Wrong');
-  await page.getByTestId('checkout-lastname').fill('User');
-  await page.getByTestId('checkout-card').fill('0000000000000000');
-  await page.getByTestId('checkout-expiration').fill('2004-03-25');
-
-  await page.getByTestId('checkout-submit').click();
-
-  await expect(page.getByTestId('checkout-success')).toHaveCount(0);
-  await expect(page.getByTestId('checkout-error')).toBeVisible();
-  await expect(page.getByTestId('checkout-error'))
-    .toContainText('card information');
-});
-
-
-// Verify movie details page loads 
-// Example: open first movie page, then confirm star links are visible
-test('E2E(browse movies): Movie and star links navigate', async ({ page }) => {
-  await login(page);
-
-  await page.goto(`${FRONTEND_URL}/movies`);
-
-  const movie = page.getByTestId('movie-link').first();
-  await movie.click();
-
-  await expect(page).toHaveURL(/\/movies\/tt/);
-
-  const star = page.getByTestId('star-link').first();
-  await expect(star).toBeVisible();
 });
