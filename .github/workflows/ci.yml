@@ -490,7 +490,7 @@ jobs:
           INSERT INTO creditcards (id, "firstName", "lastName", expiration) VALUES
             ('1354895485215896548','Janet','Trink','2004/03/25'),
             ('0011223344556677','Jana','Alshreef','2027/12/31'),
-            ('98859312428636453511','Parker','Test','2007/12/23'),
+            ('98859312428636453511', 'Frank', 'Parker', '2007/12/23'),
             ('755003', 'Chris', 'Carr', '2007/01/01')
           ON CONFLICT DO NOTHING;
 
