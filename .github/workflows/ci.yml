@@ -1,22 +1,20 @@
 name: CI
 
-# ─── Triggers ────────────────────────────────────────────────────────────────
+# Triggers
 # Run this pipeline on every push to main AND on every pull request.
 # This means every time someone pushes code or opens a PR, all jobs below run.
 on:
   pull_request:
   push:
-   # branches: [ "main" ]
+    branches: [ "main" ]
 
 jobs:
 
-  # ─────────────────────────────────────────────────────────────────────────────
   # JOB 1: check
   # A simple sanity check to confirm the CI pipeline itself is reachable
   # and GitHub Actions is working. If this fails, something is wrong with
-  # the workflow file itself (e.g. YAML syntax error).
-  # No code is compiled or tested here — it just prints a message.
-  # ─────────────────────────────────────────────────────────────────────────────
+  # the workflow file itself (example YAML syntax error).
+  # No code is compiled or tested here it just prints a message.
   check:
     runs-on: ubuntu-latest
     steps:
@@ -24,54 +22,17 @@ jobs:
       - name: Run a simple check
         run: echo "CI is running successfully"
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # JOB 2: build
-  # Validates that the required production secrets exist in the repo settings.
-  # These secrets (DB_URL, DB_USER, DB_PASS) are the credentials for the real
-  # production database — they are NOT used in tests, only validated here so
-  # we catch missing secrets before they cause a silent failure in production.
-  #
-  # HOW TO ADD SECRETS:
-  # Go to your repo → Settings → Secrets and variables → Actions → New secret
-  # Add: DB_URL, DB_USER, DB_PASS
-  # ─────────────────────────────────────────────────────────────────────────────
-  build:
-    runs-on: ubuntu-latest
-
-    env:
-      DB_URL: ${{ secrets.DB_URL }}
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_PASS: ${{ secrets.DB_PASS }}
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Check secrets exist
-        run: |
-          [ -z "$DB_URL" ]   && echo "DB_URL missing"   && exit 1
-          [ -z "$DB_USER" ]  && echo "DB_USER missing"  && exit 1
-          [ -z "$DB_PASS" ]  && echo "DB_PASS missing"  && exit 1
-          echo "All production secrets are present"
-
-  # ─────────────────────────────────────────────────────────────────────────────
-  # JOB 3: backend-tests
+  # JOB 2: backend-tests
   # Runs all Spring Boot tests: service unit tests (Mockito) + controller
   # integration tests (@SpringBootTest + MockMvc).
   #
   # WHY A DATABASE IS STILL NEEDED HERE:
   # The service unit tests use Mockito and need no DB at all.
   # However the controller integration tests use @SpringBootTest which boots
-  # the full Spring context — Spring will refuse to start if it cannot connect
+  # the full Spring context. Spring will refuse to start if it cannot connect
   # to a database. So we spin up a temporary PostgreSQL container just to
   # satisfy Spring Boot's startup, seed it with the exact data our controller
   # tests query, then tear it down automatically when the job ends.
-  #
-  # WHY jOOQ NEEDS THE DATABASE AT COMPILE TIME:
-  # jOOQ's Maven plugin runs during generate-sources (before compile) and
-  # connects to a real DB to read the schema and generate Java classes into
-  # target/generated-sources/jooq. These classes are NOT committed to the repo
-  # (target/ is gitignored) so they must be regenerated on every CI run.
-  # This is why we seed the DB before running mvn clean test.
-  # ─────────────────────────────────────────────────────────────────────────────
   backend-tests:
     runs-on: ubuntu-latest
 
@@ -197,15 +158,7 @@ jobs:
             "numVotes" INT NOT NULL
           );
 
-          -- ── Movies ────────────────────────────────────────────────────────
-          -- tt0378947 → MovieControllerIntegrationTest + E2E movie details
-          -- tt0461892 → CheckoutControllerIntegrationTest cart item
-          -- tt0395796 → StarControllerIntegrationTest (star nm1651765)
-          -- tt0400548 → E2E star details (Lorenzo Minoli)
-          -- A-prefixed titles → browse-by-letter E2E tests
-          -- 2-prefixed titles → browse-by-number E2E tests
-          -- tt1375666 → search "inception" test
-          -- tt0449881 → search "Letters" + year 2006 test
+          Movies ────────────────────────────────────────────────────────
           INSERT INTO movies (id, title, year, director) VALUES
             ('tt0378947','Melinda and Melinda',2004,'Woody Allen'),
             ('tt0400548','An Italian Affair',2003,'Unknown Director'),
@@ -226,7 +179,7 @@ jobs:
             ('tt0000002','Another Alpha Film',2001,'Another Director')
           ON CONFLICT DO NOTHING;
 
-          -- ── Ratings ───────────────────────────────────────────────────────
+          Ratings ───────────────────────────────────────────────────────
           INSERT INTO ratings ("movieId", rating, "numVotes") VALUES
             ('tt0378947',6.5,50000),('tt0400548',5.8,12000),
             ('tt0461892',7.2,8000),('tt0422896',4.2,3000),
@@ -239,8 +192,7 @@ jobs:
             ('tt0000002',5.5,800)
           ON CONFLICT DO NOTHING;
 
-          -- ── Genres ────────────────────────────────────────────────────────
-          -- id=28 needed by browseByGenre controller integration test
+          Genres ────────────────────────────────────────────────────────
           INSERT INTO genres (id, name) VALUES
             (1,'Action'),(2,'Adventure'),(3,'Animation'),(4,'Biography'),
             (5,'Comedy'),(6,'Crime'),(7,'Documentary'),(8,'Drama'),
@@ -250,7 +202,7 @@ jobs:
             (21,'Western'),(28,'Action')
           ON CONFLICT DO NOTHING;
 
-          -- ── Genres in movies ──────────────────────────────────────────────
+          Genres in movies ──────────────────────────────────────────────
           INSERT INTO genres_in_movies ("genreId","movieId") VALUES
             (8,'tt0378947'),(5,'tt0378947'),(16,'tt0378947'),
             (15,'tt0413051'),(8,'tt0461892'),(8,'tt0111161'),
@@ -259,9 +211,7 @@ jobs:
             (28,'tt0000001'),(28,'tt0000002')
           ON CONFLICT DO NOTHING;
 
-          -- ── Stars ─────────────────────────────────────────────────────────
-          -- nm1651765 → StarControllerIntegrationTest
-          -- nm0591555 → E2E star details (Lorenzo Minoli → An Italian Affair)
+          Stars ─────────────────────────────────────────────────────────
           INSERT INTO stars (id, name, "birthYear") VALUES
             ('nm0591555','Lorenzo Minoli',1950),
             ('nm1651765','Gregory Bayne',1973),
@@ -271,7 +221,7 @@ jobs:
             ('nm0001706','Wallace Shawn',1943)
           ON CONFLICT DO NOTHING;
 
-          -- ── Stars in movies ───────────────────────────────────────────────
+          Stars in movies ───────────────────────────────────────────────
           INSERT INTO stars_in_movies ("starId","movieId") VALUES
             ('nm0591555','tt0400548'),
             ('nm1651765','tt0395796'),
@@ -282,25 +232,20 @@ jobs:
             ('nm0001706','tt0378947')
           ON CONFLICT DO NOTHING;
 
-          -- ── Credit cards ──────────────────────────────────────────────────
-          -- Janet Trink's card → CheckoutControllerIntegrationTest + E2E checkout
-          -- Jana Alshreef's card → used for Parker and CC user accounts
+          Credit cards ──────────────────────────────────────────────────
           INSERT INTO creditcards (id, "firstName", "lastName", expiration) VALUES
             ('1354895485215896548','Janet','Trink','2004-03-25'),
             ('0011223344556677','Jana','Alshreef','2027-12-31')
           ON CONFLICT DO NOTHING;
 
-          -- ── Customers ─────────────────────────────────────────────────────
-          -- Parker234@aol.com → AuthControllerTest login test
-          -- cc@msn.com        → E2E browse/cart/star/login tests
-          -- janet@trink.com   → E2E checkout test
+          Customers ─────────────────────────────────────────────────────
           INSERT INTO customers ("firstName","lastName","ccId",address,email,password) VALUES
             ('Parker','Test','0011223344556677','Test City','Parker234@aol.com','test'),
             ('CC','User','0011223344556677','Test City','cc@msn.com','1111'),
             ('Janet','Trink','1354895485215896548','Test City','janet@trink.com','pw')
           ON CONFLICT DO NOTHING;
 
-          -- ── Sync sequences ────────────────────────────────────────────────
+          Sync sequences ────────────────────────────────────────────────
           SELECT setval(pg_get_serial_sequence('genres',    'id'), COALESCE((SELECT MAX(id) FROM genres),    1), true);
           SELECT setval(pg_get_serial_sequence('customers', 'id'), COALESCE((SELECT MAX(id) FROM customers), 1), true);
           SELECT setval(pg_get_serial_sequence('sales',     'id'), COALESCE((SELECT MAX(id) FROM sales),     1), true);
@@ -316,13 +261,10 @@ jobs:
         # This is why we need the DB seeded BEFORE this step.
         run: ./mvnw clean test
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # JOB 4: frontend-tests
+  # JOB 3: frontend-tests
   # Runs all Angular unit tests (Vitest).
-  # These tests are 100% mocked — every service call (MovieService, AuthService,
-  # CartService, etc.) is replaced with a vi.fn() mock. No backend and no
+  # These tests are 100% mocked. No backend and no
   # database is needed at all. This is the fastest job in the pipeline.
-  # ─────────────────────────────────────────────────────────────────────────────
   frontend-tests:
     runs-on: ubuntu-latest
     steps:
@@ -346,11 +288,9 @@ jobs:
         working-directory: ./src/frontend
         run: npm run test -- --watch=false
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # JOB 5: playwright-e2e
+  # JOB 4: playwright-e2e
   # Runs end-to-end tests using Playwright.
-  # Unlike unit tests, E2E tests simulate a real user clicking through the UI,
-  # so they need the full stack running: database + backend + frontend.
+  # They need the full stack running: database + backend + frontend.
   #
   # Flow:
   #   1. Spin up a PostgreSQL container and seed it with real test data
@@ -358,7 +298,6 @@ jobs:
   #   3. Start the Angular frontend (connects to the backend)
   #   4. Wait 60s for both servers to be ready
   #   5. Run Playwright tests against http://localhost:4200
-  # ─────────────────────────────────────────────────────────────────────────────
   playwright-e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -402,8 +341,8 @@ jobs:
           cache-dependency-path: src/frontend/package-lock.json
 
       - name: Seed test database
-        # Same seed data as backend-tests — E2E tests reference the same
-        # real IDs (e.g. cc@msn.com, tt0378947, nm0591555) so the data
+        # Same seed data as backend-tests (E2E tests reference the same)
+        # real IDs (cc@msn.com, tt0378947, nm0591555) so the data
         # must match exactly what the Playwright tests expect to see in the UI.
         env:
           PGPASSWORD: testpass
@@ -472,15 +411,7 @@ jobs:
             "numVotes" INT NOT NULL
           );
 
-          -- ── Movies ────────────────────────────────────────────────────────
-          -- tt0378947 → MovieControllerIntegrationTest + E2E movie details
-          -- tt0461892 → CheckoutControllerIntegrationTest cart item
-          -- tt0395796 → StarControllerIntegrationTest (star nm1651765)
-          -- tt0400548 → E2E star details (Lorenzo Minoli)
-          -- A-prefixed titles → browse-by-letter E2E tests
-          -- 2-prefixed titles → browse-by-number E2E tests
-          -- tt1375666 → search "inception" test
-          -- tt0449881 → search "Letters" + year 2006 test
+          Movies ────────────────────────────────────────────────────────
           INSERT INTO movies (id, title, year, director) VALUES
             ('tt0378947','Melinda and Melinda',2004,'Woody Allen'),
             ('tt0400548','An Italian Affair',2003,'Unknown Director'),
@@ -501,7 +432,7 @@ jobs:
             ('tt0000002','Another Alpha Film',2001,'Another Director')
           ON CONFLICT DO NOTHING;
 
-          -- ── Ratings ───────────────────────────────────────────────────────
+          Ratings ───────────────────────────────────────────────────────
           INSERT INTO ratings ("movieId", rating, "numVotes") VALUES
             ('tt0378947',6.5,50000),('tt0400548',5.8,12000),
             ('tt0461892',7.2,8000),('tt0422896',4.2,3000),
@@ -514,8 +445,7 @@ jobs:
             ('tt0000002',5.5,800)
           ON CONFLICT DO NOTHING;
 
-          -- ── Genres ────────────────────────────────────────────────────────
-          -- id=28 needed by browseByGenre controller integration test
+          Genres ────────────────────────────────────────────────────────
           INSERT INTO genres (id, name) VALUES
             (1,'Action'),(2,'Adventure'),(3,'Animation'),(4,'Biography'),
             (5,'Comedy'),(6,'Crime'),(7,'Documentary'),(8,'Drama'),
@@ -525,7 +455,7 @@ jobs:
             (21,'Western'),(28,'Action')
           ON CONFLICT DO NOTHING;
 
-          -- ── Genres in movies ──────────────────────────────────────────────
+          Genres in movies ──────────────────────────────────────────────
           INSERT INTO genres_in_movies ("genreId","movieId") VALUES
             (8,'tt0378947'),(5,'tt0378947'),(16,'tt0378947'),
             (15,'tt0413051'),(8,'tt0461892'),(8,'tt0111161'),
@@ -534,9 +464,7 @@ jobs:
             (28,'tt0000001'),(28,'tt0000002')
           ON CONFLICT DO NOTHING;
 
-          -- ── Stars ─────────────────────────────────────────────────────────
-          -- nm1651765 → StarControllerIntegrationTest
-          -- nm0591555 → E2E star details (Lorenzo Minoli → An Italian Affair)
+          Stars ─────────────────────────────────────────────────────────
           INSERT INTO stars (id, name, "birthYear") VALUES
             ('nm0591555','Lorenzo Minoli',1950),
             ('nm1651765','Gregory Bayne',1973),
@@ -546,7 +474,7 @@ jobs:
             ('nm0001706','Wallace Shawn',1943)
           ON CONFLICT DO NOTHING;
 
-          -- ── Stars in movies ───────────────────────────────────────────────
+          Stars in movies ───────────────────────────────────────────────
           INSERT INTO stars_in_movies ("starId","movieId") VALUES
             ('nm0591555','tt0400548'),
             ('nm1651765','tt0395796'),
@@ -557,18 +485,13 @@ jobs:
             ('nm0001706','tt0378947')
           ON CONFLICT DO NOTHING;
 
-          -- ── Credit cards ──────────────────────────────────────────────────
-          -- Janet Trink's card → CheckoutControllerIntegrationTest + E2E checkout
-          -- Jana Alshreef's card → used for Parker and CC user accounts
+          Credit cards ──────────────────────────────────────────────────
           INSERT INTO creditcards (id, "firstName", "lastName", expiration) VALUES
             ('1354895485215896548','Janet','Trink','2004-03-25'),
             ('0011223344556677','Jana','Alshreef','2027-12-31')
           ON CONFLICT DO NOTHING;
 
-          -- ── Customers ─────────────────────────────────────────────────────
-          -- Parker234@aol.com → AuthControllerTest login test
-          -- cc@msn.com        → E2E browse/cart/star/login tests
-          -- janet@trink.com   → E2E checkout test
+          Customers ─────────────────────────────────────────────────────
           INSERT INTO customers ("firstName","lastName","ccId",address,email,password) VALUES
             ('Parker','Test','0011223344556677','Test City','Parker234@aol.com','test'),
             ('CC','User','0011223344556677','Test City','cc@msn.com','1111'),
@@ -663,10 +586,10 @@ jobs:
         # --timeout=60000        → each test gets 60s instead of the default 30s.
         #                          CI machines are slower so actions like login,
         #                          cart load, and checkout take longer to complete.
-        # --retries=2            → retry a failed test up to 2 times before
+        # --retries=1            → retry a failed test up to 1 times before
         #                          marking it as failed. This handles flaky timing
         #                          issues without masking real bugs.
         # --reporter=list        → print each test result as it runs so the CI
         #                          log shows exactly which test failed and why,
         #                          rather than a single summary at the end.
-        run: npx playwright test --timeout=60000 --retries=2 --reporter=list
+        run: npx playwright test --timeout=60000 --retries=1 --reporter=list
