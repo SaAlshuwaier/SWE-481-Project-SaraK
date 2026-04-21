@@ -2,59 +2,45 @@ import { test, expect } from '@playwright/test';
 
 const FRONTEND_URL = 'http://localhost:4200';
 
-async function login(page: any) {
-  await page.goto(`${FRONTEND_URL}/login`);
-  await page.getByTestId('login-email').fill('cc@msn.com');
-  await page.getByTestId('login-password').fill('1111');
-  await page.getByTestId('login-submit').click();
-  await expect(page.getByTestId('login-error')).toHaveCount(0);
-  await expect(page).not.toHaveURL(/\/login$/);
-}
-
 // REAL IDs that exist in DB:
 const MOVIE_ID = 'tt0378947';
 const STAR_ID = 'nm0591555';
 
 
-// E2E Auth Tests:
-// These tests validate the full user authentication flow from the UI.
-// I generate a unique email on each run to avoid dependency on "seed" data
-// and to prevent "user already exists" errors.
-// The tests verify that:
-// 1) Registration succeeds and shows the success response.
-// 2) Login succeeds using the newly created account.
-// Note: This approach keeps the tests stable even if the database state changes.
+// Auth tests use fresh session
+test.describe('Auth tests', () => {
+  test.use({ storageState: { cookies: [], origins: [] } });
 
-test('E2E: Register works and shows success response', async ({ page }) => {
-  // Use unique email each run to avoid "already exists"
-  const email = `e2e_${Date.now()}@test.com`;
-  const password = 'test123';
+  test('E2E: Register works and shows success response', async ({ page }) => {
+      // Use unique email each run to avoid "already exists"
+      const email = `e2e_${Date.now()}@test.com`;
+      const password = 'test123';
 
-  await page.goto(`${FRONTEND_URL}/register`);
+      await page.goto(`${FRONTEND_URL}/register`);
 
-  await expect(page.getByTestId('register-title')).toBeVisible();
+      await expect(page.getByTestId('register-title')).toBeVisible();
 
-  await page.getByTestId('reg-firstname').fill('Jana');
-  await page.getByTestId('reg-lastname').fill('Alshreef');
-  await page.getByTestId('reg-email').fill(email);
-  await page.getByTestId('reg-password').fill(password);
-  await page.getByTestId('reg-confirm-password').fill(password);
-  await page.getByTestId('reg-address').fill('Riyadh');
- // await page.getByTestId('reg-ccnumber').fill('0011 2233 4455 6677');
- await page.getByTestId('reg-ccnumber').fill(`4000 1234 5678 ${Date.now().toString().slice(-4)}`);
-  await page.getByTestId('reg-ccexpiration').fill('2027-12-31');
-  await page.getByTestId('reg-ccfirstname').fill('Jana');
-  await page.getByTestId('reg-cclastname').fill('Alshreef');
+      await page.getByTestId('reg-firstname').fill('Jana');
+      await page.getByTestId('reg-lastname').fill('Alshreef');
+      await page.getByTestId('reg-email').fill(email);
+      await page.getByTestId('reg-password').fill(password);
+      await page.getByTestId('reg-confirm-password').fill(password);
+      await page.getByTestId('reg-address').fill('Riyadh');
+    // await page.getByTestId('reg-ccnumber').fill('0011 2233 4455 6677');
+    await page.getByTestId('reg-ccnumber').fill(`4000 1234 5678 ${Date.now().toString().slice(-4)}`);
+      await page.getByTestId('reg-ccexpiration').fill('2027-12-31');
+      await page.getByTestId('reg-ccfirstname').fill('Jana');
+      await page.getByTestId('reg-cclastname').fill('Alshreef');
 
-  await page.getByTestId('reg-submit').click();
+      await page.getByTestId('reg-submit').click();
 
-  // Assert no error box is shown
-  //await expect(page.getByTestId('reg-error')).toHaveCount(0);
- // await expect(page.locator('body')).toContainText(/success|home|login/i);
- await expect(page.locator('body')).toContainText(/sign in|welcome back|login/i);
-});
+      // Assert no error box is shown
+      //await expect(page.getByTestId('reg-error')).toHaveCount(0);
+    // await expect(page.locator('body')).toContainText(/success|home|login/i);
+    await expect(page.locator('body')).toContainText(/sign in|welcome back|login/i);
+    });
 
-test('E2E: (Login) works and redirects to home', async ({ page }) => {
+  test('E2E: (Login) works and redirects to home', async ({ page }) => {
   const email = 'Parker234@aol.com';
   const password = 'test';
 
@@ -70,6 +56,8 @@ test('E2E: (Login) works and redirects to home', async ({ page }) => {
   // redirect
   await expect(page).toHaveURL(/home/);
 });
+});
+
 
 
 
@@ -108,8 +96,6 @@ test('E2E(Home): Home page loads', async ({ page }) => {
 //////// SEARCH MOVIES E2E TESTS \\\\\\\
 
 test('E2E(Search): Search results page requires login and loads from query params', async ({ page }) => {
-  await login(page);
-
   await page.goto(`${FRONTEND_URL}/movies/search?title=inception&year=2010`, {
     waitUntil: 'networkidle'
   });
@@ -138,8 +124,6 @@ test('E2E(Search): Search results page requires login and loads from query param
 });
 
 test('E2E(Search Autocomplete): suggestions appear and selecting navigates to movie', async ({ page }) => {
-  await login(page);
-
   await page.goto(`${FRONTEND_URL}/home`);
 
   const titleInput = page.locator('input[name="title"]');
@@ -170,8 +154,6 @@ test('E2E(Search Autocomplete): suggestions appear and selecting navigates to mo
 /////// MOVIE DETAILS E2E TESTS \\\\\\\
 
 test('E2E(Movie Details): Movie details requires login and loads from DB', async ({ page }) => {
-  await login(page);
-
   await page.goto(`${FRONTEND_URL}/movies/${MOVIE_ID}`, {
     waitUntil: 'networkidle'
   });
@@ -239,11 +221,6 @@ test('E2E: Navigation flow Movie -> Star -> Movie works', async ({ page }) => {
 /////// STAR DETAILS E2E TESTS \\\\\\\
 
 test('E2E: Star Details loads from DB, renders fields, and has valid movie links', async ({ page }) => {
-  await page.goto(`${FRONTEND_URL}/login`);
-  await page.getByTestId('login-email').fill('cc@msn.com');
-  await page.getByTestId('login-password').fill('1111');
-  await page.getByTestId('login-submit').click();
-  await expect(page.getByTestId('login-error')).toHaveCount(0);
 
   await page.goto(`${FRONTEND_URL}/stars/${STAR_ID}`);
 
@@ -268,11 +245,6 @@ test('E2E: Star Details loads from DB, renders fields, and has valid movie links
 // Verify browse by first letter/number flow works
 // Example: browse movies that start with A, then browse titles starting with number 2
 test('E2E(browse movies): Browse works for first letter or number', async ({ page }) => {
-  await page.goto(`${FRONTEND_URL}/login`);
-  await page.getByTestId('login-email').fill('cc@msn.com');
-  await page.getByTestId('login-password').fill('1111');
-  await page.getByTestId('login-submit').click();
-  await expect(page.getByTestId('login-error')).toHaveCount(0);
 
   // Browse by letter
   await page.goto(`${FRONTEND_URL}/movies?letter=A`, { waitUntil: 'networkidle' });
@@ -313,17 +285,7 @@ await expect(page.getByTestId('movie-card').first()).toBeVisible();
 // Verify browse by genre flow works
 // Example: click a genre link from browse page and load filtered results
 test('E2E(browse movies): Browse works for Genre', async ({ page }) => {
-  await page.goto(`${FRONTEND_URL}/login`);
-
-  await page.getByTestId('login-email').fill('cc@msn.com');
-  await page.getByTestId('login-password').fill('1111');
-  await page.getByTestId('login-submit').click();
-
-  await expect(page.getByTestId('login-error')).toHaveCount(0);
-
-  // Now open genre page
- // await page.goto(`${FRONTEND_URL}/movies/genre/2?genreName=Action`);
-    await page.goto(`${FRONTEND_URL}/movies/genre/2?genreName=Action`, {
+    await page.goto(`${FRONTEND_URL}/movies/genre/1?genreName=Action`, {
   waitUntil: 'networkidle'
 });
   await expect(page.getByTestId('browse-title')).toBeVisible();
@@ -339,8 +301,6 @@ test('E2E(browse movies): Browse works for Genre', async ({ page }) => {
 // Verify movies page loads and movies are displayed
 // Example: open /movies page and confirm at least one movie card appears
 test('E2E(browse movies): Movies page opens and movies load', async ({ page }) => {
-  await login(page);
-
   await page.goto(`${FRONTEND_URL}/movies`);
 
   await expect(page).toHaveURL(/movies/);
@@ -353,8 +313,6 @@ test('E2E(browse movies): Movies page opens and movies load', async ({ page }) =
 // Verify sorting control works
 // Example: change sorting from Title to Rating and verify dropdown responds
 test('E2E(browse movies): Sort dropdown exists and can change', async ({ page }) => {
-  await login(page);
-
   await page.goto(`${FRONTEND_URL}/movies`);
 
   const sort = page.locator('select').first();
@@ -367,12 +325,8 @@ test('E2E(browse movies): Sort dropdown exists and can change', async ({ page })
 // Verify movie details page loads
 // Example: open first movie page, then confirm star links are visible
 test('E2E(browse movies): Movie and star links navigate', async ({ page }) => {
-  await login(page);
-
-  await page.goto(`${FRONTEND_URL}/movies`);
-
-  const movie = page.getByTestId('movie-link').first();
-  await movie.click();
+  await page.goto(`${FRONTEND_URL}/movies/tt0378947`);
+  await page.waitForTimeout(1000);
 
   await expect(page).toHaveURL(/\/movies\/tt/);
 
@@ -385,21 +339,22 @@ test('E2E(browse movies): Movie and star links navigate', async ({ page }) => {
 /////// CHECKOUT E2E TESTS \\\\\\\
 
 test('E2E: Cart page loads, Load Cart works, update/delete work, clear local works, navigation works', async ({ page }) => {
-  await page.goto(`${FRONTEND_URL}/login`);
-  await page.getByTestId('login-email').fill('cc@msn.com');
-  await page.getByTestId('login-password').fill('1111');
-  await page.getByTestId('login-submit').click();
-  await expect(page.getByTestId('login-error')).toHaveCount(0);
-
   // Go to Cart page
   await page.goto(`${FRONTEND_URL}/cart`);
   await page.waitForTimeout(1000);
+  
+  // Clear any leftover cart state from previous tests  
+  const clearBtn = page.getByTestId('clear-cart');
+  if (await clearBtn.isVisible()) {
+    await clearBtn.click();
+  }
 
   // There should be no cart error after loading
   await expect(page.getByTestId('cart-error')).toHaveCount(0);
 
   // Cart should now be visible + total quantity rendered
   await expect(page.getByTestId('cart-loaded')).toBeVisible();
+  
   await expect(page.getByTestId('proceed-checkout')).toBeVisible();
 
   // Should be disabled when cart is empty

@@ -31,3 +31,5 @@ yarn-error.log*
 *.iml
 out/
 .idea_modules/
+
+playwright/.auth/
