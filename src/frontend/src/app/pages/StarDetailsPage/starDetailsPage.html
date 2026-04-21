@@ -1,4 +1,68 @@
-<div class="container my-4">
+ <!-- Update the whole code by using bootstrap layout, no inling styling, and preserves selectors/tests-->
+
+
+<div class="container py-4">
+  <div class="card shadow-sm">
+    <div class="card-body p-4 p-md-5">
+
+      <div *ngIf="isLoading()" class="text-muted" data-testid="star-loading">
+        Loading star details…
+      </div>
+
+      <div *ngIf="error()" class="alert alert-danger mb-3" data-testid="star-error">
+        {{ error() }}
+      </div>
+
+      <ng-container *ngIf="!isLoading() && star() as s">
+        <div class="mb-4">
+          <p class="text-uppercase text-muted fw-bold small mb-2">Star Details</p>
+          <h2 class="fw-bold mb-0" data-testid="star-name">{{ s.name }}</h2>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-12 col-lg-4">
+            <div class="card h-100 border-0 bg-light">
+              <div class="card-body">
+                <h5 class="fw-bold mb-3">Profile</h5>
+                <p class="mb-0">
+                  <span class="fw-bold">Birth Year: </span>
+                  <span data-testid="star-birthyear">{{ formatBirthYear(s.birthYear) }}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-lg-8">
+            <div class="card h-100 border-0 bg-light">
+              <div class="card-body">
+                <h5 class="fw-bold mb-3">Movies</h5>
+
+                <div *ngIf="!movies()?.length" class="text-muted" data-testid="no-movies">
+                  No movies found.
+                </div>
+
+                <ul class="list-group list-group-flush movie-list" *ngIf="movies()?.length" data-testid="movies-list">
+                  <li class="list-group-item bg-transparent px-0" *ngFor="let m of movies()">
+                     <a class="text-decoration-none movie-link"data-testid="movie-link" [routerLink]="['/movies', m.id]">
+                      {{ m.title }}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<!-- <div class="container my-4">
   <div class="card shadow-sm">
     <div class="card-body">
 
@@ -44,4 +108,4 @@
 
     </div>
   </div>
-</div>
+</div> -->
