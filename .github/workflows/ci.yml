@@ -242,7 +242,7 @@ jobs:
 
           -- Customers ─────────────────────────────────────────────────────
           INSERT INTO customers ("firstName","lastName","ccId",address,email,password) VALUES
-            ('Parker','Test','98859312428636453511','Test City','Parker234@aol.com','test'),
+            ('Frank','Parker','98859312428636453511','4324 St. College Blvd., Anaheim','Parker234@aol.com','test'),
             ('Chris','Carr','755003','Test City','cc@msn.com','1111'),
             ('Janet','Trink','1354895485215896548','Test City','janet@trink.com','pw'),
             ('Hailah','Saad','1234567890123456','Riyadh','hailah@email.com','1234')
