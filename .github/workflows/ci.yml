@@ -158,7 +158,7 @@ jobs:
             "numVotes" INT NOT NULL
           );
 
-          Movies ────────────────────────────────────────────────────────
+          -- Movies ────────────────────────────────────────────────────────
           INSERT INTO movies (id, title, year, director) VALUES
             ('tt0378947','Melinda and Melinda',2004,'Woody Allen'),
             ('tt0400548','An Italian Affair',2003,'Unknown Director'),
@@ -179,7 +179,7 @@ jobs:
             ('tt0000002','Another Alpha Film',2001,'Another Director')
           ON CONFLICT DO NOTHING;
 
-          Ratings ───────────────────────────────────────────────────────
+          -- Ratings ───────────────────────────────────────────────────────
           INSERT INTO ratings ("movieId", rating, "numVotes") VALUES
             ('tt0378947',6.5,50000),('tt0400548',5.8,12000),
             ('tt0461892',7.2,8000),('tt0422896',4.2,3000),
@@ -192,7 +192,7 @@ jobs:
             ('tt0000002',5.5,800)
           ON CONFLICT DO NOTHING;
 
-          Genres ────────────────────────────────────────────────────────
+          -- Genres ────────────────────────────────────────────────────────
           INSERT INTO genres (id, name) VALUES
             (1,'Action'),(2,'Adventure'),(3,'Animation'),(4,'Biography'),
             (5,'Comedy'),(6,'Crime'),(7,'Documentary'),(8,'Drama'),
@@ -202,7 +202,7 @@ jobs:
             (21,'Western'),(28,'Action')
           ON CONFLICT DO NOTHING;
 
-          Genres in movies ──────────────────────────────────────────────
+          -- Genres in movies ──────────────────────────────────────────────
           INSERT INTO genres_in_movies ("genreId","movieId") VALUES
             (8,'tt0378947'),(5,'tt0378947'),(16,'tt0378947'),
             (15,'tt0413051'),(8,'tt0461892'),(8,'tt0111161'),
@@ -211,7 +211,7 @@ jobs:
             (28,'tt0000001'),(28,'tt0000002')
           ON CONFLICT DO NOTHING;
 
-          Stars ─────────────────────────────────────────────────────────
+          -- Stars ─────────────────────────────────────────────────────────
           INSERT INTO stars (id, name, "birthYear") VALUES
             ('nm0591555','Lorenzo Minoli',1950),
             ('nm1651765','Gregory Bayne',1973),
@@ -221,7 +221,7 @@ jobs:
             ('nm0001706','Wallace Shawn',1943)
           ON CONFLICT DO NOTHING;
 
-          Stars in movies ───────────────────────────────────────────────
+          -- Stars in movies ───────────────────────────────────────────────
           INSERT INTO stars_in_movies ("starId","movieId") VALUES
             ('nm0591555','tt0400548'),
             ('nm1651765','tt0395796'),
@@ -232,13 +232,13 @@ jobs:
             ('nm0001706','tt0378947')
           ON CONFLICT DO NOTHING;
 
-          Credit cards ──────────────────────────────────────────────────
+          -- Credit cards ──────────────────────────────────────────────────
           INSERT INTO creditcards (id, "firstName", "lastName", expiration) VALUES
             ('1354895485215896548','Janet','Trink','2004-03-25'),
             ('0011223344556677','Jana','Alshreef','2027-12-31')
           ON CONFLICT DO NOTHING;
 
-          Customers ─────────────────────────────────────────────────────
+          -- Customers ─────────────────────────────────────────────────────
           INSERT INTO customers ("firstName","lastName","ccId",address,email,password) VALUES
             ('Parker','Test','0011223344556677','Test City','Parker234@aol.com','test'),
             ('CC','User','0011223344556677','Test City','cc@msn.com','1111'),
@@ -246,7 +246,7 @@ jobs:
             ('Hailah','Saad','1234567890123456','Riyadh','hailah@email.com','1234')
           ON CONFLICT DO NOTHING;
 
-          Sync sequences ────────────────────────────────────────────────
+          -- Sync sequences ────────────────────────────────────────────────
           SELECT setval(pg_get_serial_sequence('genres',    'id'), COALESCE((SELECT MAX(id) FROM genres),    1), true);
           SELECT setval(pg_get_serial_sequence('customers', 'id'), COALESCE((SELECT MAX(id) FROM customers), 1), true);
           SELECT setval(pg_get_serial_sequence('sales',     'id'), COALESCE((SELECT MAX(id) FROM sales),     1), true);
@@ -412,7 +412,7 @@ jobs:
             "numVotes" INT NOT NULL
           );
 
-          Movies ────────────────────────────────────────────────────────
+          -- Movies ────────────────────────────────────────────────────────
           INSERT INTO movies (id, title, year, director) VALUES
             ('tt0378947','Melinda and Melinda',2004,'Woody Allen'),
             ('tt0400548','An Italian Affair',2003,'Unknown Director'),
@@ -433,7 +433,7 @@ jobs:
             ('tt0000002','Another Alpha Film',2001,'Another Director')
           ON CONFLICT DO NOTHING;
 
-          Ratings ───────────────────────────────────────────────────────
+          -- Ratings ───────────────────────────────────────────────────────
           INSERT INTO ratings ("movieId", rating, "numVotes") VALUES
             ('tt0378947',6.5,50000),('tt0400548',5.8,12000),
             ('tt0461892',7.2,8000),('tt0422896',4.2,3000),
@@ -446,7 +446,7 @@ jobs:
             ('tt0000002',5.5,800)
           ON CONFLICT DO NOTHING;
 
-          Genres ────────────────────────────────────────────────────────
+          -- Genres ────────────────────────────────────────────────────────
           INSERT INTO genres (id, name) VALUES
             (1,'Action'),(2,'Adventure'),(3,'Animation'),(4,'Biography'),
             (5,'Comedy'),(6,'Crime'),(7,'Documentary'),(8,'Drama'),
@@ -456,7 +456,7 @@ jobs:
             (21,'Western'),(28,'Action')
           ON CONFLICT DO NOTHING;
 
-          Genres in movies ──────────────────────────────────────────────
+          -- Genres in movies ──────────────────────────────────────────────
           INSERT INTO genres_in_movies ("genreId","movieId") VALUES
             (8,'tt0378947'),(5,'tt0378947'),(16,'tt0378947'),
             (15,'tt0413051'),(8,'tt0461892'),(8,'tt0111161'),
@@ -465,7 +465,7 @@ jobs:
             (28,'tt0000001'),(28,'tt0000002')
           ON CONFLICT DO NOTHING;
 
-          Stars ─────────────────────────────────────────────────────────
+          -- Stars ─────────────────────────────────────────────────────────
           INSERT INTO stars (id, name, "birthYear") VALUES
             ('nm0591555','Lorenzo Minoli',1950),
             ('nm1651765','Gregory Bayne',1973),
@@ -475,7 +475,7 @@ jobs:
             ('nm0001706','Wallace Shawn',1943)
           ON CONFLICT DO NOTHING;
 
-          Stars in movies ───────────────────────────────────────────────
+          -- Stars in movies ───────────────────────────────────────────────
           INSERT INTO stars_in_movies ("starId","movieId") VALUES
             ('nm0591555','tt0400548'),
             ('nm1651765','tt0395796'),
@@ -486,13 +486,13 @@ jobs:
             ('nm0001706','tt0378947')
           ON CONFLICT DO NOTHING;
 
-          Credit cards ──────────────────────────────────────────────────
+          -- Credit cards ──────────────────────────────────────────────────
           INSERT INTO creditcards (id, "firstName", "lastName", expiration) VALUES
             ('1354895485215896548','Janet','Trink','2004-03-25'),
             ('0011223344556677','Jana','Alshreef','2027-12-31')
           ON CONFLICT DO NOTHING;
 
-          Customers ─────────────────────────────────────────────────────
+          -- Customers ─────────────────────────────────────────────────────
           INSERT INTO customers ("firstName","lastName","ccId",address,email,password) VALUES
             ('Parker','Test','0011223344556677','Test City','Parker234@aol.com','test'),
             ('CC','User','0011223344556677','Test City','cc@msn.com','1111'),
