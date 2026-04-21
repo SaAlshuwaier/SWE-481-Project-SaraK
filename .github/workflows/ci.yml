@@ -194,21 +194,20 @@ jobs:
 
           -- Genres ────────────────────────────────────────────────────────
           INSERT INTO genres (id, name) VALUES
-            (1,'Action'),(2,'Adventure'),(3,'Animation'),(4,'Biography'),
-            (5,'Comedy'),(6,'Crime'),(7,'Documentary'),(8,'Drama'),
-            (9,'Family'),(10,'Fantasy'),(11,'Film-Noir'),(12,'History'),
-            (13,'Horror'),(14,'Music'),(15,'Mystery'),(16,'Romance'),
-            (17,'Sci-Fi'),(18,'Sport'),(19,'Thriller'),(20,'War'),
-            (21,'Western'),(28,'Action')
+            (1,'Action'),(2,'Adult'),(3,'Adventure'),(4,'Animation'),
+            (5,'Biography'),(6,'Comedy'),(7,'Crime'),(8,'Documentary'),
+            (9,'Drama'),(10,'Family'),(11,'Fantasy'),(12,'History'),
+            (13,'Horror'),(14,'Music'),(15,'Musical'),(16,'Mystery'),
+            (17,'Reality-TV'),(18,'Romance'),(19,'Sci-Fi'),(20,'Sport'),
+            (21,'Thriller'),(22,'War'),(23,'Western')
           ON CONFLICT DO NOTHING;
 
           -- Genres in movies ──────────────────────────────────────────────
           INSERT INTO genres_in_movies ("genreId","movieId") VALUES
-            (8,'tt0378947'),(5,'tt0378947'),(16,'tt0378947'),
-            (15,'tt0413051'),(8,'tt0461892'),(8,'tt0111161'),
-            (6,'tt0068646'),(17,'tt0816692'),(17,'tt1375666'),
-            (20,'tt0449881'),(1,'tt0000001'),(1,'tt0000002'),
-            (28,'tt0000001'),(28,'tt0000002')
+            (9,'tt0378947'),(6,'tt0378947'),(18,'tt0378947'),
+            (16,'tt0413051'),(9,'tt0461892'),(9,'tt0111161'),
+            (7,'tt0068646'),(19,'tt0816692'),(19,'tt1375666'),
+            (22,'tt0449881'),(1,'tt0000001'),(1,'tt0000002')
           ON CONFLICT DO NOTHING;
 
           -- Stars ─────────────────────────────────────────────────────────
@@ -451,21 +450,20 @@ jobs:
 
           -- Genres ────────────────────────────────────────────────────────
           INSERT INTO genres (id, name) VALUES
-            (1,'Action'),(2,'Adventure'),(3,'Animation'),(4,'Biography'),
-            (5,'Comedy'),(6,'Crime'),(7,'Documentary'),(8,'Drama'),
-            (9,'Family'),(10,'Fantasy'),(11,'Film-Noir'),(12,'History'),
-            (13,'Horror'),(14,'Music'),(15,'Mystery'),(16,'Romance'),
-            (17,'Sci-Fi'),(18,'Sport'),(19,'Thriller'),(20,'War'),
-            (21,'Western'),(28,'Action')
+            (1,'Action'),(2,'Adult'),(3,'Adventure'),(4,'Animation'),
+            (5,'Biography'),(6,'Comedy'),(7,'Crime'),(8,'Documentary'),
+            (9,'Drama'),(10,'Family'),(11,'Fantasy'),(12,'History'),
+            (13,'Horror'),(14,'Music'),(15,'Musical'),(16,'Mystery'),
+            (17,'Reality-TV'),(18,'Romance'),(19,'Sci-Fi'),(20,'Sport'),
+            (21,'Thriller'),(22,'War'),(23,'Western')
           ON CONFLICT DO NOTHING;
 
-          -- Genres in movies ──────────────────────────────────────────────
+          --- Genres in movies ──────────────────────────────────────────────
           INSERT INTO genres_in_movies ("genreId","movieId") VALUES
-            (8,'tt0378947'),(5,'tt0378947'),(16,'tt0378947'),
-            (15,'tt0413051'),(8,'tt0461892'),(8,'tt0111161'),
-            (6,'tt0068646'),(17,'tt0816692'),(17,'tt1375666'),
-            (20,'tt0449881'),(1,'tt0000001'),(1,'tt0000002'),
-            (28,'tt0000001'),(28,'tt0000002')
+            (9,'tt0378947'),(6,'tt0378947'),(18,'tt0378947'),
+            (16,'tt0413051'),(9,'tt0461892'),(9,'tt0111161'),
+            (7,'tt0068646'),(19,'tt0816692'),(19,'tt1375666'),
+            (22,'tt0449881'),(1,'tt0000001'),(1,'tt0000002')
           ON CONFLICT DO NOTHING;
 
           -- Stars ─────────────────────────────────────────────────────────

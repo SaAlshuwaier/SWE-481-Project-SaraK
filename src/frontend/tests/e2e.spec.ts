@@ -285,7 +285,7 @@ await expect(page.getByTestId('movie-card').first()).toBeVisible();
 // Verify browse by genre flow works
 // Example: click a genre link from browse page and load filtered results
 test('E2E(browse movies): Browse works for Genre', async ({ page }) => {
-    await page.goto(`${FRONTEND_URL}/movies/genre/2?genreName=Action`, {
+    await page.goto(`${FRONTEND_URL}/movies/genre/1?genreName=Action`, {
   waitUntil: 'networkidle'
 });
   await expect(page.getByTestId('browse-title')).toBeVisible();
@@ -325,7 +325,7 @@ test('E2E(browse movies): Sort dropdown exists and can change', async ({ page })
 // Verify movie details page loads
 // Example: open first movie page, then confirm star links are visible
 test('E2E(browse movies): Movie and star links navigate', async ({ page }) => {
-  await page.goto(`${FRONTEND_URL}/movies`);
+  await page.goto(`${FRONTEND_URL}/movies/tt0378947`);
 
   const movie = page.getByTestId('movie-link').first();
   await movie.click();
