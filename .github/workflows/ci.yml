@@ -237,15 +237,16 @@ jobs:
             ('1354895485215896548','Janet','Trink','2004/03/25'),
             ('0011223344556677','Jana','Alshreef','2027/12/31'),
             ('98859312428636453511', 'Frank', 'Parker', '2007/12/23'),
-            ('755003', 'Chris', 'Carr', '2007/01/01')
+            ('755003', 'Chris', 'Carr', '2007/01/01'),
+            ('1234567890123456', 'Hailah', 'Saad', '2025/05/31')
           ON CONFLICT DO NOTHING;
 
           -- Customers ─────────────────────────────────────────────────────
-          INSERT INTO customers ("firstName","lastName","ccId",address,email,password) VALUES
-            ('Frank','Parker','98859312428636453511','4324 St. College Blvd., Anaheim','Parker234@aol.com','test'),
-            ('Chris','Carr','755003','Test City','cc@msn.com','1111'),
-            ('Janet','Trink','1354895485215896548','Test City','janet@trink.com','pw'),
-            ('Hailah','Saad','1234567890123456','Riyadh','hailah@email.com','1234')
+          INSERT INTO customers VALUES
+            (150001, 'Frank', 'Parker', '98859312428636453511', '4324 St. College Blvd., Anaheim, CA', 'Parker234@aol.com', 'test'),
+            (150002, 'Chris', 'Carr', '755003', 'Test City', 'cc@msn.com', '1111'),
+            (150003, 'Janet', 'Trink', '1354895485215896548', 'Test City', 'janet@trink.com', 'pw'),
+            (150004, 'Hailah', 'Saad', '1234567890123456', 'Riyadh', 'hailah@email.com', '1234')
           ON CONFLICT DO NOTHING;
 
           -- Sync sequences ────────────────────────────────────────────────
@@ -488,20 +489,21 @@ jobs:
             ('nm0001706','tt0378947')
           ON CONFLICT DO NOTHING;
 
-          -- Credit cards ──────────────────────────────────────────────────
+           -- Credit cards ──────────────────────────────────────────────────
           INSERT INTO creditcards (id, "firstName", "lastName", expiration) VALUES
             ('1354895485215896548','Janet','Trink','2004/03/25'),
             ('0011223344556677','Jana','Alshreef','2027/12/31'),
             ('98859312428636453511', 'Frank', 'Parker', '2007/12/23'),
-            ('755003', 'Chris', 'Carr', '2007/01/01')
+            ('755003', 'Chris', 'Carr', '2007/01/01'),
+            ('1234567890123456', 'Hailah', 'Saad', '2025/05/31')
           ON CONFLICT DO NOTHING;
 
           -- Customers ─────────────────────────────────────────────────────
-          INSERT INTO customers ("firstName","lastName","ccId",address,email,password) VALUES
-            ('Parker','Test','98859312428636453511','Test City','Parker234@aol.com','test'),
-            ('Chris','Carr','755003','Test City','cc@msn.com','1111'),
-            ('Janet','Trink','1354895485215896548','Test City','janet@trink.com','pw'),
-            ('Hailah','Saad','1234567890123456','Riyadh','hailah@email.com','1234')
+          INSERT INTO customers VALUES
+            (150001, 'Frank', 'Parker', '98859312428636453511', '4324 St. College Blvd., Anaheim, CA', 'Parker234@aol.com', 'test'),
+            (150002, 'Chris', 'Carr', '755003', 'Test City', 'cc@msn.com', '1111'),
+            (150003, 'Janet', 'Trink', '1354895485215896548', 'Test City', 'janet@trink.com', 'pw'),
+            (150004, 'Hailah', 'Saad', '1234567890123456', 'Riyadh', 'hailah@email.com', '1234')
           ON CONFLICT DO NOTHING;
 
           -- ── Sync sequences ────────────────────────────────────────────────
