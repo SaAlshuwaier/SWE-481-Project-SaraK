@@ -577,14 +577,6 @@ jobs:
               exit 1
             fi
           done
-
-      - name: Run E2E tests
-        working-directory: ./src/frontend
-        env:
-          # Tell Playwright to wait up to 60s for page navigations to complete.
-          # On CI, page loads are slower because the backend is on the same
-          # machine and competing for CPU with the frontend and the DB.
-          PLAYWRIGHT_NAVIGATION_TIMEOUT: "60000"
         # --timeout=60000        → each test gets 60s instead of the default 30s.
         #                          CI machines are slower so actions like login,
         #                          cart load, and checkout take longer to complete.
@@ -594,4 +586,12 @@ jobs:
         # --reporter=list        → print each test result as it runs so the CI
         #                          log shows exactly which test failed and why,
         #                          rather than a single summary at the end.
+        
+      - name: Create auth directory
+        run: mkdir -p src/frontend/playwright/.auth
+
+      - name: Run E2E tests
+        working-directory: ./src/frontend
+        env:
+          PLAYWRIGHT_NAVIGATION_TIMEOUT: "60000"
         run: npx playwright test --timeout=60000 --retries=1 --reporter=list
