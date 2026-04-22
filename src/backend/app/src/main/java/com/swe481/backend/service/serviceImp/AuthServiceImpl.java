@@ -136,30 +136,25 @@ public class AuthServiceImpl implements AuthService {
             return new RegisterResponse("Credit card is expired", null, false);
         }
 
-        // 5) Validate card number is exactly 16 digits (on clean no-space version)
-        if (!request.getCcNumber().matches("\\d{16}")) {
-            return new RegisterResponse("Credit card number must be exactly 16 digits", null, false);
-        }
-
-        // 6) Reformat ccNumber to "XXXX XXXX XXXX XXXX" for DB storage
+        // 5) Reformat ccNumber to "XXXX XXXX XXXX XXXX" for DB storage
         request.setCcNumber(request.getCcNumber().replaceAll("(\\d{4})(\\d{4})(\\d{4})(\\d{4})", "$1 $2 $3 $4"));
 
-        // 7) Check email is not already taken
+        // 6) Check email is not already taken
         if (customerRepository.emailExists(request.getEmail())) {
             return new RegisterResponse("Email already in use", null, false);
         }
 
-        // 8) Check credit card number is not already registered
+        // 7) Check credit card number is not already registered
         if (customerRepository.creditCardExists(request.getCcNumber())) {
             return new RegisterResponse("Credit card already in use", null, false);
         }
 
-        // 9) Insert CC + customer, get back the new customerId
+        // 8) Insert CC + customer, get back the new customerId
         Integer newCustomerId = customerRepository.insertCustomerWithCreditCard(request);
 
         System.out.println("[Registered new customer with ID:] " + newCustomerId);
 
-        // 10) Return success response
+        // 9) Return success response
         return new RegisterResponse("User registered successfully", newCustomerId, true);
     }
 }

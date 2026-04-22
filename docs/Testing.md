@@ -80,7 +80,9 @@ Our objective is to validate full system behavior across components (frontend + 
 ### How to Run the Frontend Tests
 1) Navigate to: `src/frontend`
 2) Install Dependencies (if not already installed): `npm install` and `npx playwright install`
-3) Run Command: `npx playwright test`
+3) Run Commands: `rm -rf playwright/.auth test-results playwright-report` and
+`mkdir -p playwright/.auth` and
+`npx playwright test`
 
 ### Covary Summary of what we test:
 The E2E suite validates end-to-end behavior across multiple pages:

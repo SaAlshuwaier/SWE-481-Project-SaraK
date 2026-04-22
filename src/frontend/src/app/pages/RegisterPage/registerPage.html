@@ -77,13 +77,14 @@
             <label class="label form-label fw-semibold text-secondary small">Card Number</label>
             <input class="input form-control" [value]="ccNumber()" (input)="setCcNumber(($any($event.target).value))"
               (blur)="ccNumberTouched.set(true)" placeholder="0000 0000 0000 0000" data-testid="reg-ccnumber"
-              maxlength="20" />
+              maxlength="20" type="text" inputmode="numeric" pattern="[0-9 ]*"/>
           </div>
 
           <div *ngIf="ccNumberTouched() && ccNumber() && !isValidCcNumber(ccNumber())"
             class="err-box text-danger small">
-            Card number must be exactly 16 digits (numbers only)
+            Card number must contain digits only
           </div>
+
           <div class="col-md-6">
             <label class="label form-label fw-semibold text-secondary small">Card Expiration Date</label>
             <input class="input form-control" type="date" [value]="ccExpiration()" [min]="today"
