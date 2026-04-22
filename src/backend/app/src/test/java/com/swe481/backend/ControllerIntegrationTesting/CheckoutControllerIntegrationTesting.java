@@ -74,7 +74,7 @@ public class CheckoutControllerIntegrationTesting {
     }
 
     // old test without login step, which causes checkout to fail because the service checks that the card's customer ID matches the logged-in user
-    /* 
+    
     @Test
     void checkoutWhenValidDataAndCartExistsShouldReturn200() throws Exception {
         MockHttpSession session = new MockHttpSession();
@@ -112,10 +112,12 @@ public class CheckoutControllerIntegrationTesting {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.success").value(true))
         .andExpect(jsonPath("$.message").value("Payment completed successfully."));
-    }  */
+    }   }
 
 
         // I added login step to the above test to set the customerId in session, which is required for checkout to succeed
+       // removed since Dr. bushra said all cards in the database are valid and we don't need to check if the card belongs to the logged-in user
+        /* 
         @Test
         void checkoutWhenValidDataAndCartExistsShouldReturn200() throws Exception {
           MockHttpSession session = new MockHttpSession();
@@ -165,9 +167,11 @@ public class CheckoutControllerIntegrationTesting {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.success").value(true))
             .andExpect(jsonPath("$.message").value("Payment completed successfully."));
-        }
+        }  */
+
 
         // new test to verify that the card's customer ID matches the logged-in user
+        /* removed since Dr. bushra said all cards in the database are valid and we don't need to check if the card belongs to the logged-in user
         @Test
         void checkoutWhenCardBelongsToDifferentLoggedInUserShouldReturn400() throws Exception {
             MockHttpSession session = new MockHttpSession();
@@ -203,4 +207,4 @@ public class CheckoutControllerIntegrationTesting {
             .andExpect(jsonPath("$.success").value(false))
             .andExpect(jsonPath("$.message").value("The card information does not match our records."));
         }
-}
+} */

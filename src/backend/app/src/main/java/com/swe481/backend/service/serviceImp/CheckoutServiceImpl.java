@@ -57,10 +57,11 @@ public class CheckoutServiceImpl implements CheckoutService {
 
             // Verify that the customer ID from the card matches the logged-in user
             // I did manual check: '755004', 'David', 'Dolt', '2007/01/01' ||||| dd@cnn.com 2222 
+            /*  Removed since Dr. bushra said all cards in the database are valid and we don't need to check if the card belongs to the logged-in user
             Integer sessionCustomerId = (Integer) httpSession.getAttribute("customerId");
             if (sessionCustomerId == null || !sessionCustomerId.equals(customerId)) {
                 return new CheckoutResult(false, "The card information does not match our records.", "INVALID_CARD");
-}
+} */
 
             Cart cart = (Cart) httpSession.getAttribute(CART_SESSION_KEY);
 
