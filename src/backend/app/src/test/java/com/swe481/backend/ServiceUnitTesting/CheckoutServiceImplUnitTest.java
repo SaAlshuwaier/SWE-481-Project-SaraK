@@ -93,7 +93,7 @@ public class CheckoutServiceImplUnitTest {
         assertEquals("No customer account is linked to this card.", result.getMessage());
     }
 
-
+/* removed since Dr. bushra said all cards in the database are valid and we don't need to check if the card belongs to the logged-in user
 // new test to verify that the card's customer ID matches the logged-in user
     @Test
     void processCheckoutShouldReturnInvalidCardWhenCardBelongsToDifferentLoggedInUser() {
@@ -111,13 +111,13 @@ public class CheckoutServiceImplUnitTest {
     assertFalse(result.isSuccess());
     assertEquals("INVALID_CARD", result.getCode());
     assertEquals("The card information does not match our records.", result.getMessage());
-}
+}  */
 
     @Test
     void processCheckoutShouldReturnEmptyCartWhenCartSessionIsMissing() {
         when(checkoutRepository.isValidCreditCard(any(), any(), any(), any())).thenReturn(true);
         when(checkoutRepository.findCustomerId("Janet", "Trink", "1354895485215896548")).thenReturn(1);
-        when(httpSession.getAttribute("customerId")).thenReturn(1); // Simulate logged-in user with ID 1
+       // when(httpSession.getAttribute("customerId")).thenReturn(1); // Simulate logged-in user with ID 1 -- Removed since Dr. bushra said all cards in the database are valid and we don't need to check if the card belongs to the logged-in user
         when(httpSession.getAttribute("cart")).thenReturn(null);
 
         CheckoutResult result = checkoutService.processCheckout(
@@ -139,7 +139,7 @@ public class CheckoutServiceImplUnitTest {
 
         when(checkoutRepository.isValidCreditCard(any(), any(), any(), any())).thenReturn(true);
         when(checkoutRepository.findCustomerId("Janet", "Trink", "1354895485215896548")).thenReturn(1);
-        when(httpSession.getAttribute("customerId")).thenReturn(1); // Simulate logged-in user with ID 1
+      //  when(httpSession.getAttribute("customerId")).thenReturn(1); // Simulate logged-in user with ID 1  -- Removed since Dr. bushra said all cards in the database are valid and we don't need to check if the card belongs to the logged-in user
         when(httpSession.getAttribute("cart")).thenReturn(cart);
 
         CheckoutResult result = checkoutService.processCheckout(
