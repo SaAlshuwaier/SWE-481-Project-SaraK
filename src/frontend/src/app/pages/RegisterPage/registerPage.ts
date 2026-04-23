@@ -60,11 +60,10 @@ export class RegisterPageComponent {
   return pattern.test(email);
 }
 
-  //card number must be exactly 16 digits (spaces ignored)
-  isValidCcNumber(cc: string): boolean {
-  const stripped = cc.replace(/\s/g, '');
-  return /^\d{16}$/.test(stripped); 
-}
+isValidCcNumber(cc: string): boolean {
+    const stripped = cc.replace(/\s/g, '');
+    return /^\d+$/.test(stripped);
+  }
 
   // name on card must contain letters only
   isValidCardName(name: string): boolean {
@@ -107,7 +106,7 @@ export class RegisterPageComponent {
     }
 
     if (!this.isValidCcNumber(this.ccNumber())) {
-      this.error.set('Credit card number must be exactly 16 digits');
+      this.error.set('Credit card number must contain only digits');
       return;
     }
 
