@@ -709,5 +709,97 @@ it('should pass trimmed-looking query value exactly as provided to autocomplete 
   expect(req.request.method).toBe('GET');
   req.flush([]);
 });
- 
+ it('should return cached search result without a second HTTP request', () => {
+  const mockResponse = {
+    page: 1,
+    pageSize: 20,
+    totalResults: 1,
+    totalPages: 1,
+    hasPrev: false,
+    hasNext: false,
+    movies: []
+  };
+
+  service.searchMovies('alpha', 2005, 'david', 'tom', 1, 20).subscribe(response => {
+    expect(response).toEqual(mockResponse);
+  });
+
+  const req = httpMock.expectOne(
+    r =>
+      r.url === `${baseUrl}/api/movies/search` &&
+      r.params.get('title') === 'alpha' &&
+      r.params.get('year') === '2005' &&
+      r.params.get('director') === 'david' &&
+      r.params.get('starName') === 'tom' &&
+      r.params.get('page') === '1' &&
+      r.params.get('pageSize') === '20'
+  );
+  req.flush(mockResponse);
+
+  service.searchMovies('alpha', 2005, 'david', 'tom', 1, 20).subscribe(response => {
+    expect(response).toEqual(mockResponse);
+  });
+
+  httpMock.expectNone(`${baseUrl}/api/movies/search`);
+});
+it('should return cached genre browse result without a second HTTP request', () => {
+  const mockResponse = {
+    page: 2,
+    pageSize: 10,
+    totalResults: 1,
+    totalPages: 1,
+    hasPrev: true,
+    hasNext: false,
+    movies: []
+  };
+
+  service.browseMoviesByGenre(1, 2, 10).subscribe(response => {
+    expect(response).toEqual(mockResponse);
+  });
+
+  const req = httpMock.expectOne(
+    r =>
+      r.url === `${baseUrl}/api/movies/browseByGenre` &&
+      r.params.get('genreId') === '1' &&
+      r.params.get('page') === '2' &&
+      r.params.get('pageSize') === '10'
+  );
+  req.flush(mockResponse);
+
+  service.browseMoviesByGenre(1, 2, 10).subscribe(response => {
+    expect(response).toEqual(mockResponse);
+  });
+
+  httpMock.expectNone(`${baseUrl}/api/movies/browseByGenre`);
+});
+it('should return cached first-letter browse result without a second HTTP request', () => {
+  const mockResponse = {
+    page: 1,
+    pageSize: 20,
+    totalResults: 2,
+    totalPages: 1,
+    hasPrev: false,
+    hasNext: false,
+    movies: []
+  };
+
+  service.browseMoviesByFirstLetter('A', 1, 20).subscribe(response => {
+    expect(response).toEqual(mockResponse);
+  });
+
+  const req = httpMock.expectOne(
+    r =>
+      r.url === `${baseUrl}/api/movies/browseByFirstLetter` &&
+      r.params.get('startsWith') === 'A' &&
+      r.params.get('page') === '1' &&
+      r.params.get('pageSize') === '20'
+  );
+  req.flush(mockResponse);
+
+  service.browseMoviesByFirstLetter('A', 1, 20).subscribe(response => {
+    expect(response).toEqual(mockResponse);
+  });
+
+  httpMock.expectNone(`${baseUrl}/api/movies/browseByFirstLetter`);
+});
 });

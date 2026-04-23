@@ -72,18 +72,21 @@
       <div class="card shadow-sm">
         <div class="card-body">
           <h3 class="h5 card-title mb-3">
-            <a
-              data-testid="movie-link"
-              class="text-decoration-none movie-title-browseMovies-link"
-              [routerLink]="['/movies', movie.id]"
-              [queryParams]="{
-                from: 'genre',
-                genreId: route.snapshot.paramMap.get('genreId'),
-                genreName: route.snapshot.queryParams['genreName']
-              }"
-            >
-              {{ movie.title }}
-            </a>
+          <a
+  data-testid="movie-link"
+  class="text-decoration-none movie-title-browseMovies-link"
+  [routerLink]="['/movies', movie.id]"
+  [queryParams]="{
+    from: route.snapshot.paramMap.get('genreId') ? 'genre' : (route.snapshot.queryParams['letter'] ? 'letter' : 'browse'),
+    genreId: route.snapshot.paramMap.get('genreId'),
+    genreName: route.snapshot.queryParams['genreName'],
+    letter: route.snapshot.queryParams['letter'],
+    page: page,
+    pageSize: pageSize
+  }"
+>
+  {{ movie.title }}
+</a>
           </h3>
 
           <p class="mb-1" data-testid="movie-year">

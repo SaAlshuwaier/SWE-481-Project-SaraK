@@ -34,9 +34,21 @@
       <div class="card shadow-sm">
         <div class="card-body">
           <h3 class="h5 card-title mb-3">
-            <a [routerLink]="['/movies', movie.id]" class="text-decoration-none">
-              {{ movie.title }}
-            </a>
+          <h3 class="h5 card-title mb-3">
+<a
+  [routerLink]="['/movies', movie.id]"
+  [queryParams]="{
+    returnPage: page,
+    title: query.title,
+    year: query.year,
+    director: query.director,
+    star: query.star
+  }"
+  class="text-decoration-none"
+>
+  {{ movie.title }}
+</a>
+</h3>
           </h3>
 
           <p class="mb-1"><strong>Year:</strong> {{ movie.year }}</p>

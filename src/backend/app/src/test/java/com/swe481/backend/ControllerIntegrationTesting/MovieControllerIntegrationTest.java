@@ -123,9 +123,9 @@ public class MovieControllerIntegrationTest {
     @Test
     void getMovieById_shouldReturnMovie_whenIdExists() throws Exception {
         mockMvc.perform(
-                get(endPoint + "/{id}", "tt0378947"))
+                get(endPoint + "/{id}", "tt0278823"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("tt0378947"))
+                .andExpect(jsonPath("$.id").value("tt0278823"))
                 .andExpect(jsonPath("$.title").isString())
                 .andExpect(jsonPath("$.year").isNumber())
                 .andExpect(jsonPath("$.director").isString())
@@ -154,7 +154,7 @@ public class MovieControllerIntegrationTest {
     void autocompleteTitles_shouldReturnObjectsWithIdAndTitle() throws Exception {
         mockMvc.perform(
                 get(endPoint + "/autocomplete")
-                        .param("query", "inc"))
+                        .param("query", "mel"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$[0].id").exists())

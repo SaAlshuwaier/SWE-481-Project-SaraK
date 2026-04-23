@@ -4,7 +4,7 @@ import { MovieDto } from '../../core/models/MovieDto';
 import { MovieService } from '../../core/services/MovieService';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-browse-movies',
@@ -29,13 +29,36 @@ export class BrowseMoviesComponent implements OnInit {
   constructor(
     public route: ActivatedRoute,
     private movieService: MovieService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+     private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.loadMovies();
-  }
+  this.route.queryParams.subscribe((qp) => {
+    this.page = qp['page'] ? Number(qp['page']) : 1;
+    this.pageSize = qp['pageSize']
+      ? Number(qp['pageSize']) as 10 | 20 | 50 | 100
+      : 20;
 
+    this.loadMovies();
+  });
+}
+private updateUrl(): void {
+  const genreId = this.route.snapshot.paramMap.get('genreId');
+  const letter = this.route.snapshot.queryParams['letter'];
+  const genreName = this.route.snapshot.queryParams['genreName'];
+
+  this.router.navigate([], {
+    relativeTo: this.route,
+    queryParams: {
+      page: this.page,
+      pageSize: this.pageSize,
+      letter: letter || null,
+      genreName: genreName || null
+    },
+    queryParamsHandling: 'merge'
+  });
+}
   private loadMovies(): void {
     const genreId = this.route.snapshot.paramMap.get('genreId');
     const letter = this.route.snapshot.queryParams['letter'];
@@ -89,18 +112,13 @@ export class BrowseMoviesComponent implements OnInit {
       });
   }
 
-  private updateState(state: MoviesPageStateDto): void {
-    console.log('Browse state:', state);
-    console.log('Movies array:', state.movies);
-
-    this.pageState = state;
-    this.movies = state.movies ?? [];
-    this.applySorting();
-
-    console.log('Sorted movies:', this.sortedMovies);
-
-    this.cdr.detectChanges();
-  }
+private updateState(state: MoviesPageStateDto): void {
+  this.pageState = state;
+  this.movies = state.movies ?? [];
+  this.applySorting();
+  this.cdr.detectChanges();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
   private emptyState(): MoviesPageStateDto {
     return {
@@ -129,22 +147,22 @@ export class BrowseMoviesComponent implements OnInit {
   onPageSizeChange(event: Event): void {
     this.pageSize = Number((event.target as HTMLSelectElement).value) as 10 | 20 | 50 | 100;
     this.page = 1;
-    this.loadMovies();
+    this.updateUrl();
   }
 
-  nextPage(): void {
-    if (this.pageState?.hasNext) {
-      this.page++;
-      this.loadMovies();
-    }
+nextPage(): void {
+  if (this.pageState?.hasNext) {
+    this.page++;
+    this.updateUrl();
   }
+}
 
-  previousPage(): void {
-    if (this.pageState?.hasPrev) {
-      this.page--;
-      this.loadMovies();
-    }
+previousPage(): void {
+  if (this.pageState?.hasPrev) {
+    this.page--;
+    this.updateUrl();
   }
+}
 
   public applySorting(): void {
     this.sortedMovies = [...this.movies];

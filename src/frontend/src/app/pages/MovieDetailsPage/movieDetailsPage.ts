@@ -1,6 +1,6 @@
 import { Component, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { finalize, Subscription } from 'rxjs';
 
 import { MovieService } from '../../core/services/MovieService';
@@ -43,19 +43,57 @@ backQueryParams: any = {};
 
   constructor(
     private route: ActivatedRoute,
+     private router: Router,
     private movieService: MovieService,
     private cartService: CartService
   ) {
   }
+  
 
-  ngOnInit(): void {
+ngOnInit(): void {
   const from = this.route.snapshot.queryParamMap.get('from');
   const genreId = this.route.snapshot.queryParamMap.get('genreId');
   const genreName = this.route.snapshot.queryParamMap.get('genreName');
 
+  const returnPage = this.route.snapshot.queryParamMap.get('returnPage');
+  const title = this.route.snapshot.queryParamMap.get('title');
+  const year = this.route.snapshot.queryParamMap.get('year');
+  const director = this.route.snapshot.queryParamMap.get('director');
+  const star = this.route.snapshot.queryParamMap.get('star');
+
+  const page = this.route.snapshot.queryParamMap.get('page');
+  const pageSize = this.route.snapshot.queryParamMap.get('pageSize');
+  const letter = this.route.snapshot.queryParamMap.get('letter');
+
   if (from === 'genre' && genreId) {
     this.backLink = ['/movies/genre', genreId];
-    this.backQueryParams = genreName ? { genreName } : {};
+    this.backQueryParams = {
+      genreName: genreName || null,
+      page: page || 1,
+      pageSize: pageSize || 20
+    };
+  } else if (from === 'letter' && letter) {
+    this.backLink = ['/movies'];
+    this.backQueryParams = {
+      letter: letter,
+      page: page || 1,
+      pageSize: pageSize || 20
+    };
+  } else if (returnPage || title || year || director || star) {
+    this.backLink = ['/movies/search'];
+    this.backQueryParams = {
+      page: returnPage || 1,
+      title: title || null,
+      year: year || null,
+      director: director || null,
+      star: star || null,
+    };
+  } else if (from === 'browse') {
+    this.backLink = ['/movies'];
+    this.backQueryParams = {
+      page: page || 1,
+      pageSize: pageSize || 20
+    };
   }
 
   this.sub.add(
@@ -98,7 +136,11 @@ private loadMovie(movieId: string): void {
       });
   }
 
-
+backToMovies(): void {
+  this.router.navigate(this.backLink, {
+    queryParams: this.backQueryParams
+  });
+}
 
   /** Decrease quantity but never below 1. */
   decQty(): void {

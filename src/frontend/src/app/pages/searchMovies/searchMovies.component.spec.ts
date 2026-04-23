@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { SearchMoviesComponent } from './searchMovies.component';
 import { MovieService } from '../../core/services/MovieService';
-import { ActivatedRoute, Router, provideRouter } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 
 describe('SearchMoviesComponent', () => {
@@ -13,16 +13,21 @@ describe('SearchMoviesComponent', () => {
     searchMovies: vi.fn(),
   };
 
+  const routerMock = {
+    navigate: vi.fn(),
+  };
+
   async function createComponentWithQueryParams(queryParams: any) {
     await TestBed.configureTestingModule({
       imports: [SearchMoviesComponent],
       providers: [
         { provide: MovieService, useValue: movieServiceMock },
-        provideRouter([]),
+        { provide: Router, useValue: routerMock },
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: { queryParams },
+            queryParams: of(queryParams),
           },
         },
       ],
@@ -54,6 +59,7 @@ describe('SearchMoviesComponent', () => {
       year: '2005',
       director: 'david',
       star: 'tom',
+      page: '1',
     });
 
     fixture.detectChanges();
@@ -98,7 +104,7 @@ describe('SearchMoviesComponent', () => {
     expect(component.movies()).toEqual([]);
   });
 
-  it('nextPage should increment page when hasNext is true and reload results', async () => {
+  it('nextPage should increment page and update URL when hasNext is true', async () => {
     movieServiceMock.searchMovies.mockReturnValue(
       of({
         page: 1,
@@ -116,6 +122,7 @@ describe('SearchMoviesComponent', () => {
       year: '2005',
       director: 'david',
       star: 'tom',
+      page: '1',
     });
 
     fixture.detectChanges();
@@ -130,25 +137,13 @@ describe('SearchMoviesComponent', () => {
       movies: [],
     });
 
-    movieServiceMock.searchMovies.mockReturnValue(
-      of({
-        page: 2,
-        pageSize: 20,
-        totalResults: 2,
-        totalPages: 2,
-        hasPrev: true,
-        hasNext: false,
-        movies: [],
-      })
-    );
-
     component.nextPage();
 
     expect(component.page).toBe(2);
-    expect(movieServiceMock.searchMovies).toHaveBeenCalled();
+    expect(routerMock.navigate).toHaveBeenCalled();
   });
 
-  it('previousPage should decrement page when hasPrev is true and reload results', async () => {
+  it('previousPage should decrement page and update URL when hasPrev is true', async () => {
     movieServiceMock.searchMovies.mockReturnValue(
       of({
         page: 2,
@@ -166,6 +161,7 @@ describe('SearchMoviesComponent', () => {
       year: '2005',
       director: 'david',
       star: 'tom',
+      page: '2',
     });
 
     fixture.detectChanges();
@@ -181,23 +177,9 @@ describe('SearchMoviesComponent', () => {
       movies: [],
     });
 
-    movieServiceMock.searchMovies.mockReturnValue(
-      of({
-        page: 1,
-        pageSize: 20,
-        totalResults: 2,
-        totalPages: 2,
-        hasPrev: false,
-        hasNext: true,
-        movies: [],
-      })
-    );
-
     component.previousPage();
 
     expect(component.page).toBe(1);
-    expect(movieServiceMock.searchMovies).toHaveBeenCalled();
+    expect(routerMock.navigate).toHaveBeenCalled();
   });
-
-
 });

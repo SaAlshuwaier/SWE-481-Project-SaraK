@@ -31,9 +31,8 @@ export class SearchMoviesComponent implements OnInit {
     private movieService: MovieService
   ) {}
 
-  ngOnInit(): void {
-    const qp = this.route.snapshot.queryParams;
-
+ngOnInit(): void {
+  this.route.queryParams.subscribe((qp) => {
     this.query = {
       title: qp['title'] || undefined,
       year: qp['year'] || undefined,
@@ -41,9 +40,23 @@ export class SearchMoviesComponent implements OnInit {
       star: qp['star'] || undefined,
     };
 
+    this.page = qp['page'] ? Number(qp['page']) : 1;
     this.loadSearchResults();
-  }
-
+  });
+}
+private updateUrl(): void {
+  this.router.navigate([], {
+    relativeTo: this.route,
+    queryParams: {
+      title: this.query.title || null,
+      year: this.query.year || null,
+      director: this.query.director || null,
+      star: this.query.star || null,
+      page: this.page
+    },
+    queryParamsHandling: 'merge'
+  });
+}
 private loadSearchResults(): void {
   const rawYear = this.query.year?.trim();
   let yearNumber: number | undefined = undefined;
@@ -91,11 +104,12 @@ const currentYear = new Date().getFullYear();
         this.loading.set(false);
       })
     )
-    .subscribe({
-      next: (state) => {
-        this.pageState.set(state);
-        this.movies.set(state.movies ?? []);
-      },
+  .subscribe({
+  next: (state) => {
+    this.pageState.set(state);
+    this.movies.set(state.movies ?? []);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  },
       error: (err) => {
         console.error('SEARCH ERROR:', err);
         this.movies.set([]);
@@ -115,18 +129,18 @@ const currentYear = new Date().getFullYear();
 
 
   nextPage(): void {
-    if (this.pageState()?.hasNext) {
-      this.page++;
-      this.loadSearchResults();
-    }
+  if (this.pageState()?.hasNext) {
+    this.page++;
+    this.updateUrl();
   }
+}
 
-  previousPage(): void {
-    if (this.pageState()?.hasPrev) {
-      this.page--;
-      this.loadSearchResults();
-    }
+previousPage(): void {
+  if (this.pageState()?.hasPrev) {
+    this.page--;
+    this.updateUrl();
   }
+}
 
   backToHome(): void {
     this.router.navigate(['/home']);

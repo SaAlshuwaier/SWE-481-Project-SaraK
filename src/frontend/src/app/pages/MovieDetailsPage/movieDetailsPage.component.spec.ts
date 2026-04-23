@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
 
@@ -296,4 +296,186 @@ describe('MovieDetailsPageComponent', () => {
     expect(noStars).toBeTruthy();
     expect(noStars.textContent).toContain('No stars found.');
   });
+it('should navigate back to search results with correct query params', async () => {
+  movieService.getMovieById.mockReturnValue(of(mockMovie));
+
+  await TestBed.configureTestingModule({
+    imports: [MovieDetailsPageComponent, RouterTestingModule],
+    providers: [
+      { provide: MovieService, useValue: movieService },
+      { provide: CartService, useValue: cartService },
+      {
+        provide: ActivatedRoute,
+        useValue: {
+          paramMap: of(convertToParamMap({ movieId: 'tt0413051' })),
+          snapshot: {
+            queryParamMap: convertToParamMap({
+              returnPage: '2',
+              title: 'mel',
+              year: '',
+              director: '',
+              star: '',
+            }),
+          },
+        },
+      },
+    ],
+  }).compileComponents();
+
+  const router = TestBed.inject(Router);
+  const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+  fixture = TestBed.createComponent(MovieDetailsPageComponent);
+  component = fixture.componentInstance;
+  fixture.detectChanges();
+
+  component.backToMovies();
+
+  expect(navigateSpy).toHaveBeenCalledWith(
+    ['/movies/search'],
+    {
+      queryParams: {
+        page: '2',
+        title: 'mel',
+        year: null,
+        director: null,
+        star: null,
+      },
+    }
+  );
+});
+it('should navigate back to genre browse with page and pageSize', async () => {
+  movieService.getMovieById.mockReturnValue(of(mockMovie));
+
+  await TestBed.configureTestingModule({
+    imports: [MovieDetailsPageComponent, RouterTestingModule],
+    providers: [
+      { provide: MovieService, useValue: movieService },
+      { provide: CartService, useValue: cartService },
+      {
+        provide: ActivatedRoute,
+        useValue: {
+          paramMap: of(convertToParamMap({ movieId: 'tt0413051' })),
+          snapshot: {
+            queryParamMap: convertToParamMap({
+              from: 'genre',
+              genreId: '1',
+              genreName: 'Action',
+              page: '2',
+              pageSize: '50',
+            }),
+          },
+        },
+      },
+    ],
+  }).compileComponents();
+
+  const router = TestBed.inject(Router);
+  const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+  fixture = TestBed.createComponent(MovieDetailsPageComponent);
+  component = fixture.componentInstance;
+  fixture.detectChanges();
+
+  component.backToMovies();
+
+  expect(navigateSpy).toHaveBeenCalledWith(
+    ['/movies/genre', '1'],
+    {
+      queryParams: {
+        genreName: 'Action',
+        page: '2',
+        pageSize: '50',
+      },
+    }
+  );
+});
+it('should navigate back to letter browse with page and pageSize', async () => {
+  movieService.getMovieById.mockReturnValue(of(mockMovie));
+
+  await TestBed.configureTestingModule({
+    imports: [MovieDetailsPageComponent, RouterTestingModule],
+    providers: [
+      { provide: MovieService, useValue: movieService },
+      { provide: CartService, useValue: cartService },
+      {
+        provide: ActivatedRoute,
+        useValue: {
+          paramMap: of(convertToParamMap({ movieId: 'tt0413051' })),
+          snapshot: {
+            queryParamMap: convertToParamMap({
+              from: 'letter',
+              letter: 'A',
+              page: '3',
+              pageSize: '20',
+            }),
+          },
+        },
+      },
+    ],
+  }).compileComponents();
+
+  const router = TestBed.inject(Router);
+  const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+  fixture = TestBed.createComponent(MovieDetailsPageComponent);
+  component = fixture.componentInstance;
+  fixture.detectChanges();
+
+  component.backToMovies();
+
+  expect(navigateSpy).toHaveBeenCalledWith(
+    ['/movies'],
+    {
+      queryParams: {
+        letter: 'A',
+        page: '3',
+        pageSize: '20',
+      },
+    }
+  );
+});
+it('should navigate back to default browse with page and pageSize', async () => {
+  movieService.getMovieById.mockReturnValue(of(mockMovie));
+
+  await TestBed.configureTestingModule({
+    imports: [MovieDetailsPageComponent, RouterTestingModule],
+    providers: [
+      { provide: MovieService, useValue: movieService },
+      { provide: CartService, useValue: cartService },
+      {
+        provide: ActivatedRoute,
+        useValue: {
+          paramMap: of(convertToParamMap({ movieId: 'tt0413051' })),
+          snapshot: {
+            queryParamMap: convertToParamMap({
+              from: 'browse',
+              page: '4',
+              pageSize: '10',
+            }),
+          },
+        },
+      },
+    ],
+  }).compileComponents();
+
+  const router = TestBed.inject(Router);
+  const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+  fixture = TestBed.createComponent(MovieDetailsPageComponent);
+  component = fixture.componentInstance;
+  fixture.detectChanges();
+
+  component.backToMovies();
+
+  expect(navigateSpy).toHaveBeenCalledWith(
+    ['/movies'],
+    {
+      queryParams: {
+        page: '4',
+        pageSize: '10',
+      },
+    }
+  );
+});
 });
