@@ -66,6 +66,16 @@ In this phase, we focused on implementing the system features based on the defin
 - Authentication functionality implemented (login and registration).
 - Dynamic data rendering implemented across all pages.
 - Pagination, sorting, and filtering functionality implemented.
+- Autocomplete search implemented.
+
+## Phase 5 Status
+In this phase, we focused on implementing a responsive user interface using Bootstrap.
+
+### Completed in Phase 5:
+- Responsive user interface implemented using Bootstrap.
+- Proper scaling ensured across multiple screen sizes.
+- Clean and consistent UI design applied.
+- CSS validated to pass standard validation checks.
   
 ## Team Members
 - Layan Alhugbani
