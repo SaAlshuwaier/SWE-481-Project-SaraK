@@ -75,7 +75,6 @@ In this phase, we focused on implementing a responsive user interface using Boot
 - Responsive user interface implemented using Bootstrap.
 - Proper scaling ensured across multiple screen sizes.
 - Clean and consistent UI design applied.
-- CSS validated to pass standard validation checks.
   
 ## Team Members
 - Layan Alhugbani
