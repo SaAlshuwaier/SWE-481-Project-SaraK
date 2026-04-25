@@ -1,4 +1,4 @@
- <!-- Update the whole code by using bootstrap layout, no inling styling, and preserves selectors/tests-->
+<!-- Update the whole code by using bootstrap layout, no inling styling, and preserves selectors/tests-->
 
 
 <div class="container py-4">
@@ -14,6 +14,12 @@
       </div>
 
       <ng-container *ngIf="!isLoading() && star() as s">
+
+        <button class="btn btn-link ps-0 mb-3 text-decoration-none"
+          (click)="back()" data-testid="back-to-movie">
+          ← Back
+        </button>
+
         <div class="mb-4">
           <p class="text-uppercase text-muted fw-bold small mb-2">Star Details</p>
           <h2 class="fw-bold mb-0" data-testid="star-name">{{ s.name }}</h2>
@@ -43,7 +49,8 @@
 
                 <ul class="list-group list-group-flush movie-list" *ngIf="movies()?.length" data-testid="movies-list">
                   <li class="list-group-item bg-transparent px-0" *ngFor="let m of movies()">
-                     <a class="text-decoration-none movie-link"data-testid="movie-link" [routerLink]="['/movies', m.id]">
+                    <a class="text-decoration-none movie-link" data-testid="movie-link"
+                      [routerLink]="['/movies', m.id]"   [queryParams]="{originUrl: originUrl}">
                       {{ m.title }}
                     </a>
                   </li>

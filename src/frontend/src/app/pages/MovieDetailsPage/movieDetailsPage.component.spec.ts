@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
 
@@ -296,4 +296,56 @@ describe('MovieDetailsPageComponent', () => {
     expect(noStars).toBeTruthy();
     expect(noStars.textContent).toContain('No stars found.');
   });
+  
+ it('should navigate back to previous page (search case)', async () => {
+  const backSpy = vi.spyOn(window.history, 'back');
+
+  Object.defineProperty(window.history, 'length', {
+    value: 2,
+    configurable: true,
+  });
+
+  component.back();
+
+  expect(backSpy).toHaveBeenCalled();
+});
+
+it('should navigate back to previous page (genre case)', async () => {
+  const backSpy = vi.spyOn(window.history, 'back');
+
+  Object.defineProperty(window.history, 'length', {
+    value: 2,
+    configurable: true,
+  });
+
+  component.back();
+
+  expect(backSpy).toHaveBeenCalled();
+});
+
+it('should navigate back to previous page (letter case)', async () => {
+  const backSpy = vi.spyOn(window.history, 'back');
+
+  Object.defineProperty(window.history, 'length', {
+    value: 2,
+    configurable: true,
+  });
+
+  component.back();
+
+  expect(backSpy).toHaveBeenCalled();
+});
+
+it('should navigate back to previous page (browse case)', async () => {
+  const backSpy = vi.spyOn(window.history, 'back');
+
+  Object.defineProperty(window.history, 'length', {
+    value: 2,
+    configurable: true,
+  });
+
+  component.back();
+
+  expect(backSpy).toHaveBeenCalled();
+});
 });

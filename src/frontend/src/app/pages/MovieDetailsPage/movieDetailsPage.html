@@ -14,10 +14,21 @@
       </div>
 
       <ng-container *ngIf="!isLoading() && movie() as m">
-        <div class="mb-4">
-          <p class="text-uppercase text-muted fw-bold small mb-2">Movie Details</p>
-          <h2 class="fw-bold mb-0" data-testid="movie-title">{{ m.title }}</h2>
-        </div>
+
+
+  <button
+    type="button"
+    class="btn btn-link ps-0 mb-3 text-decoration-none"
+    (click)="back()"
+    data-testid="back-to-movies"
+  >
+    ← Back
+  </button>
+
+  <div class="mb-4">
+    <p class="text-uppercase text-muted fw-bold small mb-2">Movie Details</p>
+    <h2 class="fw-bold mb-0" data-testid="movie-title">{{ m.title }}</h2>
+  </div>
 
         <div class="row g-4">
           <div class="col-12 col-lg-7">
@@ -72,7 +83,8 @@
 
                 <ul class="list-group list-group-flush link-list" *ngIf="m.stars?.length" data-testid="stars-list">
                   <li class="list-group-item bg-transparent px-0" *ngFor="let s of m.stars">
-                    <a class="text-decoration-none link" data-testid="star-link" [routerLink]="['/stars', s.id]">
+                    <a class="text-decoration-none link" data-testid="star-link" [routerLink]="['/stars', s.id]"
+                        [queryParams]="{originUrl: originUrl}">
                       {{ s.name }}
                     </a>
                   </li>

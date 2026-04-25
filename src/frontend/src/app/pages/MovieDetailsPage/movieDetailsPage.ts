@@ -1,6 +1,6 @@
 import { Component, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { finalize, Subscription } from 'rxjs';
 
 import { MovieService } from '../../core/services/MovieService';
@@ -37,27 +37,23 @@ backQueryParams: any = {};
   quantity = signal<number>(1);
   cartResult = signal<CartDto | null>(null);
   cartError = signal<string | null>(null);
+  originUrl: string | null = null;
 
   // Keep a reference so we can unsubscribe on destroy
   private sub = new Subscription();
 
   constructor(
     private route: ActivatedRoute,
+     private router: Router,
     private movieService: MovieService,
     private cartService: CartService
   ) {
   }
+  
 
-  ngOnInit(): void {
-  const from = this.route.snapshot.queryParamMap.get('from');
-  const genreId = this.route.snapshot.queryParamMap.get('genreId');
-  const genreName = this.route.snapshot.queryParamMap.get('genreName');
-
-  if (from === 'genre' && genreId) {
-    this.backLink = ['/movies/genre', genreId];
-    this.backQueryParams = genreName ? { genreName } : {};
-  }
-
+ngOnInit(): void {
+  this.originUrl =this.route.snapshot.queryParamMap.get('originUrl') || this.router.url;
+  
   this.sub.add(
     this.route.paramMap.subscribe((params) => {
       const movieId = params.get('movieId');
@@ -98,7 +94,11 @@ private loadMovie(movieId: string): void {
       });
   }
 
-
+backToMovies(): void {
+  this.router.navigate(this.backLink, {
+    queryParams: this.backQueryParams
+  });
+}
 
   /** Decrease quantity but never below 1. */
   decQty(): void {
@@ -171,6 +171,21 @@ private loadMovie(movieId: string): void {
   }
 
 
+back(): void {
+  const originUrl = this.route.snapshot.queryParamMap.get('originUrl');
+  //if history exists
+  if (window.history.length > 1) {
+    window.history.back();
+    return;
+  }
+ //no history go back once
+  if (originUrl) {
+    this.router.navigateByUrl(originUrl);
+    return;
+  }
+  // fall-back
+  this.router.navigate(['/movies']);
+}
 
   
 }

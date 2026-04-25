@@ -71,6 +71,9 @@ describe('StarDetailsPageComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             paramMap: of(convertToParamMap({ starId: 'nm1636964' })),
+            snapshot: {
+              queryParamMap: convertToParamMap({}),
+            },
           },
         },
       ],

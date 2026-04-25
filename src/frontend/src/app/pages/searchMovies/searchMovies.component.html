@@ -34,9 +34,15 @@
       <div class="card shadow-sm">
         <div class="card-body">
           <h3 class="h5 card-title mb-3">
-            <a [routerLink]="['/movies', movie.id]" class="text-decoration-none">
-              {{ movie.title }}
-            </a>
+          <h3 class="h5 card-title mb-3">
+<a
+  [routerLink]="['/movies', movie.id]"
+  [queryParams]="{ originUrl: router.url }"
+  class="text-decoration-none"
+>
+  {{ movie.title }}
+</a>
+</h3>
           </h3>
 
           <p class="mb-1"><strong>Year:</strong> {{ movie.year }}</p>
@@ -59,7 +65,8 @@
           <p class="mb-0">
             <strong>Stars:</strong>
             <ng-container *ngFor="let s of movie.stars; let last = last">
-              <a [routerLink]="['/stars', s.id]" class="text-decoration-none">
+              <a [routerLink]="['/stars', s.id]" class="text-decoration-none" [queryParams]="{ originUrl: router.url }"
+>
                 {{ s.name }}
               </a><span *ngIf="!last">, </span>
             </ng-container>
