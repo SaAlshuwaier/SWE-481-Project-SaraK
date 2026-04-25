@@ -2,6 +2,7 @@ package com.swe481.backend.service.serviceImp;
 
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.swe481.backend.Dto.Genre;
@@ -18,6 +19,7 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
+    @Cacheable(value = "genres")
     public List<Genre> getAllGenres() {
         return movieRepository.findAllGenres();
     }
