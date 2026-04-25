@@ -1,6 +1,6 @@
 import { Component, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { finalize, Subscription } from 'rxjs';
 
 import { StarService } from '../../core/services/StarService';
@@ -34,6 +34,7 @@ export class StarDetailsPageComponent implements OnDestroy {
   movies = signal<MovieDto[]>([]);
   isLoading = signal<boolean>(true);
   error = signal<string | null>(null);
+  originUrl: string | null = null;
 
   // Keep a reference so we can unsubscribe on destroy
   private sub = new Subscription();
@@ -41,10 +42,13 @@ export class StarDetailsPageComponent implements OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private starService: StarService,
+    private router: Router,
   ) {
   }
 
   ngOnInit(): void {
+    this.originUrl =this.route.snapshot.queryParamMap.get('originUrl')|| this.router.url;
+
     this.sub.add(
       this.route.paramMap.subscribe((params) => {
         const starId = params.get('starId');
@@ -123,5 +127,22 @@ export class StarDetailsPageComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.sub.unsubscribe();
   }
+
+
+back(): void {
+  const originUrl = this.route.snapshot.queryParamMap.get('originUrl');
+  //if history exists
+  if (window.history.length > 1) {
+    window.history.back();
+    return;
+  }
+ //no history go back once
+  if (originUrl) {
+    this.router.navigateByUrl(originUrl);
+    return;
+  }
+  // fall-back
+  this.router.navigate(['/movies']);
+}
 
 }

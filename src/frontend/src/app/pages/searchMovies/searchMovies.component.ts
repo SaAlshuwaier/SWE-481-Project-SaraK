@@ -27,7 +27,7 @@ export class SearchMoviesComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
+    public  router: Router,
     private movieService: MovieService
   ) {}
 
@@ -39,7 +39,6 @@ ngOnInit(): void {
       director: qp['director'] || undefined,
       star: qp['star'] || undefined,
     };
-
     this.page = qp['page'] ? Number(qp['page']) : 1;
     this.loadSearchResults();
   });

@@ -37,6 +37,7 @@ backQueryParams: any = {};
   quantity = signal<number>(1);
   cartResult = signal<CartDto | null>(null);
   cartError = signal<string | null>(null);
+  originUrl: string | null = null;
 
   // Keep a reference so we can unsubscribe on destroy
   private sub = new Subscription();
@@ -51,51 +52,8 @@ backQueryParams: any = {};
   
 
 ngOnInit(): void {
-  const from = this.route.snapshot.queryParamMap.get('from');
-  const genreId = this.route.snapshot.queryParamMap.get('genreId');
-  const genreName = this.route.snapshot.queryParamMap.get('genreName');
-
-  const returnPage = this.route.snapshot.queryParamMap.get('returnPage');
-  const title = this.route.snapshot.queryParamMap.get('title');
-  const year = this.route.snapshot.queryParamMap.get('year');
-  const director = this.route.snapshot.queryParamMap.get('director');
-  const star = this.route.snapshot.queryParamMap.get('star');
-
-  const page = this.route.snapshot.queryParamMap.get('page');
-  const pageSize = this.route.snapshot.queryParamMap.get('pageSize');
-  const letter = this.route.snapshot.queryParamMap.get('letter');
-
-  if (from === 'genre' && genreId) {
-    this.backLink = ['/movies/genre', genreId];
-    this.backQueryParams = {
-      genreName: genreName || null,
-      page: page || 1,
-      pageSize: pageSize || 20
-    };
-  } else if (from === 'letter' && letter) {
-    this.backLink = ['/movies'];
-    this.backQueryParams = {
-      letter: letter,
-      page: page || 1,
-      pageSize: pageSize || 20
-    };
-  } else if (returnPage || title || year || director || star) {
-    this.backLink = ['/movies/search'];
-    this.backQueryParams = {
-      page: returnPage || 1,
-      title: title || null,
-      year: year || null,
-      director: director || null,
-      star: star || null,
-    };
-  } else if (from === 'browse') {
-    this.backLink = ['/movies'];
-    this.backQueryParams = {
-      page: page || 1,
-      pageSize: pageSize || 20
-    };
-  }
-
+  this.originUrl =this.route.snapshot.queryParamMap.get('originUrl') || this.router.url;
+  
   this.sub.add(
     this.route.paramMap.subscribe((params) => {
       const movieId = params.get('movieId');
@@ -213,6 +171,21 @@ backToMovies(): void {
   }
 
 
+back(): void {
+  const originUrl = this.route.snapshot.queryParamMap.get('originUrl');
+  //if history exists
+  if (window.history.length > 1) {
+    window.history.back();
+    return;
+  }
+ //no history go back once
+  if (originUrl) {
+    this.router.navigateByUrl(originUrl);
+    return;
+  }
+  // fall-back
+  this.router.navigate(['/movies']);
+}
 
   
 }

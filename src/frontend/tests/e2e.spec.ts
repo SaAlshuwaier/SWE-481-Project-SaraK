@@ -149,8 +149,6 @@ test('E2E(Search Autocomplete): suggestions appear and selecting navigates to mo
   }
 });
 
-
-
 /////// MOVIE DETAILS E2E TESTS \\\\\\\
 
 test('E2E(Movie Details): Movie details requires login and loads from DB', async ({ page }) => {
@@ -235,7 +233,7 @@ test('E2E: Star Details loads from DB, renders fields, and has valid movie links
   // Movie link points to correct route
   const firstMovieLink = page.getByTestId('movie-link').first();
   await expect(firstMovieLink).toBeVisible();
-  await expect(firstMovieLink).toHaveAttribute('href', /.*\/movies\/tt0400548$/);
+  await expect(firstMovieLink).toHaveAttribute('href',expect.stringContaining('/movies/tt0400548'));
 });
 
 

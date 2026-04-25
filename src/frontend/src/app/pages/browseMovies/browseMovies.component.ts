@@ -19,7 +19,6 @@ export class BrowseMoviesComponent implements OnInit {
   movies: MovieDto[] = [];
   sortedMovies: MovieDto[] = [];
   contextTitle = '';
-
   page = 1;
   pageSize: 10 | 20 | 50 | 100 = 20;
 
@@ -30,7 +29,7 @@ export class BrowseMoviesComponent implements OnInit {
     public route: ActivatedRoute,
     private movieService: MovieService,
     private cdr: ChangeDetectorRef,
-     private router: Router
+     public router: Router
   ) {}
 
   ngOnInit(): void {

@@ -76,14 +76,7 @@
   data-testid="movie-link"
   class="text-decoration-none movie-title-browseMovies-link"
   [routerLink]="['/movies', movie.id]"
-  [queryParams]="{
-    from: route.snapshot.paramMap.get('genreId') ? 'genre' : (route.snapshot.queryParams['letter'] ? 'letter' : 'browse'),
-    genreId: route.snapshot.paramMap.get('genreId'),
-    genreName: route.snapshot.queryParams['genreName'],
-    letter: route.snapshot.queryParams['letter'],
-    page: page,
-    pageSize: pageSize
-  }"
+  [queryParams]="{ originUrl: router.url }"
 >
   {{ movie.title }}
 </a>
@@ -125,6 +118,8 @@
                 data-testid="star-link"
                 class="text-decoration-none star-browseMovies-link"
                 [routerLink]="['/stars', s.id]"
+                [queryParams]="{ originUrl: router.url }"
+  
               >
                 {{ s.name }}
               </a>
