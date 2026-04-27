@@ -61,7 +61,7 @@ export class RegisterPageComponent {
 }
 
 isValidCcNumber(cc: string): boolean {
-    const stripped = cc.replace(/\s/g, '');
+    const stripped = cc.replace(/[\s-]/g, '');
     return /^\d+$/.test(stripped);
   }
 
@@ -74,7 +74,7 @@ isValidCcNumber(cc: string): boolean {
     passwordsMatch(): boolean {
     return this.password() === this.confirmPassword();
   }
-  
+
   markEmailTouched(): void { this.emailTouched.set(true); }
   markCcNumberTouched(): void { this.ccNumberTouched.set(true); }
   markCcFirstNameTouched(): void { this.ccFirstNameTouched.set(true); }
