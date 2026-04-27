@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/AuthService';
@@ -17,15 +17,21 @@ export class NavbarComponent {
     private router: Router
   ) {}
 
-  confirmLogout() {
+  showConfirm = signal<boolean>(false);
 
-    const confirmAction = confirm("Are you sure you want to logout?");
+    openLogoutModal(): void {
+    this.showConfirm.set(true);
+  }
 
-    if (confirmAction) {
+    closeLogoutModal(): void {
+      this.showConfirm.set(false);
+    }
+
+    confirmLogout(): void {
+      this.showConfirm.set(false);
       this.logout();
     }
 
-  }
 
   logout() {
 
