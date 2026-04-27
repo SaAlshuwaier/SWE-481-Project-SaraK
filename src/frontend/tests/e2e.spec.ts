@@ -398,3 +398,17 @@ await page.goto(`${FRONTEND_URL}/cart`);
   // After local clear, empty cart message should appear
   await expect(page.getByTestId('cart-empty')).toBeVisible();
 });
+
+test('E2E(Checkout): name fields reject numbers', async ({ page }) => {
+  await page.goto(`${FRONTEND_URL}/checkout`);
+
+  await page.getByTestId('checkout-firstname').fill('Sara123');
+  await page.getByTestId('checkout-lastname').fill('Alshuwaier1');
+
+  await page.getByTestId('checkout-firstname').blur();
+  await page.getByTestId('checkout-lastname').blur();
+
+  await expect(page.locator('body')).toContainText('Name on card must contain letters only');
+
+  await expect(page.getByTestId('checkout-submit')).toBeDisabled();
+});
