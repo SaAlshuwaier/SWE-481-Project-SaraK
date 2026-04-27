@@ -7,22 +7,18 @@ import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record5;
 import org.jooq.impl.DSL;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
  
-import static com.jooq.swe481.generated.tables.Genres.GENRES;
-import com.jooq.swe481.generated.tables.GenresInMovies;
 import static com.jooq.swe481.generated.tables.Movies.MOVIES;
-import static com.jooq.swe481.generated.tables.Ratings.RATINGS;
 import static com.jooq.swe481.generated.tables.Stars.STARS;
 import static com.jooq.swe481.generated.tables.StarsInMovies.STARS_IN_MOVIES;
-import com.swe481.backend.Dto.Genre;
 import com.swe481.backend.Dto.Movie;
 import com.swe481.backend.Dto.MovieSuggestion;
 import com.swe481.backend.Dto.MoviesPageState;
 import com.swe481.backend.Dto.Repo.MovieRepository;
-import com.swe481.backend.Dto.Star;
 import com.swe481.backend.service.serviceInterface.MovieService;
-import com.swe481.backend.Dto.MovieSuggestion;
+
 @Service
 public class MovieServiceImpl implements MovieService {
  
@@ -69,7 +65,9 @@ public class MovieServiceImpl implements MovieService {
  	*
  	*/
 	@Override
+	@Cacheable(value = "movieSearch", key = "{#title, #year, #director, #starName, #page, #pageSize}")
 	public MoviesPageState searchMovies(String title, Integer year, String director, String starName, int page, int pageSize) {
+		System.out.println("[CACHE MISS] searchMovies - title: " + title + " year: " + year + " page: " + page);
  
     	validatePaging(page, pageSize);
  
@@ -140,7 +138,9 @@ public class MovieServiceImpl implements MovieService {
  
     	return new MoviesPageState(page, pageSize, totalResults, movies);
 	}
+
 @Override
+@Cacheable(value = "movieTitleSuggestions", key = "#query?.trim()?.toLowerCase()")
 public List<MovieSuggestion> autocompleteTitles(String query) {
 	String normalizedQuery = normalize(query);
  
@@ -151,52 +151,13 @@ public List<MovieSuggestion> autocompleteTitles(String query) {
 	return movieRepository.findTitleSuggestions(normalizedQuery, 10);
 }
  
-	/*
-   private final List<Movie> dummyMovies = List.of(
-        	new Movie(
-                	"tt1",
-                	"Zebra Story",
-                	2018,
-                	"Alice Brown",
-                	7.2,
-                	List.of(new Genre(1L, "Drama")),
-                	List.of(new Star("nm3", "Chris Evans", 1981))
-        	),
-        	new Movie(
-                	"tt2",
-                	"Alpha Movie",
-                	2005,
-                	"David Clark",
-                	8.1,
-                	List.of(new Genre(2L, "Action")),
-                	List.of(new Star("nm1", "Tom Hardy", 1977))
-        	),
-        	new Movie(
-                	"tt3",
-                	"Middle Ground",
-                	2012,
-                	"Brian Adams",
-                	6.9,
-                	List.of(new Genre(3L, "Fiction")),
-                	List.of(new Star("nm2", "Leonardo DiCaprio", 1974))
-        	),
-        	new Movie(
-                	"tt4",
-                	"Another Tale",
-                	2022,
-                	"Aaron Smith",
-                	7.9,
-            	    List.of(new Genre(1L, "Drama"), new Genre(4L, "Comedy")),
-                	List.of(new Star("nm4", "Brad Pitt", 1963))
-        	)
-	); */
- 
 	// Retrieves a paginated list of movies that belong to the selected genre.
 	// Used by the frontend "Browse by Genre" page.
  
-	@Override
+@Override
+@Cacheable(value = "moviesByGenre", key = "{#genreId, #page, #pageSize}")
 public MoviesPageState browseMoviesByGenre(Integer genreId, int page, int pageSize) {
- 
+     System.out.println("[CACHE MISS] browseMoviesByGenre called - genreId: " + genreId + " page: " + page);
 	validatePaging(page, pageSize);
  
 	int totalResults = movieRepository.countMoviesByGenre(genreId);
@@ -237,76 +198,15 @@ public MoviesPageState browseMoviesByGenre(Integer genreId, int page, int pageSi
  
 	return new MoviesPageState(page, pageSize, totalResults, movies);
 }
- 
-	/*
-	@Override
-public MoviesPageState browseMoviesByGenre(Integer genreId, int page, int pageSize) {
- 
-	validatePaging(page, pageSize);
- 
-	int totalResults = dsl
-        	.selectCount()
-        	.from(MOVIES)
-        	.join(GenresInMovies.GENRES_IN_MOVIES)
-            .on(MOVIES.ID.eq(GenresInMovies.GENRES_IN_MOVIES.MOVIEID))
-            .where(GenresInMovies.GENRES_IN_MOVIES.GENREID.eq(genreId))
-        	.fetchOne(0, int.class);
- 
-	if (totalResults == 0) {
-    	return new MoviesPageState(page, pageSize, 0, List.of());
-	}
- 
-	int offset = (page - 1) * pageSize;
- 
-	List<String> movieIds = dsl
-    	.select(MOVIES.ID)
-    	.from(MOVIES)
-    	.join(GenresInMovies.GENRES_IN_MOVIES)
-        .on(MOVIES.ID.eq(GenresInMovies.GENRES_IN_MOVIES.MOVIEID))
-        .where(GenresInMovies.GENRES_IN_MOVIES.GENREID.eq(genreId))
-    	.orderBy(MOVIES.TITLE.asc(), MOVIES.ID.asc())
-    	.limit(pageSize)
-    	.offset(offset)
-    	.fetch(MOVIES.ID);
- 
-	if (movieIds.isEmpty()) {
-    	return new MoviesPageState(page, pageSize, totalResults, List.of());
-	}
- 
-	List<Record5<String, String, Integer, String, Double>> rows = movieRepository.findMovieRows(movieIds);
- 
-	List<Movie> movies = new ArrayList<>();
- 
-	for (String movieId : movieIds) {
-    	Record5<String, String, Integer, String, Double> row = rows.stream()
-            	.filter(r -> movieId.equals(r.get(0, String.class)))
-            	.findFirst()
-            	.orElse(null);
- 
-    	if (row != null) {
-        	movies.add(new Movie(
-                	row.get(0, String.class),
-                	row.get(1, String.class),
-                	row.get(2, Integer.class),
-                	row.get(3, String.class),
-                	row.get(4, Double.class),
-                    movieRepository.findGenresByMovieId(movieId),
-                    movieRepository.findStarsByMovieId(movieId)
-        	));
-    	}
-	}
- 
-	return new MoviesPageState(page, pageSize, totalResults, movies);
-}  */
-
-
-
 
 
 	// Retrieves a paginated list of movies whose titles start with the specified letter(s).
 	// Used by the frontend "Browse by First Letter" page.
 	@Override
-public MoviesPageState browseMoviesByFirstLetter(String startsWith, int page, int pageSize) {
+	@Cacheable(value = "moviesByFirstLetter", key = "{#startsWith, #page, #pageSize}")
+	public MoviesPageState browseMoviesByFirstLetter(String startsWith, int page, int pageSize) {
+	System.out.println("[CACHE MISS] browseMoviesByFirstLetter - startsWith: " + startsWith + " page: " + page);
+
  
 	// Validate and sanitize input parameters for pagination and filtering.   
 	validatePaging(page, pageSize);
@@ -354,7 +254,9 @@ public MoviesPageState browseMoviesByFirstLetter(String startsWith, int page, in
 	return new MoviesPageState(page, pageSize, totalResults, movies);
 }
 @Override
+@Cacheable(value = "movieById", key = "#movieId")
 public Movie getMovieById(String movieId) {
+	System.out.println("[CACHE MISS] getMovieById - movieId: " + movieId);
 	if (movieId == null || movieId.isBlank()) {
     	throw new IllegalArgumentException("movieId must not be null or blank");
 	}

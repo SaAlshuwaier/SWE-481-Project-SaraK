@@ -5,6 +5,8 @@ import com.swe481.backend.Dto.Star;
 import com.swe481.backend.Dto.Repo.StarRepository;
 
 import com.swe481.backend.service.serviceInterface.StarService;
+
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -21,16 +23,18 @@ public class StarServiceImpl implements StarService {
     }
 
     @Override
-
+    @Cacheable(value = "starById", key = "#starId")
     public Star getStar(String starId) {
+        System.out.println("[CACHE MISS] getStar - starId: " + starId);
         if (starId == null || starId.isBlank())
             return null;
         return starRepository.findById(starId);
     }
 
     @Override
-
+    @Cacheable(value = "starMovies", key = "#starId")
     public List<Movie> getStarMovies(String starId) {
+        System.out.println("[CACHE MISS] getStarMovies - starId: " + starId);
         if (starId == null || starId.isBlank())
             return null;
         return starRepository.findMoviesByStarId(starId);
