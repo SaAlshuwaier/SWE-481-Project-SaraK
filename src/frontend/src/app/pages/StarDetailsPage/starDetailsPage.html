@@ -26,19 +26,24 @@
         </div>
 
         <div class="row g-4">
-          <div class="col-12 col-lg-4">
-            <div class="card h-100 border-0 bg-light">
-              <div class="card-body">
-                <h5 class="fw-bold mb-3">Profile</h5>
-                <p class="mb-0" *ngIf="s.birthYear != null">
-  <span class="fw-bold">Birth Year: </span>
-  <span data-testid="star-birthyear">{{ s.birthYear }}</span>
-</p>
-              </div>
-            </div>
-          </div>
 
-          <div class="col-12 col-lg-8">
+
+          <div class="col-12 col-lg-4" *ngIf="s.birthYear != null">
+  <div class="card h-100 border-0 bg-light">
+    <div class="card-body">
+      <h5 class="fw-bold mb-3">Profile</h5>
+
+      <p class="mb-0">
+        <span class="fw-bold">Birth Year: </span>
+        <span data-testid="star-birthyear">{{ s.birthYear }}</span>
+      </p>
+    </div>
+  </div>
+</div>
+
+
+
+     <div [class]="s.birthYear != null ? 'col-12 col-lg-8' : 'col-12'">
             <div class="card h-100 border-0 bg-light">
               <div class="card-body">
                 <h5 class="fw-bold mb-3">Movies</h5>
