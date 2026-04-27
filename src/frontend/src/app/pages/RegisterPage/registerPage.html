@@ -80,7 +80,7 @@
               maxlength="20" type="text" inputmode="numeric" pattern="[0-9 ]*"/>
           </div>
 
-          <div *ngIf="ccNumberTouched() && ccNumber() && !isValidCcNumber(ccNumber())"
+          <div *ngIf="ccNumber() && !isValidCcNumber(ccNumber())"
             class="err-box text-danger small">
             Card number must contain digits only
           </div>
@@ -104,7 +104,7 @@
           </div>
 
           <!-- cc first name error -->
-          <div *ngIf="ccFirstNameTouched() && ccFirstName() && !isValidCardName(ccFirstName())"
+          <div *ngIf="ccFirstName() && !isValidCardName(ccFirstName())"
             class="err-box text-danger small">
             Name on card must contain letters only
           </div>
@@ -118,7 +118,7 @@
         </div>
       </div>
       <!--cc last name error -->
-      <div *ngIf="ccLastNameTouched() && ccLastName() && !isValidCardName(ccLastName())"
+      <div *ngIf="ccLastName() && !isValidCardName(ccLastName())"
         class="err-box text-danger small">
         Name on card must contain letters only
       </div>

@@ -20,6 +20,7 @@ export class CheckoutPageComponent {
 
   firstNameTouched = signal<boolean>(false);
   lastNameTouched = signal<boolean>(false);
+  cardNumberTouched = signal<boolean>(false);
   
 
   isLoading = signal<boolean>(false);
@@ -35,6 +36,10 @@ export class CheckoutPageComponent {
   setExpiration(v: string) { this.expiration.set(v); }
   isValidCardName(name: string): boolean {
   return /^[a-zA-Z\s\-]+$/.test(name); }
+  isValidCcNumber(cc: string): boolean {
+  const stripped = cc.replace(/[\s-]/g, '');
+  return /^\d+$/.test(stripped);
+}
   
 
 
@@ -44,6 +49,7 @@ export class CheckoutPageComponent {
 
     this.firstNameTouched.set(true);
     this.lastNameTouched.set(true);
+    this.cardNumberTouched.set(true);
 
     if (!this.firstName() || !this.lastName() || !this.cardNumber() || !this.expiration()) {
   this.error.set('All fields are required');
@@ -55,6 +61,11 @@ if (!this.isValidCardName(this.firstName()) || !this.isValidCardName(this.lastNa
   return;
 }
 
+
+if (!this.isValidCcNumber(this.cardNumber())) {
+  this.error.set('Card number must contain digits only');
+  return;
+}
 
 
     const body: CheckoutRequest = {
@@ -79,6 +90,7 @@ if (!this.isValidCardName(this.firstName()) || !this.isValidCardName(this.lastNa
     this.expiration.set('');
     this.firstNameTouched.set(false);
     this.lastNameTouched.set(false);
+    this.cardNumberTouched.set(false);
   }
 },
     error: (err) => {
