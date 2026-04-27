@@ -15,7 +15,7 @@
         <div>
           <label class="label form-label fw-semibold text-secondary small">Email</label>
           <input class="input form-control" type="email" [value]="email()"
-            (input)="onEmailInput(($any($event.target).value))" (blur)="emailTouched.set(true)"
+            (input)="onEmailInput(($any($event.target).value))" (blur)="markEmailTouched()"
             placeholder="name@example.com" data-testid="login-email" />
         </div>
 
