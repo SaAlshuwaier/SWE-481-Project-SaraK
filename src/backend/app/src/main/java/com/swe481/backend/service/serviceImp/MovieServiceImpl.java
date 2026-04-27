@@ -67,6 +67,7 @@ public class MovieServiceImpl implements MovieService {
 	@Override
 	@Cacheable(value = "movieSearch", key = "{#title, #year, #director, #starName, #page, #pageSize}")
 	public MoviesPageState searchMovies(String title, Integer year, String director, String starName, int page, int pageSize) {
+		System.out.println("[CACHE MISS] searchMovies - title: " + title + " year: " + year + " page: " + page);
  
     	validatePaging(page, pageSize);
  
@@ -204,6 +205,8 @@ public MoviesPageState browseMoviesByGenre(Integer genreId, int page, int pageSi
 	@Override
 	@Cacheable(value = "moviesByFirstLetter", key = "{#startsWith, #page, #pageSize}")
 	public MoviesPageState browseMoviesByFirstLetter(String startsWith, int page, int pageSize) {
+	System.out.println("[CACHE MISS] browseMoviesByFirstLetter - startsWith: " + startsWith + " page: " + page);
+
  
 	// Validate and sanitize input parameters for pagination and filtering.   
 	validatePaging(page, pageSize);
@@ -253,6 +256,7 @@ public MoviesPageState browseMoviesByGenre(Integer genreId, int page, int pageSi
 @Override
 @Cacheable(value = "movieById", key = "#movieId")
 public Movie getMovieById(String movieId) {
+	System.out.println("[CACHE MISS] getMovieById - movieId: " + movieId);
 	if (movieId == null || movieId.isBlank()) {
     	throw new IllegalArgumentException("movieId must not be null or blank");
 	}

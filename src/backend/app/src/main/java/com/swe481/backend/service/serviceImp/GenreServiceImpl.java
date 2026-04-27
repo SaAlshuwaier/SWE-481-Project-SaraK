@@ -21,6 +21,7 @@ public class GenreServiceImpl implements GenreService {
     @Override
     @Cacheable(value = "genres")
     public List<Genre> getAllGenres() {
+        System.out.println("[CACHE MISS] getAllGenres - hitting database");
         return movieRepository.findAllGenres();
     }
 }

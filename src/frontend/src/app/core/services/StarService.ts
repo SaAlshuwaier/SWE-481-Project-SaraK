@@ -1,7 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environment/environment';
 import {StarDto} from '../models/StarDto';
-import {Observable} from 'rxjs';
+import {Observable, of, tap} from 'rxjs';
 import {Injectable} from '@angular/core';
 import {MovieDto} from '../models/MovieDto';
 
@@ -12,6 +12,8 @@ import {MovieDto} from '../models/MovieDto';
 export class StarService {
   constructor(private http: HttpClient) {}
   private baseUrl = environment.backendUrl;
+  private starCache = new Map<string, StarDto>();
+  private starMoviesCache = new Map<string, MovieDto[]>();  
 
   /**
    * Get a specific star details
@@ -31,7 +33,14 @@ export class StarService {
    * }
    */
   getStar(starId: string) : Observable<StarDto> {
-    return this.http.get<StarDto>(`${this.baseUrl}/api/stars/${starId}`);
+    if (this.starCache.has(starId)) {
+      console.log('[CACHE HIT] getStar - key:', starId);
+      return of(this.starCache.get(starId)!);
+    }
+    console.log('[CACHE MISS] getStar - hitting backend, key:', starId);
+    return this.http.get<StarDto>(`${this.baseUrl}/api/stars/${starId}`).pipe(
+      tap(res => this.starCache.set(starId, res))
+    );
   }
 
   /**
@@ -60,7 +69,14 @@ export class StarService {
    *   ]
    * }
    */
-  getMoviesOfStar(starId: string) : Observable<MovieDto[]> {
-    return this.http.get<MovieDto[]>(`${this.baseUrl}/api/stars/${starId}/movies`);
+  getMoviesOfStar(starId: string): Observable<MovieDto[]> {
+  if (this.starMoviesCache.has(starId)) {
+    console.log('[CACHE HIT] getMoviesOfStar - starId:', starId);
+    return of(this.starMoviesCache.get(starId)!);
   }
+  console.log('[CACHE MISS] getMoviesOfStar - hitting backend, starId:', starId);
+  return this.http.get<MovieDto[]>(`${this.baseUrl}/api/stars/${starId}/movies`).pipe(
+    tap(res => this.starMoviesCache.set(starId, res))
+  );
+}
 }

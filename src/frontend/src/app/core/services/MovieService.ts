@@ -11,10 +11,11 @@ import { MoviesPageStateDto } from '../models/MoviesPageStateDto';
 })
 export class MovieService {
  
-	constructor(private http: HttpClient) { }
-	private searchCache = new Map<string, MoviesPageStateDto>();
+constructor(private http: HttpClient) { }
+private searchCache = new Map<string, MoviesPageStateDto>();
 private genreBrowseCache = new Map<string, MoviesPageStateDto>();
 private letterBrowseCache = new Map<string, MoviesPageStateDto>();
+private movieByIdCache = new Map<string, MovieDto>();
  
 	searchMovies(
     	title?: string,
@@ -49,10 +50,12 @@ private letterBrowseCache = new Map<string, MoviesPageStateDto>();
 
 //if exists in cache → return cached value
 if (this.searchCache.has(key)) {
+    console.log('[CACHE HIT] searchMovies - key:', key);
   return of(this.searchCache.get(key)!);
 }
 
 //if not in cache → make HTTP request and cache the result
+console.log('[CACHE MISS] searchMovies - hitting backend, key:', key);
 return this.http.get<MoviesPageStateDto>(
   `${environment.backendUrl}/api/movies/search`,
   { params }
@@ -80,8 +83,10 @@ return this.http.get<MoviesPageStateDto>(
   const key = JSON.stringify({ genreId, page, pageSize });
 
   if (this.genreBrowseCache.has(key)) {
+    console.log('[CACHE HIT] browseMoviesByGenre - key:', key);
     return of(this.genreBrowseCache.get(key)!);
   }
+  console.log('[CACHE MISS] browseMoviesByGenre - hitting backend, key:', key);
 
   return this.http.get<MoviesPageStateDto>(
     `${environment.backendUrl}/api/movies/browseByGenre`,
@@ -106,8 +111,10 @@ browseMoviesByFirstLetter(
   const key = JSON.stringify({ startsWith, page, pageSize });
 
   if (this.letterBrowseCache.has(key)) {
+    console.log('[CACHE HIT] browseMoviesByFirstLetter - key:', key);
     return of(this.letterBrowseCache.get(key)!);
   }
+  console.log('[CACHE MISS] browseMoviesByFirstLetter - hitting backend, key:', key);
 
   return this.http.get<MoviesPageStateDto>(
     `${environment.backendUrl}/api/movies/browseByFirstLetter`,
@@ -126,9 +133,15 @@ browseMoviesByFirstLetter(
 }
  
 	getMovieById(movieId: string): Observable<MovieDto> {
+    if (this.movieByIdCache.has(movieId)) {
+      console.log('[CACHE HIT] getMovieById - movieId:', movieId);
+      return of(this.movieByIdCache.get(movieId)!);
+    }
+    console.log('[CACHE MISS] getMovieById - hitting backend, movieId:', movieId);
     	return this.http.get<MovieDto>(
-        	`${environment.backendUrl}/api/movies/${movieId}`
-    	);
+        	`${environment.backendUrl}/api/movies/${movieId}`).pipe(
+            tap(res => this.movieByIdCache.set(movieId, res))
+);
 	}
 }
 export interface MovieSuggestionDto {

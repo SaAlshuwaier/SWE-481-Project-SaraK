@@ -22,8 +22,10 @@ export class GenreService {
 
   getAllGenres(): Observable<GenreDto[]> {
     if (this.cachedGenres) {
+      console.log('[CACHE HIT] getAllGenres - returning from cache');
       return of(this.cachedGenres); // return cached, no HTTP call
     }
+    console.log('[CACHE MISS] getAllGenres - hitting backend');
     // This method makes a GET request to the backend API to fetch all genres. It returns an Observable that emits an array of GenreDto objects when the data is received.
     return this.http.get<GenreDto[]>(this.apiUrl).pipe(
       tap(genres => this.cachedGenres = genres) // store on first fetch
