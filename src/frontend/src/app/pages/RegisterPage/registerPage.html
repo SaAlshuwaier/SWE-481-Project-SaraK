@@ -16,12 +16,12 @@
         <div class="row g-3">
           <div class="col-md-6">
             <label class="label form-label fw-semibold text-secondary small">First Name</label>
-            <input class="input form-control" [value]="firstName()" (input)="setFirstName(($any($event.target).value))"
+            <input class="input form-control" [value]="firstName()" (input)="setFirstName(($any($event.target).value))" (keydown)="allowOnlyEnglish($event)"
               data-testid="reg-firstname" maxlength="50" />
           </div>
           <div class="col-md-6">
             <label class="label form-label fw-semibold text-secondary small">Last Name</label>
-            <input class="input form-control" [value]="lastName()" (input)="setLastName(($any($event.target).value))"
+            <input class="input form-control" [value]="lastName()" (input)="setLastName(($any($event.target).value))" (keydown)="allowOnlyEnglish($event)"
               data-testid="reg-lastname" maxlength="50" />
           </div>
         </div>
@@ -30,7 +30,7 @@
       <div>
 
         <label class="label form-label fw-semibold text-secondary small">Email</label>
-        <input class="input form-control" type="email" [value]="email()" (input)="setEmail(($any($event.target).value))"
+        <input class="input form-control" type="email" [value]="email()" (input)="setEmail(($any($event.target).value))" (keydown)="allowOnlyEnglish($event)"
           (blur)="markEmailTouched()" placeholder="name@example.com" data-testid="reg-email" maxlength="50" />
       </div>
       <div *ngIf="emailTouched() && !isValidEmail(email())" class="err-box text-danger small">
@@ -43,7 +43,7 @@
 
             <label class="label form-label fw-semibold text-secondary small">Password</label>
             <input class="input form-control" type="password" [value]="password()"
-              (input)="setPassword(($any($event.target).value))" placeholder="••••••••" data-testid="reg-password"
+              (input)="setPassword(($any($event.target).value))" placeholder="••••••••" data-testid="reg-password" (keydown)="allowOnlyEnglish($event)"
               maxlength="20" />
           </div>
 
@@ -52,7 +52,7 @@
           <div class="col-md-6">
             <label class="label form-label fw-semibold text-secondary small">Confirm Password</label>
             <input class="input form-control" type="password" [value]="confirmPassword()"
-              (input)="setConfirmPassword(($any($event.target).value))" (blur)="markConfirmTouched()"
+              (input)="setConfirmPassword(($any($event.target).value))" (blur)="markConfirmTouched()" (keydown)="allowOnlyEnglish($event)"
               placeholder="••••••••" data-testid="reg-confirm-password" maxlength="20" />
           </div>
         </div>
@@ -63,7 +63,7 @@
       </div>
       <div>
         <label class="label form-label fw-semibold text-secondary small">Address</label>
-        <input class="input form-control" [value]="address()" (input)="setAddress(($any($event.target).value))"
+        <input class="input form-control" [value]="address()" (input)="setAddress(($any($event.target).value))" (keydown)="allowOnlyEnglish($event)"
           data-testid="reg-address" maxlength="200" />
       </div>
 
@@ -75,7 +75,7 @@
         <div class="row g-3">
           <div class="col-md-6">
             <label class="label form-label fw-semibold text-secondary small">Card Number</label>
-            <input class="input form-control" [value]="ccNumber()" (input)="setCcNumber(($any($event.target).value))"
+            <input class="input form-control" [value]="ccNumber()" (input)="setCcNumber(($any($event.target).value))" (keydown)="allowOnlyEnglish($event)"
               (blur)="markCcNumberTouched()" placeholder="0000 0000 0000 0000" data-testid="reg-ccnumber"
               maxlength="20" type="text" inputmode="numeric" pattern="[0-9 ]*"/>
           </div>
@@ -99,7 +99,7 @@
           <div class="col-md-6">
             <label class="label form-label fw-semibold text-secondary small">Name on Card (First Name)</label>
             <input class="input form-control" [value]="ccFirstName()"
-              (input)="setCcFirstName(($any($event.target).value))" (blur)="markCcFirstNameTouched()"
+              (input)="setCcFirstName(($any($event.target).value))" (blur)="markCcFirstNameTouched()" (keydown)="allowOnlyEnglish($event)"
               data-testid="reg-ccfirstname" maxlength="50" />
           </div>
 
@@ -112,7 +112,7 @@
           <div class="col-md-6">
             <label class="label form-label fw-semibold text-secondary small">Name on Card (Last Name)</label>
             <input class="input form-control" [value]="ccLastName()"
-              (input)="setCcLastName(($any($event.target).value))" (blur)="markCcLastNameTouched()"
+              (input)="setCcLastName(($any($event.target).value))" (blur)="markCcLastNameTouched()" (keydown)="allowOnlyEnglish($event)"
               data-testid="reg-cclastname" />
           </div>
         </div>
