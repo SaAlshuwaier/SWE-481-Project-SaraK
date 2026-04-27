@@ -44,6 +44,18 @@ isValidEmail(email: string): boolean {
   this.emailTouched.set(true);
 }
 
+allowOnlyEnglish(event: KeyboardEvent) {
+  const allowedPattern = /^[a-zA-Z0-9@._-]$/;
+
+  const controlKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'];
+
+  if (controlKeys.includes(event.key)) return;
+
+  if (!allowedPattern.test(event.key)) {
+    event.preventDefault(); //prevent user to enter it
+  }
+}
+
 submit() {
   this.result.set(null);
   this.error.set(null);

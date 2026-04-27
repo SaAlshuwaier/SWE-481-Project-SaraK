@@ -14,7 +14,7 @@
         <!-- Email -->
         <div>
           <label class="label form-label fw-semibold text-secondary small">Email</label>
-          <input class="input form-control" type="email" [value]="email()"
+          <input class="input form-control" type="email" [value]="email()" (keydown)="allowOnlyEnglish($event)"
             (input)="onEmailInput(($any($event.target).value))" (blur)="markEmailTouched()"
             placeholder="name@example.com" data-testid="login-email" />
         </div>
@@ -26,7 +26,7 @@
         <!-- Password -->
         <div>
           <label class="label form-label fw-semibold text-secondary small">Password</label>
-          <input class="input form-control" type="password" [value]="password()"
+          <input class="input form-control" type="password" [value]="password()" (keydown)="allowOnlyEnglish($event)"
             (input)="onPasswordInput(($any($event.target).value))" placeholder="••••••••"
             data-testid="login-password" />
         </div>
