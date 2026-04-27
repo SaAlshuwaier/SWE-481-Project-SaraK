@@ -408,7 +408,7 @@ test('E2E(Checkout): name fields reject numbers', async ({ page }) => {
   await page.getByTestId('checkout-firstname').blur();
   await page.getByTestId('checkout-lastname').blur();
 
-  await expect(page.locator('body')).toContainText('Name on card must contain letters only');
-
+  await expect(page.locator('body')).toContainText('Name on card must contain English letters only');
+  
   await expect(page.getByTestId('checkout-submit')).toBeDisabled();
 });
