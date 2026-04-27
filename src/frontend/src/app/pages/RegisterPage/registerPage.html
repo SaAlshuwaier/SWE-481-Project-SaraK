@@ -31,7 +31,7 @@
 
         <label class="label form-label fw-semibold text-secondary small">Email</label>
         <input class="input form-control" type="email" [value]="email()" (input)="setEmail(($any($event.target).value))"
-          (blur)="emailTouched.set(true)" placeholder="name@example.com" data-testid="reg-email" maxlength="50" />
+          (blur)="markEmailTouched()" placeholder="name@example.com" data-testid="reg-email" maxlength="50" />
       </div>
       <div *ngIf="emailTouched() && !isValidEmail(email())" class="err-box text-danger small">
         Invalid email format
@@ -52,7 +52,7 @@
           <div class="col-md-6">
             <label class="label form-label fw-semibold text-secondary small">Confirm Password</label>
             <input class="input form-control" type="password" [value]="confirmPassword()"
-              (input)="setConfirmPassword(($any($event.target).value))" (blur)="confirmTouched.set(true)"
+              (input)="setConfirmPassword(($any($event.target).value))" (blur)="markConfirmTouched()"
               placeholder="••••••••" data-testid="reg-confirm-password" maxlength="20" />
           </div>
         </div>
@@ -76,7 +76,7 @@
           <div class="col-md-6">
             <label class="label form-label fw-semibold text-secondary small">Card Number</label>
             <input class="input form-control" [value]="ccNumber()" (input)="setCcNumber(($any($event.target).value))"
-              (blur)="ccNumberTouched.set(true)" placeholder="0000 0000 0000 0000" data-testid="reg-ccnumber"
+              (blur)="markCcNumberTouched()" placeholder="0000 0000 0000 0000" data-testid="reg-ccnumber"
               maxlength="20" type="text" inputmode="numeric" pattern="[0-9 ]*"/>
           </div>
 
@@ -99,7 +99,7 @@
           <div class="col-md-6">
             <label class="label form-label fw-semibold text-secondary small">Name on Card (First Name)</label>
             <input class="input form-control" [value]="ccFirstName()"
-              (input)="setCcFirstName(($any($event.target).value))" (blur)="ccFirstNameTouched.set(true)"
+              (input)="setCcFirstName(($any($event.target).value))" (blur)="markCcFirstNameTouched()"
               data-testid="reg-ccfirstname" maxlength="50" />
           </div>
 
@@ -112,7 +112,7 @@
           <div class="col-md-6">
             <label class="label form-label fw-semibold text-secondary small">Name on Card (Last Name)</label>
             <input class="input form-control" [value]="ccLastName()"
-              (input)="setCcLastName(($any($event.target).value))" (blur)="ccLastNameTouched.set(true)"
+              (input)="setCcLastName(($any($event.target).value))" (blur)="markCcLastNameTouched()"
               data-testid="reg-cclastname" />
           </div>
         </div>

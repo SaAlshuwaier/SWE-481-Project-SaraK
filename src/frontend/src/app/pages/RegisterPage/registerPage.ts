@@ -74,6 +74,12 @@ isValidCcNumber(cc: string): boolean {
     passwordsMatch(): boolean {
     return this.password() === this.confirmPassword();
   }
+  
+  markEmailTouched(): void { this.emailTouched.set(true); }
+  markCcNumberTouched(): void { this.ccNumberTouched.set(true); }
+  markCcFirstNameTouched(): void { this.ccFirstNameTouched.set(true); }
+  markCcLastNameTouched(): void { this.ccLastNameTouched.set(true); }
+  markConfirmTouched(): void { this.confirmTouched.set(true); }
 
 
   submit() {
@@ -115,6 +121,7 @@ isValidCcNumber(cc: string): boolean {
       return;
     }
 
+    
     const body: RegisterRequestDto = {
       firstName: this.firstName(),
       lastName: this.lastName(),

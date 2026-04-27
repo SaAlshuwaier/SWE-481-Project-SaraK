@@ -40,6 +40,10 @@ isValidEmail(email: string): boolean {
     this.password.set(v);
   }
 
+  markEmailTouched(): void {
+  this.emailTouched.set(true);
+}
+
 submit() {
   this.result.set(null);
   this.error.set(null);
