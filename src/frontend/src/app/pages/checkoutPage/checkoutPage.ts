@@ -27,6 +27,7 @@ export class CheckoutPageComponent {
   error = signal<string | null>(null);
   result = signal<CheckoutDto | null>(null);
   today = new Date().toISOString().split('T')[0];
+  showSuccessToast = signal<boolean>(false);
 
   constructor(private checkoutService: CheckoutService) {}
 
@@ -84,6 +85,8 @@ if (!this.isValidCcNumber(this.cardNumber())) {
   this.result.set(res);
 
   if (res.success) {
+    this.showSuccessToast.set(true);          
+    setTimeout(() => this.showSuccessToast.set(false), 3000);
     this.firstName.set('');
     this.lastName.set('');
     this.cardNumber.set('');
