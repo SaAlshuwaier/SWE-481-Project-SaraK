@@ -25,6 +25,10 @@
     ← Back
   </button>
 
+    <div *ngIf="showSuccessToast()" class="alert alert-success mt-2" role="alert">
+        Added to cart!
+     </div>
+
   <div class="mb-4">
     <p class="text-uppercase text-muted fw-bold small mb-2">Movie Details</p>
     <h2 class="fw-bold mb-0" data-testid="movie-title">{{ m.title }}</h2>
