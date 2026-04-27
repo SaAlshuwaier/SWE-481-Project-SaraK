@@ -19,11 +19,8 @@
       </div>
 
       <div class="table-responsive" data-testid="cart-table-wrap">
-        <table
-          class="table align-middle"
-          *ngIf="c.items && c.items.length > 0; else emptyCart"
-          data-testid="cart-table"
-        >
+        <table class="table align-middle" *ngIf="c.items && c.items.length > 0; else emptyCart"
+          data-testid="cart-table">
           <thead class="table-light">
             <tr>
               <th>Movie</th>
@@ -38,31 +35,17 @@
                 <span class="fw-medium" data-testid="cart-item-title">
                   {{ it.title }}
                 </span>
-                <span class="text-muted ms-2" data-testid="cart-item-id">
-                  {{ it.movieId }}
-                </span>
               </td>
 
               <td class="text-center">
-                <input
-                  class="form-control text-center"
-                  type="number"
-                  min="0"
-                  [value]="it.quantity"
-                  (input)="updateItemById(it.movieId, +$any($event.target).value)"
-                  [disabled]="isLoading()"
-                  aria-label="Quantity"
-                  data-testid="cart-qty-input"
-                />
+                <input class="form-control text-center" type="number" min="0" [value]="it.quantity"
+                  (input)="updateItemById(it.movieId, +$any($event.target).value)" [disabled]="isLoading()"
+                  aria-label="Quantity" data-testid="cart-qty-input" />
               </td>
 
               <td class="text-end">
-                <button
-                  class="btn btn-danger btn-sm"
-                  (click)="deleteItemById(it.movieId)"
-                  [disabled]="isLoading()"
-                  data-testid="remove-item"
-                >
+                <button class="btn btn-danger btn-sm" (click)="deleteItemById(it.movieId)" [disabled]="isLoading()"
+                  data-testid="remove-item">
                   Remove
                 </button>
               </td>
@@ -76,34 +59,20 @@
       </div>
 
       <div class="d-flex align-items-center mt-4">
-        <button
-          class="btn btn-danger"
-          (click)="clearCartLocal()"
-          [disabled]="isLoading()"
-          data-testid="clear-cart"
-        >
+        <button class="btn btn-danger" (click)="clearCartLocal()" [disabled]="isLoading()" data-testid="clear-cart">
           Clear Cart
         </button>
 
-          <div class="d-flex gap-2 ms-auto">
-            <button
-            class="btn btn-outline-secondary"
-            type="button"
-            routerLink="/movies"
-           data-testid="continue-shopping" >
-           Continue Shopping
-            </button>
-            <button
-              class="btn btn-primary"
-               type="button"
-                routerLink="/checkout"
-                data-testid="proceed-checkout"
-                [disabled]="c.items.length === 0"
-                >
-                Proceed to Checkout
-              </button>
-            </div>
-          </div>
+        <div class="d-flex gap-2 ms-auto">
+          <button class="btn btn-outline-secondary" type="button" routerLink="/movies" data-testid="continue-shopping">
+            Continue Shopping
+          </button>
+          <button class="btn btn-primary" type="button" routerLink="/checkout" data-testid="proceed-checkout"
+            [disabled]="c.items.length === 0">
+            Proceed to Checkout
+          </button>
+        </div>
+      </div>
 
       <!-- Loading / Error -->
       <div *ngIf="isLoading()" class="text-muted mt-3" data-testid="cart-loading">
