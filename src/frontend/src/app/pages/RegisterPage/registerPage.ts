@@ -75,6 +75,18 @@ isValidCcNumber(cc: string): boolean {
     return this.password() === this.confirmPassword();
   }
 
+  allowOnlyEnglish(event: KeyboardEvent) {
+  const allowedPattern = /^[a-zA-Z0-9@._-]$/;
+
+  const controlKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'];
+
+  if (controlKeys.includes(event.key)) return;
+
+  if (!allowedPattern.test(event.key)) {
+    event.preventDefault(); //prevent user to enter it
+  }
+}
+
   markEmailTouched(): void { this.emailTouched.set(true); }
   markCcNumberTouched(): void { this.ccNumberTouched.set(true); }
   markCcFirstNameTouched(): void { this.ccFirstNameTouched.set(true); }
