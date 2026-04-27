@@ -30,6 +30,8 @@ export class MovieDetailsPageComponent implements OnDestroy {
   movie = signal<MovieDto | null>(null);
   isLoading = signal<boolean>(true);
   error = signal<string | null>(null);
+  showSuccessToast = signal<boolean>(false);
+
 
 backLink: any[] = ['/movies'];
 backQueryParams: any = {};
@@ -144,8 +146,9 @@ backToMovies(): void {
       })
       .subscribe({
         next: (res) => {
-          alert('Added to cart!');
           this.cartResult.set(res);
+          this.showSuccessToast.set(true);
+          setTimeout(() => this.showSuccessToast.set(false), 3000);
         },
         error: (err) => {
           this.cartError.set(err?.message ?? 'Add to cart failed.');
