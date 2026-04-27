@@ -34,7 +34,7 @@ public class CustomerRepository {
     /**
      * Check if a credit card number already exists in the creditcards table.
      *
-     * @param ccNumber the formatted card number ("XXXX XXXX XXXX XXXX")
+     * @param ccNumber the card number 
      * @return true if the card number is already registered, false if available
      */
     public boolean creditCardExists(String ccNumber) {
