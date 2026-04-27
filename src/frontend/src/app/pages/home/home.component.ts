@@ -212,4 +212,15 @@ titleSuggestions: MovieSuggestionDto[] = [];
   	queryParams: { letter: startsWith }
 	});
   }
+  allowOnlyEnglish(event: KeyboardEvent) {
+  const allowedPattern = /^[a-zA-Z0-9@._-]$/;
+
+  const controlKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'];
+
+  if (controlKeys.includes(event.key)) return;
+
+  if (!allowedPattern.test(event.key)) {
+    event.preventDefault(); //prevent user to enter it
+  }
+}
 }

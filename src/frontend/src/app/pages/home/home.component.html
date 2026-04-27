@@ -22,6 +22,7 @@
            name="title"
            [(ngModel)]="filters.title"
            (ngModelChange)="onTitleInputChange($event)"
+          (keydown)="allowOnlyEnglish($event)" 
            autocomplete="off" />
 
 
@@ -60,6 +61,7 @@
            class="form-control"
            placeholder="Search by director..."
            name="director"
+           (keydown)="allowOnlyEnglish($event)" 
            [(ngModel)]="filters.director" />
        </div>
 
@@ -70,6 +72,7 @@
            class="form-control"
            placeholder="Search by star..."
            name="star"
+           (keydown)="allowOnlyEnglish($event)" 
            [(ngModel)]="filters.star" />
        </div>
 
