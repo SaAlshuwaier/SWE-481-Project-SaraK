@@ -3,6 +3,7 @@ package com.swe481.backend.Dto.Repo;
 import com.swe481.backend.Dto.Auth.RegisterRequest;
 import com.jooq.swe481.generated.tables.records.CustomersRecord;
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -38,9 +39,14 @@ public class CustomerRepository {
      * @return true if the card number is already registered, false if available
      */
     public boolean creditCardExists(String ccNumber) {
-    return dsl.fetchExists(
-            dsl.selectFrom(CREDITCARDS)
-                    .where(CREDITCARDS.ID.eq(ccNumber)));
+        ccNumber = ccNumber.replaceAll("[ -]", ""); // strip spaces and dashes from input
+        
+        return dsl.fetchExists(
+                dsl.selectFrom(CREDITCARDS)
+                        .where(DSL.replace(
+                                DSL.replace(CREDITCARDS.ID, " ", ""),
+                                "-", "")
+                        .eq(ccNumber)));
     }
 
     /**

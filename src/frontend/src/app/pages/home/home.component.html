@@ -1,7 +1,7 @@
 <div class="container my-4">
 
 
- <h2 class="text-center fw-bold mb-1" data-testid="home-title" >IMDB Movie Store</h2>
+ <h2 class="text-center fw-bold mb-1" >IMDB Movie Store</h2>
 
 
  <div class="card shadow-sm mb-4">
@@ -15,9 +15,10 @@
 
 
        <div class="col-md-2 position-relative">
-         <label class="form-label">Title</label>
+         <label class="form-label" for="titleInput">Title</label>
          <input
            class="form-control"
+           id="titleInput"
            placeholder="Search by title"
            name="title"
            [(ngModel)]="filters.title"
@@ -43,10 +44,11 @@
 
 
        <div class="col-md-2">
-         <label class="form-label">Year</label>
+         <label class="form-label" for="yearInput">Year</label>
          <input
            type="number"
            class="form-control"
+           id="yearInput"
            placeholder=" e.g. 1994"
            [(ngModel)]="filters.year" />
          <div class="text-danger small mt-1" *ngIf="yearError">
@@ -56,9 +58,10 @@
 
 
        <div class="col-md-2">
-         <label class="form-label">Director</label>
+         <label class="form-label" for="directorInput">Director</label>
          <input
            class="form-control"
+           id="directorInput"
            placeholder="Search by director..."
            name="director"
            (keydown)="allowOnlyEnglish($event)" 
@@ -67,9 +70,10 @@
 
 
        <div class="col-md-2">
-         <label class="form-label">Star Name</label>
+         <label class="form-label" for="starInput">Star Name</label>
          <input
            class="form-control"
+           id="starInput"
            placeholder="Search by star..."
            name="star"
            (keydown)="allowOnlyEnglish($event)" 

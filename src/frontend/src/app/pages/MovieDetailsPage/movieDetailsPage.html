@@ -5,11 +5,11 @@
   <div class="card shadow-sm">
     <div class="card-body p-4 p-md-5">
 
-      <div *ngIf="isLoading()" class="text-muted" data-testid="movie-loading">
+      <div *ngIf="isLoading()" class="text-muted">
         Loading movie details…
       </div>
 
-      <div *ngIf="error()" class="alert alert-danger mb-3" data-testid="movie-error">
+      <div *ngIf="error()" class="alert alert-danger mb-3">
         {{ error() }}
       </div>
 
@@ -20,7 +20,6 @@
     type="button"
     class="btn btn-link ps-0 mb-3 text-decoration-none"
     (click)="back()"
-    data-testid="back-to-movies"
   >
     ← Back
   </button>
@@ -31,7 +30,7 @@
 
   <div class="mb-4">
     <p class="text-uppercase text-muted fw-bold small mb-2">Movie Details</p>
-    <h2 class="fw-bold mb-0" data-testid="movie-title">{{ m.title }}</h2>
+    <h2 class="fw-bold mb-0">{{ m.title }}</h2>
   </div>
 
         <div class="row g-4">
@@ -42,33 +41,32 @@
 
                 <div class="mb-3">
                   <span class="fw-bold d-block">Year</span>
-                  <span data-testid="movie-year">{{ m.year }}</span>
+                  <span>{{ m.year }}</span>
                 </div>
 
                 <div class="mb-3">
                   <span class="fw-bold d-block">Director</span>
-                  <span data-testid="movie-director">{{ m.director }}</span>
+                  <span>{{ m.director }}</span>
                 </div>
 
                 <div class="mb-3">
                   <span class="fw-bold d-block">Rating</span>
-                  <span data-testid="movie-rating">{{ formatRating(m.rating) }}</span>
+                  <span>{{ formatRating(m.rating) }}</span>
                 </div>
 
                 <div>
                   <span class="fw-bold d-block mb-2">Genres</span>
-                  <div data-testid="movie-genres">
+                  <div>
                     <ng-container *ngIf="m.genres?.length; else noGenres">
                       <span
                         *ngFor="let g of m.genres; let last = last"
-                        class="badge text-bg-light border me-2 mb-2"
-                        data-testid="genre-item">
+                        class="badge text-bg-light border me-2 mb-2">
                         {{ g.name }}
                       </span>
                     </ng-container>
 
                     <ng-template #noGenres>
-                      <span data-testid="no-genres">-</span>
+                      <span>-</span>
                     </ng-template>
                   </div>
                 </div>
@@ -81,13 +79,13 @@
               <div class="card-body">
                 <h5 class="fw-bold mb-3">Stars</h5>
 
-                <div *ngIf="!m.stars?.length" class="text-muted" data-testid="no-stars">
+                <div *ngIf="!m.stars?.length" class="text-muted">
                   No stars found.
                 </div>
 
-                <ul class="list-group list-group-flush link-list" *ngIf="m.stars?.length" data-testid="stars-list">
+                <ul class="list-group list-group-flush link-list" *ngIf="m.stars?.length">
                   <li class="list-group-item bg-transparent px-0" *ngFor="let s of m.stars">
-                    <a class="text-decoration-none link" data-testid="star-link" [routerLink]="['/stars', s.id]"
+                    <a class="text-decoration-none link" [routerLink]="['/stars', s.id]"
                         [queryParams]="{originUrl: originUrl}">
                       {{ s.name }}
                     </a>
@@ -106,14 +104,12 @@
                   <button
                     type="button"
                     class="btn btn-outline-secondary"
-                    (click)="decQty()"
-                    data-testid="qty-dec">
+                    (click)="decQty()">
                     -
                   </button>
 
                   <input
                     class="form-control text-center w-auto"
-                    data-testid="qty-input"
                     type="number"
                     min="1"
                     [value]="quantity()"
@@ -121,8 +117,7 @@
                   <button
                     type="button"
                     class="btn btn-outline-secondary"
-                    (click)="incQty()"
-                    data-testid="qty-inc">
+                    (click)="incQty()">
                     +
                   </button>
                 </div>
@@ -130,12 +125,11 @@
                 <button
                   type="button"
                   class="btn btn-primary"
-                  (click)="addToCart()"
-                  data-testid="add-to-cart">
+                  (click)="addToCart()">
                   Add to Cart
                 </button>
 
-                <div *ngIf="cartError()" class="text-danger mt-2" data-testid="cart-error">
+                <div *ngIf="cartError()" class="text-danger mt-2">
                   {{ cartError() }}
                 </div>
               </div>

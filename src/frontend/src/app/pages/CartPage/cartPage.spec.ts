@@ -42,9 +42,14 @@ it('should render footer actions (Clear Cart, Continue Shopping, Proceed to Chec
   fixture.detectChanges();
   const el = fixture.nativeElement as HTMLElement;
 
-  expect(el.querySelector('[data-testid="clear-cart"]')).toBeTruthy();
-  expect(el.querySelector('[data-testid="continue-shopping"]')).toBeTruthy();
-  expect(el.querySelector('[data-testid="proceed-checkout"]')).toBeTruthy();
+  const buttons = Array.from(el.querySelectorAll('button'));
+  const clearBtn    = buttons.find(b => b.textContent?.trim() === 'Clear Cart');
+  const continueBtn = buttons.find(b => b.textContent?.trim() === 'Continue Shopping');
+  const checkoutBtn = buttons.find(b => b.textContent?.trim() === 'Proceed to Checkout');
+
+  expect(clearBtn).toBeTruthy();
+  expect(continueBtn).toBeTruthy();
+  expect(checkoutBtn).toBeTruthy();
 });
 
   it('should render Remove button for each cart item', () => {
@@ -149,7 +154,8 @@ it('should render footer actions (Clear Cart, Continue Shopping, Proceed to Chec
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
 
-    const checkoutBtn = el.querySelector('[data-testid="proceed-checkout"]');
+  const checkoutBtn = Array.from(el.querySelectorAll('button'))
+    .find(b => b.textContent?.trim().includes('Proceed to Checkout')) as HTMLButtonElement;
     expect(checkoutBtn).toBeTruthy();
     expect(checkoutBtn?.getAttribute('disabled')).not.toBeNull();
   });
@@ -162,7 +168,8 @@ it('should render footer actions (Clear Cart, Continue Shopping, Proceed to Chec
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
 
-    const checkoutBtn = el.querySelector('[data-testid="proceed-checkout"]');
+    const checkoutBtn = Array.from(el.querySelectorAll('button'))
+      .find(b => b.textContent?.trim().includes('Proceed to Checkout')) as HTMLButtonElement;
     expect(checkoutBtn).toBeTruthy();
     expect(checkoutBtn?.getAttribute('disabled')).toBeNull();
   });

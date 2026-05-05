@@ -3,6 +3,7 @@ package com.swe481.backend.Dto.Repo;
 import java.time.LocalDate;
 
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import static com.jooq.swe481.generated.tables.Creditcards.CREDITCARDS;
@@ -19,10 +20,14 @@ public class CheckoutRepository {
     }
 
     public boolean isValidCreditCard(String firstName, String lastName, String cardNumber, LocalDate expiration) {
+        cardNumber = cardNumber.replaceAll("[ -]", ""); // strip spaces and dashes from input
         return dsl.fetchExists(
                 dsl.selectOne()
                         .from(CREDITCARDS)
-                        .where(CREDITCARDS.ID.eq(cardNumber))
+                        .where(DSL.replace(
+                            DSL.replace(CREDITCARDS.ID, " ", ""),
+                            "-", "")
+                        .eq(cardNumber))                        
                         .and(CREDITCARDS.FIRSTNAME.eq(firstName))
                         .and(CREDITCARDS.LASTNAME.eq(lastName))
                         .and(CREDITCARDS.EXPIRATION.eq(expiration))
@@ -30,9 +35,13 @@ public class CheckoutRepository {
     }
 
     public Integer findCustomerId(String firstName, String lastName, String cardNumber) {
+        cardNumber = cardNumber.replaceAll("[ -]", ""); // strip user input
         return dsl.select(CUSTOMERS.ID)
                 .from(CUSTOMERS)
-                .where(CUSTOMERS.CCID.eq(cardNumber))
+                .where(DSL.replace(
+                        DSL.replace(CUSTOMERS.CCID, " ", ""),
+                        "-", "")
+                .eq(cardNumber))
                 .and(CUSTOMERS.FIRSTNAME.eq(firstName))
                 .and(CUSTOMERS.LASTNAME.eq(lastName))
                 .fetchOne(CUSTOMERS.ID);

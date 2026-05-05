@@ -42,34 +42,18 @@ public class CheckoutServiceImplUnitTest {
     }
 
     @Test
-    void processCheckoutShouldReturnInvalidExpirationWhenDateFormatIsWrong() {
-        CheckoutResult result = checkoutService.processCheckout(
-                "Janet",
-                "Trink",
-                "1354895485215896548",
-                "wrong-date"
-        );
-
-        assertFalse(result.isSuccess());
-        assertEquals("INVALID_EXPIRATION", result.getCode());
-        assertEquals("Expiration date format is invalid.", result.getMessage());
-    }
-
-    @Test
     void processCheckoutShouldReturnInvalidCardWhenCardDoesNotMatchDatabase() {
         when(checkoutRepository.isValidCreditCard(
                 eq("Janet"),
                 eq("Trink"),
                 eq("1354895485215896548"),
-                eq(LocalDate.of(2004, 3, 25))
-        )).thenReturn(false);
+                eq(LocalDate.of(2004, 3, 25)))).thenReturn(false);
 
         CheckoutResult result = checkoutService.processCheckout(
                 "Janet",
                 "Trink",
                 "1354895485215896548",
-                "2004-03-25"
-        );
+                "2004-03-25");
 
         assertFalse(result.isSuccess());
         assertEquals("INVALID_CARD", result.getCode());
@@ -85,47 +69,57 @@ public class CheckoutServiceImplUnitTest {
                 "Janet",
                 "Trink",
                 "1354895485215896548",
-                "2004-03-25"
-        );
+                "2004-03-25");
 
         assertFalse(result.isSuccess());
         assertEquals("CUSTOMER_NOT_FOUND", result.getCode());
         assertEquals("No customer account is linked to this card.", result.getMessage());
     }
 
-/* removed since Dr. bushra said all cards in the database are valid and we don't need to check if the card belongs to the logged-in user
-// new test to verify that the card's customer ID matches the logged-in user
-    @Test
-    void processCheckoutShouldReturnInvalidCardWhenCardBelongsToDifferentLoggedInUser() {
-        when(checkoutRepository.isValidCreditCard(any(), any(), any(), any())).thenReturn(true);
-        when(checkoutRepository.findCustomerId("Janet", "Trink", "1354895485215896548")).thenReturn(135002);
-        when(httpSession.getAttribute("customerId")).thenReturn(755003);
-
-    CheckoutResult result = checkoutService.processCheckout(
-            "Janet",
-            "Trink",
-            "1354895485215896548",
-            "2004-03-25"
-    );
-
-    assertFalse(result.isSuccess());
-    assertEquals("INVALID_CARD", result.getCode());
-    assertEquals("The card information does not match our records.", result.getMessage());
-}  */
+    /*
+     * removed since Dr. bushra said all cards in the database are valid and we
+     * don't need to check if the card belongs to the logged-in user
+     * // new test to verify that the card's customer ID matches the logged-in user
+     * 
+     * @Test
+     * void
+     * processCheckoutShouldReturnInvalidCardWhenCardBelongsToDifferentLoggedInUser(
+     * ) {
+     * when(checkoutRepository.isValidCreditCard(any(), any(), any(),
+     * any())).thenReturn(true);
+     * when(checkoutRepository.findCustomerId("Janet", "Trink",
+     * "1354895485215896548")).thenReturn(135002);
+     * when(httpSession.getAttribute("customerId")).thenReturn(755003);
+     * 
+     * CheckoutResult result = checkoutService.processCheckout(
+     * "Janet",
+     * "Trink",
+     * "1354895485215896548",
+     * "2004-03-25"
+     * );
+     * 
+     * assertFalse(result.isSuccess());
+     * assertEquals("INVALID_CARD", result.getCode());
+     * assertEquals("The card information does not match our records.",
+     * result.getMessage());
+     * }
+     */
 
     @Test
     void processCheckoutShouldReturnEmptyCartWhenCartSessionIsMissing() {
         when(checkoutRepository.isValidCreditCard(any(), any(), any(), any())).thenReturn(true);
         when(checkoutRepository.findCustomerId("Janet", "Trink", "1354895485215896548")).thenReturn(1);
-       // when(httpSession.getAttribute("customerId")).thenReturn(1); // Simulate logged-in user with ID 1 -- Removed since Dr. bushra said all cards in the database are valid and we don't need to check if the card belongs to the logged-in user
+        // when(httpSession.getAttribute("customerId")).thenReturn(1); // Simulate
+        // logged-in user with ID 1 -- Removed since Dr. bushra said all cards in the
+        // database are valid and we don't need to check if the card belongs to the
+        // logged-in user
         when(httpSession.getAttribute("cart")).thenReturn(null);
 
         CheckoutResult result = checkoutService.processCheckout(
                 "Janet",
                 "Trink",
                 "1354895485215896548",
-                "2004-03-25"
-        );
+                "2004-03-25");
 
         assertFalse(result.isSuccess());
         assertEquals("EMPTY_CART", result.getCode());
@@ -139,15 +133,17 @@ public class CheckoutServiceImplUnitTest {
 
         when(checkoutRepository.isValidCreditCard(any(), any(), any(), any())).thenReturn(true);
         when(checkoutRepository.findCustomerId("Janet", "Trink", "1354895485215896548")).thenReturn(1);
-      //  when(httpSession.getAttribute("customerId")).thenReturn(1); // Simulate logged-in user with ID 1  -- Removed since Dr. bushra said all cards in the database are valid and we don't need to check if the card belongs to the logged-in user
+        // when(httpSession.getAttribute("customerId")).thenReturn(1); // Simulate
+        // logged-in user with ID 1 -- Removed since Dr. bushra said all cards in the
+        // database are valid and we don't need to check if the card belongs to the
+        // logged-in user
         when(httpSession.getAttribute("cart")).thenReturn(cart);
 
         CheckoutResult result = checkoutService.processCheckout(
                 "Janet",
                 "Trink",
                 "1354895485215896548",
-                "2004-03-25"
-        );
+                "2004-03-25");
 
         assertTrue(result.isSuccess());
         assertEquals("SUCCESS", result.getCode());

@@ -119,11 +119,7 @@ public class AuthServiceImpl implements AuthService {
 
             return new RegisterResponse("All fields are required", null, false);
         }
-
-        // 2) Normalize ccNumber: strip all spaces so "0011 2233 4455 6677" -> "0011223344556677"
-        request.setCcNumber(request.getCcNumber().replace(" ", ""));
-
-        // 3) Validate ccExpiration is a parseable date (yyyy-MM-dd)
+        // 2) Validate ccExpiration is a parseable date (yyyy-MM-dd)
         LocalDate expiration;
         try {
             expiration = LocalDate.parse(request.getCcExpiration());
@@ -131,27 +127,27 @@ public class AuthServiceImpl implements AuthService {
             return new RegisterResponse("Invalid expiration date format, use yyyy-MM-dd", null, false);
         }
 
-        // 4) Validate expiration is not in the past
+        // 3) Validate expiration is not in the past
         if (expiration.isBefore(LocalDate.now())) {
             return new RegisterResponse("Credit card is expired", null, false);
         }
 
-        // 5) Check email is not already taken
+        // 4) Check email is not already taken
         if (customerRepository.emailExists(request.getEmail())) {
             return new RegisterResponse("Email already in use", null, false);
         }
 
-        // 6) Check credit card number is not already registered
+        // 5) Check credit card number is not already registered
         if (customerRepository.creditCardExists(request.getCcNumber())) {
             return new RegisterResponse("Credit card already in use", null, false);
         }
 
-        // 7) Insert CC + customer, get back the new customerId
+        // 6) Insert CC + customer, get back the new customerId
         Integer newCustomerId = customerRepository.insertCustomerWithCreditCard(request);
 
         System.out.println("[Registered new customer with ID:] " + newCustomerId);
 
-        // 8) Return success response
+        // 7) Return success response
         return new RegisterResponse("User registered successfully", newCustomerId, true);
     }
 }

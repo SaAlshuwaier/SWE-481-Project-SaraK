@@ -8,7 +8,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,14 +31,14 @@ import com.swe481.backend.service.serviceImp.AuthServiceImpl;
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceImplUnitTest {
     private CustomerRepository customerRepository;
-    private DSLContext dls;
+    private DSLContext dsl;
     private AuthServiceImpl authService;
 
     @BeforeEach
     void setUp() {
-        dls = Mockito.mock(DSLContext.class);
+        dsl = Mockito.mock(DSLContext.class);
         customerRepository = mock(CustomerRepository.class);
-        authService = new AuthServiceImpl(dls, customerRepository);
+        authService = new AuthServiceImpl(dsl, customerRepository);
 
     }
 
@@ -53,26 +52,24 @@ public class AuthServiceImplUnitTest {
      * - correct email wrong password → login fails.
      * - wrong email correct password → login fails.
      */
-@Test
-void login_validRequest_returnsSuccessTrueAndCorrectMessage() {
+    @Test
+    void login_validRequest_returnsSuccessTrueAndCorrectMessage() {
 
-    CustomersRecord mockUser = new CustomersRecord();
-    mockUser.setEmail("ar@tilae.com");
-    mockUser.setPassword("strike");
+        CustomersRecord mockUser = new CustomersRecord();
+        mockUser.setEmail("ar@tilae.com");
+        mockUser.setPassword("strike");
+        when(customerRepository.findByEmail(anyString())).thenReturn(mockUser);
 
-    when(customerRepository.findByEmail(anyString()))
-            .thenReturn(mockUser);
+        LoginRequest request = new LoginRequest("ar@tilae.com", "strike");
 
-    LoginRequest request = new LoginRequest("ar@tilae.com", "strike");
+        LoginResponse response = authService.login(request);
 
-    LoginResponse response = authService.login(request);
+        System.out.println(response.getMessage());
 
-    System.out.println(response.getMessage());
-
-    assertNotNull(response);
-    assertEquals("Login successful", response.getMessage());
-    assertTrue(response.isSuccess());
-}
+        assertNotNull(response);
+        assertEquals("Login successful", response.getMessage());
+        assertTrue(response.isSuccess());
+    }
 
     @Test
     void login_emptyEmailOrPassword_returnsFailure() {
@@ -89,6 +86,8 @@ void login_validRequest_returnsSuccessTrueAndCorrectMessage() {
     @Test
     void login_invalidCredentials_returnsFailure() {
 
+        when(customerRepository.findByEmail(anyString())).thenReturn(null);
+
         LoginRequest request = new LoginRequest("wrong@email.com", "wrong");
 
         LoginResponse response = authService.login(request);
@@ -100,6 +99,11 @@ void login_validRequest_returnsSuccessTrueAndCorrectMessage() {
 
     @Test
     void login_validEmailWrongPassword_returnsFailure() {
+
+        CustomersRecord mockUser = new CustomersRecord();
+        mockUser.setEmail("Parker234@aol.com");
+        mockUser.setPassword("test");
+        when(customerRepository.findByEmail("Parker234@aol.com")).thenReturn(mockUser);
 
         LoginRequest request = new LoginRequest("Parker234@aol.com", "wrongPassword");
 
@@ -113,6 +117,8 @@ void login_validRequest_returnsSuccessTrueAndCorrectMessage() {
     @Test
     void login_wrongEmailValidPassword_returnsFailure() {
 
+        when(customerRepository.findByEmail(anyString())).thenReturn(null);
+
         LoginRequest request = new LoginRequest("wrong@email.com", "test");
 
         LoginResponse response = authService.login(request);
@@ -120,15 +126,6 @@ void login_validRequest_returnsSuccessTrueAndCorrectMessage() {
         assertNotNull(response);
         assertFalse(response.isSuccess());
         assertEquals("Invalid email or password", response.getMessage());
-    }
-
-    @Test
-    void login_wrongPassword_returnsFailure() {
-        LoginRequest request = new LoginRequest("user@email.com", "wrong");
-
-        LoginResponse response = authService.login(request);
-
-        assertFalse(response.isSuccess());
     }
 
     /**
@@ -151,6 +148,7 @@ void login_validRequest_returnsSuccessTrueAndCorrectMessage() {
     void register_validRequest_returnsSuccessTrueAndCorrectMessage() {
         // email not taken, insert returns a new customerId
         when(customerRepository.emailExists("hailah@email.com")).thenReturn(false);
+        when(customerRepository.creditCardExists(anyString())).thenReturn(false);
         when(customerRepository.insertCustomerWithCreditCard(any())).thenReturn(42);
 
         RegisterRequest request = new RegisterRequest(
@@ -182,7 +180,7 @@ void login_validRequest_returnsSuccessTrueAndCorrectMessage() {
 
         RegisterResponse response = authService.register(rquest);
 
-        // Expect failure 
+        // Expect failure
         assertFalse(response.isSuccess());
         assertEquals("All fields are required", response.getMessage());
 

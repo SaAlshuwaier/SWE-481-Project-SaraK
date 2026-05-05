@@ -76,7 +76,7 @@ isValidCcNumber(cc: string): boolean {
   }
 
   allowOnlyEnglish(event: KeyboardEvent) {
-  const allowedPattern = /^[a-zA-Z0-9@._-]$/;
+  const allowedPattern = /^[a-zA-Z0-9@._\- ]$/;
 
   const controlKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'];
 

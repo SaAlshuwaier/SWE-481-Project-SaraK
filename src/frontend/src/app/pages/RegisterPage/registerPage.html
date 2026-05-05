@@ -4,9 +4,9 @@
 </header>
 
 <section class="page-wrap container d-flex justify-content-center py-4">
-  <div class="card shadow-sm p-5 col-12" data-testid="register-page">
+  <div class="card shadow-sm p-5 col-12">
     <p class="text-muted text-center mb-0 fs-5">Millions of movies. One account.</p>
-    <h2 class="title text-center mb-4 mt-3 fs-3" data-testid="register-title">Let's create your account</h2>
+    <h2 class="title text-center mb-4 mt-3 fs-3">Let's create your account</h2>
 
     <div class="form d-flex flex-column gap-3">
       <p class="fw-semibold text-secondary small mb-0">Personal Information</p>
@@ -15,23 +15,23 @@
       <div>
         <div class="row g-3">
           <div class="col-md-6">
-            <label class="label form-label fw-semibold text-secondary small">First Name</label>
-            <input class="input form-control" [value]="firstName()" (input)="setFirstName(($any($event.target).value))" (keydown)="allowOnlyEnglish($event)"
-              data-testid="reg-firstname" maxlength="50" />
+            <label class="label form-label fw-semibold text-secondary small" for="firstName">First Name</label>
+            <input class="input form-control" id="firstName" [value]="firstName()" (input)="setFirstName(($any($event.target).value))" (keydown)="allowOnlyEnglish($event)"
+              maxlength="50" />
           </div>
           <div class="col-md-6">
-            <label class="label form-label fw-semibold text-secondary small">Last Name</label>
-            <input class="input form-control" [value]="lastName()" (input)="setLastName(($any($event.target).value))" (keydown)="allowOnlyEnglish($event)"
-              data-testid="reg-lastname" maxlength="50" />
+            <label class="label form-label fw-semibold text-secondary small" for="lastName">Last Name</label>
+            <input class="input form-control" id="lastName" [value]="lastName()" (input)="setLastName(($any($event.target).value))" (keydown)="allowOnlyEnglish($event)"
+              maxlength="50" />
           </div>
         </div>
       </div>
 
       <div>
 
-        <label class="label form-label fw-semibold text-secondary small">Email</label>
-        <input class="input form-control" type="email" [value]="email()" (input)="setEmail(($any($event.target).value))" (keydown)="allowOnlyEnglish($event)"
-          (blur)="markEmailTouched()" placeholder="name@example.com" data-testid="reg-email" maxlength="50" />
+        <label class="label form-label fw-semibold text-secondary small" for="email">Email</label>
+        <input class="input form-control" id="email" type="email" [value]="email()" (input)="setEmail(($any($event.target).value))" (keydown)="allowOnlyEnglish($event)"
+          (blur)="markEmailTouched()" placeholder="name@example.com" maxlength="50" />
       </div>
       <div *ngIf="emailTouched() && !isValidEmail(email())" class="err-box text-danger small">
         Invalid email format
@@ -41,19 +41,19 @@
         <div class="row g-3">
           <div class="col-md-6">
 
-            <label class="label form-label fw-semibold text-secondary small">Password</label>
-            <input class="input form-control" type="password" [value]="password()"
-              (input)="setPassword(($any($event.target).value))" placeholder="••••••••" data-testid="reg-password" (keydown)="allowOnlyEnglish($event)"
+            <label class="label form-label fw-semibold text-secondary small" for="password">Password</label>
+            <input class="input form-control" id="password" type="password" [value]="password()"
+              (input)="setPassword(($any($event.target).value))" placeholder="••••••••" (keydown)="allowOnlyEnglish($event)"
               maxlength="20" />
           </div>
 
 
           <!--confirm password field -->
           <div class="col-md-6">
-            <label class="label form-label fw-semibold text-secondary small">Confirm Password</label>
-            <input class="input form-control" type="password" [value]="confirmPassword()"
+            <label class="label form-label fw-semibold text-secondary small" for="confirmPassword">Confirm Password</label>
+            <input class="input form-control" id="confirmPassword" type="password" [value]="confirmPassword()"
               (input)="setConfirmPassword(($any($event.target).value))" (blur)="markConfirmTouched()" (keydown)="allowOnlyEnglish($event)"
-              placeholder="••••••••" data-testid="reg-confirm-password" maxlength="20" />
+              placeholder="••••••••" maxlength="20" />
           </div>
         </div>
       </div>
@@ -62,9 +62,9 @@
         Passwords do not match
       </div>
       <div>
-        <label class="label form-label fw-semibold text-secondary small">Address</label>
-        <input class="input form-control" [value]="address()" (input)="setAddress(($any($event.target).value))" (keydown)="allowOnlyEnglish($event)"
-          data-testid="reg-address" maxlength="200" />
+        <label class="label form-label fw-semibold text-secondary small" for="address">Address</label>
+        <input class="input form-control" id="address" [value]="address()" (input)="setAddress(($any($event.target).value))" (keydown)="allowOnlyEnglish($event)"
+          maxlength="200" />
       </div>
 
       <hr class="my-2" />
@@ -74,9 +74,9 @@
       <div>
         <div class="row g-3">
           <div class="col-md-6">
-            <label class="label form-label fw-semibold text-secondary small">Card Number</label>
-            <input class="input form-control" [value]="ccNumber()" (input)="setCcNumber(($any($event.target).value))" (keydown)="allowOnlyEnglish($event)"
-              (blur)="markCcNumberTouched()" placeholder="0000 0000 0000 0000" data-testid="reg-ccnumber"
+            <label class="label form-label fw-semibold text-secondary small" for="ccNumber">Card Number</label>
+            <input class="input form-control" id="ccNumber" [value]="ccNumber()" (input)="setCcNumber(($any($event.target).value))" (keydown)="allowOnlyEnglish($event)"
+              (blur)="markCcNumberTouched()" placeholder="0000 0000 0000 0000" 
               maxlength="20" type="text" inputmode="numeric" pattern="[0-9 ]*"/>
           </div>
 
@@ -86,9 +86,9 @@
           </div>
 
           <div class="col-md-6">
-            <label class="label form-label fw-semibold text-secondary small">Card Expiration Date</label>
-            <input class="input form-control" type="date" [value]="ccExpiration()" [min]="today"
-              (input)="setCcExpiration(($any($event.target).value))" data-testid="reg-ccexpiration" maxlength="50" />
+            <label class="label form-label fw-semibold text-secondary small" for="ccExpiration">Card Expiration Date</label>
+            <input class="input form-control" id="ccExpiration" type="date" [value]="ccExpiration()" [min]="today"
+              (input)="setCcExpiration(($any($event.target).value))" maxlength="50" />
           </div>
         </div>
       </div>
@@ -97,10 +97,10 @@
       <div>
         <div class="row g-3">
           <div class="col-md-6">
-            <label class="label form-label fw-semibold text-secondary small">Name on Card (First Name)</label>
-            <input class="input form-control" [value]="ccFirstName()"
+            <label class="label form-label fw-semibold text-secondary small" for="ccFirstName">Name on Card (First Name)</label>
+            <input class="input form-control" id="ccFirstName" [value]="ccFirstName()"
               (input)="setCcFirstName(($any($event.target).value))" (blur)="markCcFirstNameTouched()" (keydown)="allowOnlyEnglish($event)"
-              data-testid="reg-ccfirstname" maxlength="50" />
+              maxlength="50" />
           </div>
 
           <!-- cc first name error -->
@@ -110,10 +110,10 @@
           </div>
 
           <div class="col-md-6">
-            <label class="label form-label fw-semibold text-secondary small">Name on Card (Last Name)</label>
-            <input class="input form-control" [value]="ccLastName()"
+            <label class="label form-label fw-semibold text-secondary small" for="ccLastName">Name on Card (Last Name)</label>
+            <input class="input form-control" id="ccLastName" [value]="ccLastName()"
               (input)="setCcLastName(($any($event.target).value))" (blur)="markCcLastNameTouched()" (keydown)="allowOnlyEnglish($event)"
-              data-testid="reg-cclastname" />
+              />
           </div>
         </div>
       </div>
@@ -125,7 +125,7 @@
 
       <button class="btn btn-primary btn-lg mt-2 w-50 d-block mx-auto" (click)="submit()"
         [disabled]="isLoading() || !firstName() || !lastName() || !isValidEmail(email()) || !password() || !passwordsMatch() || !address() || !ccNumber() || !ccExpiration() || !ccFirstName() || !ccLastName()"
-        data-testid="reg-submit">
+        >
         {{ isLoading() ? 'Creating…' : 'Create Account' }}
       </button>
 
@@ -133,7 +133,7 @@
         Already have an account? <a routerLink="/login">Sign in here</a>
       </p>
 
-      <div *ngIf="error()" class="err-box text-danger small" data-testid="reg-error">
+      <div *ngIf="error()" class="err-box text-danger small">
         {{ error() }}
       </div>
 

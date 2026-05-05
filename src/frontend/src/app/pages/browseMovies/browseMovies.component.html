@@ -3,19 +3,17 @@
 
 
   <!-- Header -->
-  <div class="mb-4" data-testid="browse-header">
-    <h1 class="mb-3" data-testid="browse-title">Browse Movies</h1>
+  <div class="mb-4">
+    <h1 class="mb-3">Browse Movies</h1>
 
 <div
   class="d-flex flex-wrap align-items-center gap-3"
-  data-testid="browse-controls"
 >
 
   <!-- Context -->
   <span
     class="badge text-bg-light border px-3 py-2"
     *ngIf="contextTitle"
-    data-testid="context-title"
   >
     <strong>{{ contextTitle }}</strong>
   </span>
@@ -23,7 +21,6 @@
   <!-- Sort -->
   <select
     class="form-select form-select-sm w-auto"
-    data-testid="sort-select"
     (change)="onSortChange($event)"
   >
     <option value="Title">Title</option>
@@ -33,7 +30,6 @@
   <!-- Order -->
   <select
     class="form-select form-select-sm w-auto"
-    data-testid="order-select"
     (change)="onOrderChange($event)"
   >
     <option value="asc">Ascending</option>
@@ -49,7 +45,6 @@
     <select
       id="pageSizeSelect"
       class="form-select form-select-sm w-auto"
-      data-testid="numOfMoviesPerPage-select"
       (change)="onPageSizeChange($event)"
     >
       <option value="10">10</option>
@@ -63,17 +58,15 @@
   </div>
 
   <!-- Movies List -->
- <div class="row g-4 mt-4" data-testid="movies-list">
+ <div class="row g-4 mt-4">
     <div
       class="col-12"
       *ngFor="let movie of sortedMovies"
-      data-testid="movie-card"
     >
       <div class="card shadow-sm">
         <div class="card-body">
           <h3 class="h5 card-title mb-3">
           <a
-  data-testid="movie-link"
   class="text-decoration-none movie-title-browseMovies-link"
   [routerLink]="['/movies', movie.id]"
   [queryParams]="{ originUrl: router.url }"
@@ -82,15 +75,15 @@
 </a>
           </h3>
 
-          <p class="mb-1" data-testid="movie-year">
+          <p class="mb-1">
             <strong>Year:</strong> {{ movie.year }}
           </p>
 
-          <p class="mb-1" data-testid="movie-director">
+          <p class="mb-1">
             <strong>Director:</strong> {{ movie.director }}
           </p>
 
-          <p class="mb-2" data-testid="movie-rating">
+          <p class="mb-2">
             <strong>Rating:</strong> {{ movie.rating }}
           </p>
 
@@ -99,7 +92,6 @@
             <strong>Genres:</strong>
             <ng-container *ngFor="let g of movie.genres; let last = last">
               <a
-                data-testid="genre-link"
                 class="text-decoration-none genre-browseMovies-link"
                 [routerLink]="['/movies/genre', g.id]"
                 [queryParams]="{ genreName: g.name }"
@@ -115,7 +107,6 @@
             <strong>Stars:</strong>
             <ng-container *ngFor="let s of movie.stars; let last = last">
               <a
-                data-testid="star-link"
                 class="text-decoration-none star-browseMovies-link"
                 [routerLink]="['/stars', s.id]"
                 [queryParams]="{ originUrl: router.url }"
@@ -135,24 +126,21 @@
   <div
     class="d-flex justify-content-center align-items-center gap-3 mt-4"
     *ngIf="pageState"
-    data-testid="pagination"
   >
     <button
       class="btn btn-primary"
-      data-testid="prev-btn"
       (click)="previousPage()"
       [disabled]="!pageState.hasPrev"
     >
       Previous
     </button>
 
-    <span class="fw-semibold" data-testid="page-number">
+    <span class="fw-semibold">
       Page {{ pageState.page }}
     </span>
 
     <button
       class="btn btn-primary"
-      data-testid="next-btn"
       (click)="nextPage()"
       [disabled]="!pageState.hasNext"
     >

@@ -76,6 +76,19 @@ In this phase, we focused on implementing a responsive user interface using Boot
 - Proper scaling ensured across multiple screen sizes.
 - Clean and consistent UI design applied.
   
+  ## Phase 6 Status
+In this phase, we focused on enhancing the security and performance of the application.
+
+### Completed in Phase 6:
+- Application configured to run over HTTPS, ensuring all communication between client and server is encrypted.
+- User authentication implemented using server-side sessions, with session data managed and verified entirely on the server.
+- localStorage is not used for session data or tokens, preventing client-side manipulation.
+- Access control applied so that protected pages are accessible only to authenticated users.
+- Server session verification enforced on every request, redirecting unauthenticated users to the login page even when accessing a protected URL directly.
+- Database queries optimized to reduce unnecessary data retrieval and improve response times.
+- Caching applied where appropriate to avoid repeated database calls.
+
+
 ## Team Members
 - Layan Alhugbani
 - Sara Alshuwaier

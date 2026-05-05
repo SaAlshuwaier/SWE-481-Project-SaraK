@@ -52,8 +52,13 @@ describe('CheckoutPageComponent', () => {
 
     expect(checkoutService.checkout).toHaveBeenCalledTimes(1);
 
-    const el = fixture.nativeElement as HTMLElement;
-    expect(el.querySelector('[data-testid="checkout-error"]')?.textContent)
-      .toContain('Checkout failed');
+      const el = fixture.nativeElement as HTMLElement;
+      const allAlerts = Array.from(el.querySelectorAll<HTMLElement>('.alert'));
+      const errorAlert = allAlerts.find(
+        (alert) => alert.textContent?.includes('Checkout failed')
+      );
+
+      expect(errorAlert).toBeTruthy();
+      expect(errorAlert?.textContent).toContain('Checkout failed');
   });
 });

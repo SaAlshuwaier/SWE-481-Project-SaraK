@@ -79,6 +79,7 @@ public class CheckoutServiceImpl implements CheckoutService {
             return new CheckoutResult(true, "Payment completed successfully.", "SUCCESS");
 
         } catch (DataAccessException e) {
+             e.printStackTrace();
             return new CheckoutResult(false, "Payment could not be completed due to a database error.", "DATABASE_ERROR");
         } catch (Exception e) {
             return new CheckoutResult(false, "Payment could not be completed due to a system error.", "SYSTEM_ERROR");

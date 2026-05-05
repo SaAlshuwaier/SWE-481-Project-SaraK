@@ -1,19 +1,19 @@
 <section class="container py-5 d-flex justify-content-center">
   <div class="card p-4 shadow-sm w-100">
-    <h2 class="h4 mb-4 fw-bold" data-testid="checkout-title">Checkout</h2>
+    <h2 class="h4 mb-4 fw-bold">Checkout</h2>
 
-          <div *ngIf="showSuccessToast()" class="alert alert-success mt-2" data-testid="checkout-success">
+          <div *ngIf="showSuccessToast()" class="alert alert-success mt-2">
         <div class="fw-bold">Response</div>
-        <div data-testid="checkout-success-message">
+        <div>
           {{ result()?.message }}
         </div>
       </div>
       
     <div class="d-flex flex-column gap-3">
-      <label class="form-label">Name on Card (First Name)</label>
+      <label class="form-label" for="checkoutFirstName">Name on Card (First Name)</label>
       <input
   class="form-control"
-  data-testid="checkout-firstname"
+  id="checkoutFirstName"
   [value]="firstName()"
   (input)="setFirstName(($any($event.target).value))"
   (blur)="firstNameTouched.set(true)"
@@ -25,10 +25,10 @@
   Name on card must contain English letters only
 </div>
 
-      <label class="form-label">Name on Card (Last Name)</label>
+      <label class="form-label" for="checkoutLastName">Name on Card (Last Name)</label>
       <input
   class="form-control"
-  data-testid="checkout-lastname"
+  id="checkoutLastName"
   [value]="lastName()"
   (input)="setLastName(($any($event.target).value))"
   (blur)="lastNameTouched.set(true)"
@@ -40,11 +40,10 @@
   Name on card must contain English letters only
 </div>
 
-      <!-- update data-testid="checkout-cardnumber" to ata-testid="checkout-card"    -->
-      <label class="form-label">Card Number</label>
+      <label class="form-label" for="checkoutCard">Card Number</label>
       <input
   class="form-control"
-  data-testid="checkout-card"
+  id="checkoutCard"
   [value]="cardNumber()"
   (input)="setCardNumber(($any($event.target).value))"
   placeholder="0000 0000 0000 0000"
@@ -61,27 +60,26 @@
 
 
 
-      <label class="form-label">Card Expiration Date</label>
+      <label class="form-label" for="checkoutExpiration">Card Expiration Date</label>
       <input
   class="input form-control"
+  id="checkoutExpiration"
   type="date"
   [value]="expiration()"
 
   (input)="setExpiration(($any($event.target).value))"
-  data-testid="checkout-expiration"
   maxlength="50"
 />
 
       <button
         class="btn btn-primary mt-2"
-        data-testid="checkout-submit"
         (click)="submit()"
         [disabled]="isLoading() || !firstName() || !lastName() || !cardNumber() || !expiration() || !isValidCardName(firstName()) || !isValidCardName(lastName()) || !isValidCcNumber(cardNumber())"
       >
         {{ isLoading() ? 'Processing…' : 'Pay Now' }}
       </button>
 
-      <div *ngIf="error()" class="alert alert-danger mt-2" data-testid="checkout-error">
+      <div *ngIf="error()" class="alert alert-danger mt-2">
         {{ error() }}
       </div>
 

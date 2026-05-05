@@ -264,13 +264,12 @@ describe('MovieDetailsPageComponent', () => {
     await createComponentWithMovieId('tt0413051');
     fixture.detectChanges();
 
-    const container = fixture.nativeElement.querySelector('.link-list');
-    expect(container).toBeTruthy();
+    const starList = fixture.nativeElement.querySelector('ul');
+    expect(starList).toBeTruthy();
 
-    const starLinks: NodeListOf<HTMLAnchorElement> =
-      container.querySelectorAll('a');
-
+    const starLinks: NodeListOf<HTMLAnchorElement> = starList.querySelectorAll('a');
     expect(starLinks.length).toBe(mockMovie.stars.length);
+
 
     const renderedTexts = Array.from(starLinks).map(a =>
       (a.textContent ?? '').trim()
@@ -292,9 +291,13 @@ describe('MovieDetailsPageComponent', () => {
     await createComponentWithMovieId('tt0413051');
     fixture.detectChanges();
 
-    const noStars = fixture.nativeElement.querySelector('[data-testid="no-stars"]');
-    expect(noStars).toBeTruthy();
-    expect(noStars.textContent).toContain('No stars found.');
+    const allElements = Array.from(
+    fixture.nativeElement.querySelectorAll('div, span, p')
+    );
+    const noStarsMsg = allElements.find(
+      (element) => (element as HTMLElement).textContent?.trim() === 'No stars found.'
+    );
+    expect(noStarsMsg).toBeTruthy();
   });
   
  it('should navigate back to previous page (search case)', async () => {
