@@ -1,4 +1,7 @@
 import { Component, signal } from '@angular/core';
+import { Router } from '@angular/router';
+
+
 import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
 
@@ -27,9 +30,13 @@ export class CheckoutPageComponent {
   error = signal<string | null>(null);
   result = signal<CheckoutDto | null>(null);
   today = new Date().toISOString().split('T')[0];
-  showSuccessToast = signal<boolean>(false);
+  //showSuccessToast = signal<boolean>(false);
 
-  constructor(private checkoutService: CheckoutService) {}
+  //constructor(private checkoutService: CheckoutService) {}
+  constructor(
+  private checkoutService: CheckoutService,
+  private router: Router
+) {}
 
   setFirstName(v: string) { this.firstName.set(v); }
   setLastName(v: string) { this.lastName.set(v); }
@@ -85,8 +92,7 @@ if (!this.isValidCcNumber(this.cardNumber())) {
   this.result.set(res);
 
   if (res.success) {
-    this.showSuccessToast.set(true);          
-    setTimeout(() => this.showSuccessToast.set(false), 3000);
+    this.router.navigate(['/checkout-success']);         
     this.firstName.set('');
     this.lastName.set('');
     this.cardNumber.set('');

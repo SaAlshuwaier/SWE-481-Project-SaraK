@@ -48,12 +48,22 @@ public class CheckoutServiceImpl implements CheckoutService {
             }
 
             Integer customerId = checkoutRepository.findCustomerId(
-                    firstName, lastName, cardNumber
-            );
+        firstName, lastName, cardNumber
+);
 
-            if (customerId == null) {
-                return new CheckoutResult(false, "No customer account is linked to this card.", "CUSTOMER_NOT_FOUND");
-            }
+        if (customerId == null) {
+            return new CheckoutResult(false, "No customer account is linked to this card.", "CUSTOMER_NOT_FOUND");
+        }
+
+        Integer sessionCustomerId = (Integer) httpSession.getAttribute("customerId");
+
+        if (sessionCustomerId == null) {
+            return new CheckoutResult(false, "Please log in before checkout.", "NOT_LOGGED_IN");
+        }
+
+        if (!sessionCustomerId.equals(customerId)) {
+            return new CheckoutResult(false, "This card is not linked to your account.", "CARD_NOT_LINKED");
+        }
 
             // Verify that the customer ID from the card matches the logged-in user
             // I did manual check: '755004', 'David', 'Dolt', '2007/01/01' ||||| dd@cnn.com 2222 
@@ -62,6 +72,8 @@ public class CheckoutServiceImpl implements CheckoutService {
             if (sessionCustomerId == null || !sessionCustomerId.equals(customerId)) {
                 return new CheckoutResult(false, "The card information does not match our records.", "INVALID_CARD");
 } */
+
+
 
             Cart cart = (Cart) httpSession.getAttribute(CART_SESSION_KEY);
 
