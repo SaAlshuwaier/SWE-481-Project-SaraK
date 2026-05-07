@@ -50,7 +50,8 @@ public class CheckoutController {
         }
 
         return switch (result.getCode()) {
-            case "EMPTY_CART", "INVALID_CARD", "CUSTOMER_NOT_FOUND", "INVALID_EXPIRATION" ->
+          //  case "EMPTY_CART", "INVALID_CARD", "CUSTOMER_NOT_FOUND", "INVALID_EXPIRATION" ->
+          case "EMPTY_CART", "INVALID_CARD", "CUSTOMER_NOT_FOUND", "INVALID_EXPIRATION", "NOT_LOGGED_IN", "CARD_NOT_LINKED" ->
                     ResponseEntity.badRequest().body(response);
             case "DATABASE_ERROR", "SYSTEM_ERROR" ->
                     ResponseEntity.internalServerError().body(response);

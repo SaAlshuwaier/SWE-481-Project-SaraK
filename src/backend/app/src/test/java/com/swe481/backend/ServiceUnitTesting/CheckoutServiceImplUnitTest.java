@@ -114,6 +114,7 @@ public class CheckoutServiceImplUnitTest {
         // database are valid and we don't need to check if the card belongs to the
         // logged-in user
         when(httpSession.getAttribute("cart")).thenReturn(null);
+        when(httpSession.getAttribute("customerId")).thenReturn(1);
 
         CheckoutResult result = checkoutService.processCheckout(
                 "Janet",
@@ -138,6 +139,7 @@ public class CheckoutServiceImplUnitTest {
         // database are valid and we don't need to check if the card belongs to the
         // logged-in user
         when(httpSession.getAttribute("cart")).thenReturn(cart);
+        when(httpSession.getAttribute("customerId")).thenReturn(1);
 
         CheckoutResult result = checkoutService.processCheckout(
                 "Janet",

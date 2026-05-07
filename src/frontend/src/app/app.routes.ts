@@ -9,6 +9,8 @@ import { CartPageComponent } from './pages/CartPage/cartPage';
 import { LoginPageComponent } from './pages/LoginPage/loginPage';
 import { RegisterPageComponent } from './pages/RegisterPage/registerPage';
 import { CheckoutPageComponent } from './pages/checkoutPage/checkoutPage';
+import { CheckoutSuccessPageComponent } from './pages/checkoutSuccessPage/checkoutSuccessPage';
+
 import { authGuard } from './guards/auth-guard';
 export const routes: Routes = [
 
@@ -34,6 +36,7 @@ export const routes: Routes = [
   // cart & checkout
   { path: 'cart', component: CartPageComponent, canActivate: [authGuard]  },
   { path: 'checkout', component: CheckoutPageComponent, canActivate: [authGuard]  },
+  { path: 'checkout-success', component: CheckoutSuccessPageComponent, canActivate: [authGuard] },
 
   // fallback
   { path: '**', redirectTo: 'login' }

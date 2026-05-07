@@ -1690,3 +1690,551 @@ jOOQ tip of the day: Move logic to your data, not data to your logic, by running
 2026-05-05 01:07:05 [INFO] o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete
 2026-05-05 01:07:05 [INFO] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
 2026-05-05 01:07:05 [INFO] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-05-07 19:54:19 [INFO] c.swe481.backend.BackendApplication - Starting BackendApplication using Java 17.0.16 with PID 1076 (C:\Users\saraa\Desktop\SWE481\SWE-481-Project-SaraK\src\backend\app\target\classes started by saraa in C:\Users\saraa\Desktop\SWE481\SWE-481-Project-SaraK\src\backend\app)
+2026-05-07 19:54:19 [INFO] c.swe481.backend.BackendApplication - No active profile set, falling back to 1 default profile: "default"
+2026-05-07 19:54:19 [INFO] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-05-07 19:54:19 [INFO] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-05-07 19:54:22 [INFO] o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-07 19:54:22 [INFO] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-07 19:54:22 [INFO] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-05-07 19:54:22 [INFO] o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 2663 ms
+2026-05-07 19:54:37 [INFO] o.s.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-05-07 19:54:37 [INFO] c.swe481.backend.BackendApplication - Started BackendApplication in 18.092 seconds (process running for 18.883)
+2026-05-07 19:55:12 [INFO] o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 82 class path changes (0 additions, 82 deletions, 0 modifications)
+2026-05-07 19:55:12 [INFO] o.s.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-05-07 19:55:13 [INFO] o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-05-07 19:55:18 [INFO] c.swe481.backend.BackendApplication - Starting BackendApplication using Java 17.0.16 with PID 1076 (C:\Users\saraa\Desktop\SWE481\SWE-481-Project-SaraK\src\backend\app\target\classes started by saraa in C:\Users\saraa\Desktop\SWE481\SWE-481-Project-SaraK\src\backend\app)
+2026-05-07 19:55:18 [INFO] c.swe481.backend.BackendApplication - No active profile set, falling back to 1 default profile: "default"
+2026-05-07 19:55:19 [INFO] o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-07 19:55:19 [INFO] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-07 19:55:19 [INFO] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-05-07 19:55:19 [INFO] o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 1064 ms
+2026-05-07 19:55:39 [INFO] o.s.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-05-07 19:55:39 [INFO] c.swe481.backend.BackendApplication - Started BackendApplication in 20.692 seconds (process running for 81.141)
+2026-05-07 19:55:39 [INFO] o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2026-05-07 19:57:05 [INFO] o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2026-05-07 19:57:05 [INFO] o.s.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-05-07 19:57:05 [INFO] o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-05-07 19:57:05 [INFO] c.swe481.backend.BackendApplication - Starting BackendApplication using Java 17.0.16 with PID 1076 (C:\Users\saraa\Desktop\SWE481\SWE-481-Project-SaraK\src\backend\app\target\classes started by saraa in C:\Users\saraa\Desktop\SWE481\SWE-481-Project-SaraK\src\backend\app)
+2026-05-07 19:57:05 [INFO] c.swe481.backend.BackendApplication - No active profile set, falling back to 1 default profile: "default"
+2026-05-07 19:57:06 [INFO] o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-07 19:57:06 [INFO] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-07 19:57:06 [INFO] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-05-07 19:57:06 [INFO] o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 703 ms
+2026-05-07 19:57:25 [INFO] o.s.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-05-07 19:57:25 [INFO] c.swe481.backend.BackendApplication - Started BackendApplication in 19.282 seconds (process running for 187.066)
+2026-05-07 19:57:25 [INFO] o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2026-05-07 20:07:35 [INFO] o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-07 20:07:35 [INFO] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-05-07 20:07:35 [INFO] o.s.web.servlet.DispatcherServlet - Completed initialization in 4 ms
+2026-05-07 20:07:36 [INFO] org.jooq.Constants - 
+                                      
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@  @@        @@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@        @@@@@@@@@@
+@@@@@@@@@@@@@@@@  @@  @@    @@@@@@@@@@
+@@@@@@@@@@  @@@@  @@  @@    @@@@@@@@@@
+@@@@@@@@@@        @@        @@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@        @@        @@@@@@@@@@
+@@@@@@@@@@    @@  @@  @@@@  @@@@@@@@@@
+@@@@@@@@@@    @@  @@  @@@@  @@@@@@@@@@
+@@@@@@@@@@        @@  @  @  @@@@@@@@@@
+@@@@@@@@@@        @@        @@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@  @@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  Thank you for using jOOQ 3.19.29 (Build date: 2025-12-05T09:11:16Z)
+                                      
+2026-05-07 20:07:36 [INFO] org.jooq.Constants - 
+
+jOOQ tip of the day: When plain SQL templating is not enough, you can write dialect agnostic CustomQueryPart implementations: https://www.jooq.org/doc/latest/manual/sql-building/queryparts/custom-queryparts/
+
+2026-05-07 20:07:36 [INFO] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-07 20:07:36 [INFO] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@260956d7
+2026-05-07 20:07:36 [INFO] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-07 20:07:36 [INFO] o.j.i.D.logVersionSupport - Version                  : Database version is supported by dialect POSTGRES: 18.3
+2026-05-07 20:07:37 [WARN] c.s.backend.QueryPerformanceAspect - [CustomerRepository] [findByEmail] Query time: 1177.87 ms ⚠️ EXCEEDED 500ms TARGET
+2026-05-07 20:07:37 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findAllGenres] Query time: 29.35 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [countMoviesByGenre] Query time: 138.90 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieIdsByGenre] Query time: 16.09 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieRows] Query time: 72.86 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 6.22 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 27.01 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.02 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 16.65 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 4.12 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 22.02 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.39 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 30.08 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.26 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 11.50 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 4.64 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 11.29 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.03 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 11.07 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.71 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 20.18 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.82 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 17.58 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.26 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 28.01 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.71 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 32.30 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.51 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 10.27 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.51 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 14.31 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 4.43 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 16.92 ms ✅ OK
+2026-05-07 20:08:48 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.46 ms ✅ OK
+2026-05-07 20:08:49 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 22.90 ms ✅ OK
+2026-05-07 20:08:49 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.57 ms ✅ OK
+2026-05-07 20:08:49 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 26.14 ms ✅ OK
+2026-05-07 20:08:49 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.59 ms ✅ OK
+2026-05-07 20:08:49 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 28.48 ms ✅ OK
+2026-05-07 20:08:49 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 5.96 ms ✅ OK
+2026-05-07 20:08:49 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 15.96 ms ✅ OK
+2026-05-07 20:08:49 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.27 ms ✅ OK
+2026-05-07 20:08:49 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 15.11 ms ✅ OK
+2026-05-07 20:08:49 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.52 ms ✅ OK
+2026-05-07 20:08:49 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 27.63 ms ✅ OK
+2026-05-07 20:08:59 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieRowById] Query time: 4.18 ms ✅ OK
+2026-05-07 20:08:59 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.29 ms ✅ OK
+2026-05-07 20:08:59 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 10.66 ms ✅ OK
+2026-05-07 20:09:10 [INFO] c.s.backend.QueryPerformanceAspect - [StarRepository] [findById] Query time: 33.92 ms ✅ OK
+2026-05-07 20:09:10 [INFO] c.s.backend.QueryPerformanceAspect - [StarRepository] [findMoviesByStarId] Query time: 35.13 ms ✅ OK
+2026-05-07 20:09:13 [INFO] c.s.backend.QueryPerformanceAspect - [StarRepository] [findById] Query time: 3.08 ms ✅ OK
+2026-05-07 20:09:13 [INFO] c.s.backend.QueryPerformanceAspect - [StarRepository] [findMoviesByStarId] Query time: 5.13 ms ✅ OK
+2026-05-07 20:09:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieRowById] Query time: 4.05 ms ✅ OK
+2026-05-07 20:09:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.83 ms ✅ OK
+2026-05-07 20:09:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 24.35 ms ✅ OK
+2026-05-07 20:10:26 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [isValidCreditCard] Query time: 90.87 ms ✅ OK
+2026-05-07 20:10:26 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [findCustomerId] Query time: 2.73 ms ✅ OK
+2026-05-07 20:10:26 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [insertSale] Query time: 61.75 ms ✅ OK
+2026-05-07 20:10:26 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [insertSale] Query time: 1.98 ms ✅ OK
+2026-05-07 20:10:26 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [insertSale] Query time: 2.52 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [countMoviesByGenre] Query time: 8.57 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieIdsByGenre] Query time: 6.29 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieRows] Query time: 20.74 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.28 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 13.55 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.61 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 12.08 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.38 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 12.29 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.25 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 13.51 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.73 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 12.91 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.96 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 12.85 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.84 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 14.88 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 4.13 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 15.83 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.34 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 16.47 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.83 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 15.18 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.34 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 14.00 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.41 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 14.48 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.81 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 14.86 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.17 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 13.50 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.89 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 16.41 ms ✅ OK
+2026-05-07 20:15:30 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.46 ms ✅ OK
+2026-05-07 20:15:31 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 15.36 ms ✅ OK
+2026-05-07 20:15:31 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.94 ms ✅ OK
+2026-05-07 20:15:31 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 14.44 ms ✅ OK
+2026-05-07 20:15:31 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.21 ms ✅ OK
+2026-05-07 20:15:31 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 14.24 ms ✅ OK
+2026-05-07 20:15:31 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.89 ms ✅ OK
+2026-05-07 20:15:31 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 13.45 ms ✅ OK
+2026-05-07 20:15:31 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.43 ms ✅ OK
+2026-05-07 20:15:31 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 24.52 ms ✅ OK
+2026-05-07 20:15:33 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieRowById] Query time: 5.09 ms ✅ OK
+2026-05-07 20:15:33 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.05 ms ✅ OK
+2026-05-07 20:15:33 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 12.44 ms ✅ OK
+2026-05-07 20:15:37 [INFO] c.s.backend.QueryPerformanceAspect - [StarRepository] [findById] Query time: 2.66 ms ✅ OK
+2026-05-07 20:15:37 [INFO] c.s.backend.QueryPerformanceAspect - [StarRepository] [findMoviesByStarId] Query time: 13.53 ms ✅ OK
+2026-05-07 20:15:40 [INFO] c.s.backend.QueryPerformanceAspect - [StarRepository] [findById] Query time: 3.58 ms ✅ OK
+2026-05-07 20:15:40 [INFO] c.s.backend.QueryPerformanceAspect - [StarRepository] [findMoviesByStarId] Query time: 12.06 ms ✅ OK
+2026-05-07 20:15:43 [INFO] c.s.backend.QueryPerformanceAspect - [StarRepository] [findMoviesByStarId] Query time: 8.96 ms ✅ OK
+2026-05-07 20:15:43 [INFO] c.s.backend.QueryPerformanceAspect - [StarRepository] [findById] Query time: 3.45 ms ✅ OK
+2026-05-07 20:15:47 [INFO] c.s.backend.QueryPerformanceAspect - [StarRepository] [findById] Query time: 2.62 ms ✅ OK
+2026-05-07 20:15:47 [INFO] c.s.backend.QueryPerformanceAspect - [StarRepository] [findMoviesByStarId] Query time: 11.56 ms ✅ OK
+2026-05-07 20:16:25 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieRowById] Query time: 6.02 ms ✅ OK
+2026-05-07 20:16:25 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 5.67 ms ✅ OK
+2026-05-07 20:16:25 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 15.67 ms ✅ OK
+2026-05-07 20:17:50 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [isValidCreditCard] Query time: 3.80 ms ✅ OK
+2026-05-07 20:17:53 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [isValidCreditCard] Query time: 4.45 ms ✅ OK
+2026-05-07 20:18:05 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [isValidCreditCard] Query time: 3.78 ms ✅ OK
+2026-05-07 20:18:30 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [isValidCreditCard] Query time: 7.47 ms ✅ OK
+2026-05-07 20:18:54 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [isValidCreditCard] Query time: 7.75 ms ✅ OK
+2026-05-07 20:18:54 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [findCustomerId] Query time: 5.48 ms ✅ OK
+2026-05-07 20:18:54 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [insertSale] Query time: 5.62 ms ✅ OK
+2026-05-07 20:18:54 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [insertSale] Query time: 2.68 ms ✅ OK
+2026-05-07 20:18:54 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [insertSale] Query time: 5.86 ms ✅ OK
+2026-05-07 20:18:54 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [insertSale] Query time: 2.32 ms ✅ OK
+2026-05-07 20:22:24 [INFO] o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2026-05-07 20:22:24 [INFO] o.s.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-05-07 20:22:24 [INFO] o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-05-07 20:22:24 [INFO] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-05-07 20:22:24 [INFO] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-05-07 20:22:24 [INFO] c.swe481.backend.BackendApplication - Starting BackendApplication using Java 17.0.16 with PID 1076 (C:\Users\saraa\Desktop\SWE481\SWE-481-Project-SaraK\src\backend\app\target\classes started by saraa in C:\Users\saraa\Desktop\SWE481\SWE-481-Project-SaraK\src\backend\app)
+2026-05-07 20:22:24 [INFO] c.swe481.backend.BackendApplication - No active profile set, falling back to 1 default profile: "default"
+2026-05-07 20:22:24 [INFO] o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-07 20:22:24 [INFO] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-07 20:22:24 [INFO] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-05-07 20:22:25 [INFO] o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 436 ms
+2026-05-07 20:22:38 [INFO] o.s.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-05-07 20:22:38 [INFO] c.swe481.backend.BackendApplication - Started BackendApplication in 14.332 seconds (process running for 1700.73)
+2026-05-07 20:22:38 [INFO] o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2026-05-07 20:23:54 [INFO] o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2026-05-07 20:23:54 [INFO] o.s.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-05-07 20:23:54 [INFO] o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-05-07 20:23:54 [INFO] c.swe481.backend.BackendApplication - Starting BackendApplication using Java 17.0.16 with PID 1076 (C:\Users\saraa\Desktop\SWE481\SWE-481-Project-SaraK\src\backend\app\target\classes started by saraa in C:\Users\saraa\Desktop\SWE481\SWE-481-Project-SaraK\src\backend\app)
+2026-05-07 20:23:54 [INFO] c.swe481.backend.BackendApplication - No active profile set, falling back to 1 default profile: "default"
+2026-05-07 20:23:55 [INFO] o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-07 20:23:55 [INFO] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-07 20:23:55 [INFO] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-05-07 20:23:55 [INFO] o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 712 ms
+2026-05-07 20:24:14 [INFO] o.s.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-05-07 20:24:14 [INFO] c.swe481.backend.BackendApplication - Started BackendApplication in 19.96 seconds (process running for 1796.267)
+2026-05-07 20:24:14 [INFO] o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2026-05-07 20:24:47 [INFO] o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2026-05-07 20:24:47 [INFO] o.s.boot.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-05-07 20:24:47 [INFO] o.s.boot.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-05-07 20:24:47 [INFO] c.swe481.backend.BackendApplication - Starting BackendApplication using Java 17.0.16 with PID 1076 (C:\Users\saraa\Desktop\SWE481\SWE-481-Project-SaraK\src\backend\app\target\classes started by saraa in C:\Users\saraa\Desktop\SWE481\SWE-481-Project-SaraK\src\backend\app)
+2026-05-07 20:24:47 [INFO] c.swe481.backend.BackendApplication - No active profile set, falling back to 1 default profile: "default"
+2026-05-07 20:24:47 [INFO] o.s.boot.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-05-07 20:24:47 [INFO] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-07 20:24:47 [INFO] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-05-07 20:24:47 [INFO] o.s.b.w.c.s.WebApplicationContextInitializer - Root WebApplicationContext: initialization completed in 374 ms
+2026-05-07 20:25:07 [INFO] o.s.boot.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-05-07 20:25:07 [INFO] c.swe481.backend.BackendApplication - Started BackendApplication in 19.644 seconds (process running for 1849.081)
+2026-05-07 20:25:07 [INFO] o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2026-05-07 20:25:08 [INFO] o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-07 20:25:08 [INFO] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-05-07 20:25:08 [INFO] o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2026-05-07 20:25:10 [INFO] com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Starting...
+2026-05-07 20:25:10 [INFO] com.zaxxer.hikari.pool.HikariPool - HikariPool-2 - Added connection org.postgresql.jdbc.PgConnection@768a521b
+2026-05-07 20:25:10 [INFO] com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Start completed.
+2026-05-07 20:25:10 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [countMoviesByGenre] Query time: 127.67 ms ✅ OK
+2026-05-07 20:25:10 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieIdsByGenre] Query time: 5.98 ms ✅ OK
+2026-05-07 20:25:10 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieRows] Query time: 13.70 ms ✅ OK
+2026-05-07 20:25:10 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 5.07 ms ✅ OK
+2026-05-07 20:25:10 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 20.09 ms ✅ OK
+2026-05-07 20:25:10 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.45 ms ✅ OK
+2026-05-07 20:25:10 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 18.86 ms ✅ OK
+2026-05-07 20:25:10 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.23 ms ✅ OK
+2026-05-07 20:25:10 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 16.72 ms ✅ OK
+2026-05-07 20:25:10 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.63 ms ✅ OK
+2026-05-07 20:25:10 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 12.60 ms ✅ OK
+2026-05-07 20:25:10 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 5.09 ms ✅ OK
+2026-05-07 20:25:10 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 10.18 ms ✅ OK
+2026-05-07 20:25:10 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.80 ms ✅ OK
+2026-05-07 20:25:11 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 9.66 ms ✅ OK
+2026-05-07 20:25:11 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 4.61 ms ✅ OK
+2026-05-07 20:25:11 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 10.80 ms ✅ OK
+2026-05-07 20:25:12 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieRowById] Query time: 4.99 ms ✅ OK
+2026-05-07 20:25:12 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.68 ms ✅ OK
+2026-05-07 20:25:12 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 12.03 ms ✅ OK
+2026-05-07 20:25:18 [INFO] c.s.backend.QueryPerformanceAspect - [StarRepository] [findById] Query time: 7.85 ms ✅ OK
+2026-05-07 20:25:18 [INFO] c.s.backend.QueryPerformanceAspect - [StarRepository] [findMoviesByStarId] Query time: 15.02 ms ✅ OK
+2026-05-07 20:25:22 [INFO] c.s.backend.QueryPerformanceAspect - [StarRepository] [findMoviesByStarId] Query time: 3.87 ms ✅ OK
+2026-05-07 20:25:22 [INFO] c.s.backend.QueryPerformanceAspect - [StarRepository] [findById] Query time: 4.54 ms ✅ OK
+2026-05-07 20:25:26 [INFO] c.s.backend.QueryPerformanceAspect - [StarRepository] [findById] Query time: 3.53 ms ✅ OK
+2026-05-07 20:25:26 [INFO] c.s.backend.QueryPerformanceAspect - [StarRepository] [findMoviesByStarId] Query time: 10.39 ms ✅ OK
+2026-05-07 20:25:35 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieRowById] Query time: 3.13 ms ✅ OK
+2026-05-07 20:25:35 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.50 ms ✅ OK
+2026-05-07 20:25:35 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 10.57 ms ✅ OK
+2026-05-07 20:27:15 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [isValidCreditCard] Query time: 8.12 ms ✅ OK
+2026-05-07 20:28:00 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [isValidCreditCard] Query time: 4.28 ms ✅ OK
+2026-05-07 20:28:00 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [findCustomerId] Query time: 3.86 ms ✅ OK
+2026-05-07 20:29:17 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [isValidCreditCard] Query time: 9.74 ms ✅ OK
+2026-05-07 20:29:19 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [isValidCreditCard] Query time: 4.67 ms ✅ OK
+2026-05-07 20:29:32 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [isValidCreditCard] Query time: 7.55 ms ✅ OK
+2026-05-07 20:29:32 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [findCustomerId] Query time: 3.36 ms ✅ OK
+2026-05-07 20:29:32 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [insertSale] Query time: 5.89 ms ✅ OK
+2026-05-07 20:29:32 [INFO] c.s.backend.QueryPerformanceAspect - [CheckoutRepository] [insertSale] Query time: 2.17 ms ✅ OK
+2026-05-07 20:31:15 [INFO] c.s.backend.BackendApplicationTests - Starting BackendApplicationTests using Java 17.0.16 with PID 27060 (started by saraa in C:\Users\saraa\Desktop\SWE481\SWE-481-Project-SaraK\src\backend\app)
+2026-05-07 20:31:15 [INFO] c.s.backend.BackendApplicationTests - No active profile set, falling back to 1 default profile: "default"
+2026-05-07 20:31:37 [INFO] c.s.backend.BackendApplicationTests - Started BackendApplicationTests in 22.373 seconds (process running for 24.598)
+2026-05-07 20:31:38 [INFO] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.swe481.backend.ControllerIntegrationTesting.AuthControllerTest]: AuthControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-05-07 20:31:38 [INFO] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.swe481.backend.BackendApplication for test class com.swe481.backend.ControllerIntegrationTesting.AuthControllerTest
+2026-05-07 20:31:38 [INFO] o.s.b.d.r.RestartApplicationListener - Restart disabled due to context in which it is running
+2026-05-07 20:31:38 [INFO] c.s.b.C.AuthControllerTest - Starting AuthControllerTest using Java 17.0.16 with PID 27060 (started by saraa in C:\Users\saraa\Desktop\SWE481\SWE-481-Project-SaraK\src\backend\app)
+2026-05-07 20:31:38 [INFO] c.s.b.C.AuthControllerTest - No active profile set, falling back to 1 default profile: "default"
+2026-05-07 20:31:56 [INFO] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-05-07 20:31:56 [INFO] o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-05-07 20:31:56 [INFO] o.s.t.w.s.TestDispatcherServlet - Completed initialization in 4 ms
+2026-05-07 20:31:56 [INFO] c.s.b.C.AuthControllerTest - Started AuthControllerTest in 18.535 seconds (process running for 44.39)
+2026-05-07 20:31:58 [INFO] org.jooq.Constants - 
+                                      
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@  @@        @@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@        @@@@@@@@@@
+@@@@@@@@@@@@@@@@  @@  @@    @@@@@@@@@@
+@@@@@@@@@@  @@@@  @@  @@    @@@@@@@@@@
+@@@@@@@@@@        @@        @@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@        @@        @@@@@@@@@@
+@@@@@@@@@@    @@  @@  @@@@  @@@@@@@@@@
+@@@@@@@@@@    @@  @@  @@@@  @@@@@@@@@@
+@@@@@@@@@@        @@  @  @  @@@@@@@@@@
+@@@@@@@@@@        @@        @@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@  @@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  Thank you for using jOOQ 3.19.29 (Build date: 2025-12-05T09:11:16Z)
+                                      
+2026-05-07 20:31:58 [INFO] org.jooq.Constants - 
+
+jOOQ tip of the day: You don't have to register your Converters or Bindings with the code generator. You can use ad-hoc converters on any Field expression: https://www.jooq.org/doc/latest/manual/sql-execution/fetching/ad-hoc-converter/
+
+2026-05-07 20:31:58 [INFO] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-07 20:31:59 [INFO] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@6bb2b8d4
+2026-05-07 20:31:59 [INFO] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-07 20:31:59 [INFO] o.j.i.D.logVersionSupport - Version                  : Database version is supported by dialect POSTGRES: 18.3
+2026-05-07 20:31:59 [WARN] c.s.backend.QueryPerformanceAspect - [CustomerRepository] [findByEmail] Query time: 1835.10 ms ⚠️ EXCEEDED 500ms TARGET
+2026-05-07 20:31:59 [INFO] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.swe481.backend.ControllerIntegrationTesting.MovieControllerIntegrationTest]: MovieControllerIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-05-07 20:31:59 [INFO] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.swe481.backend.BackendApplication for test class com.swe481.backend.ControllerIntegrationTesting.MovieControllerIntegrationTest
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [countMovies] Query time: 154.60 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [countMovies] Query time: 10.24 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieIds] Query time: 49.61 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieRows] Query time: 113.45 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 15.88 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 19.17 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.03 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 11.70 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.79 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 9.59 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.20 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 10.90 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.76 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 20.20 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [countMovies] Query time: 5.68 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieIds] Query time: 5.20 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieRows] Query time: 5.52 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.39 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 14.40 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.86 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 12.19 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.26 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 12.65 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.98 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 12.66 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.44 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 14.28 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.05 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 9.61 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.02 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 11.71 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.55 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 18.56 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.98 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 9.66 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.44 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 9.27 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findTitleSuggestions] Query time: 17.49 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findTitleSuggestions] Query time: 9.54 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [countMoviesByGenre] Query time: 2.49 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieRowById] Query time: 9.23 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.14 ms ✅ OK
+2026-05-07 20:32:00 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 13.87 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [countMovies] Query time: 9.86 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieIds] Query time: 9.17 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieRows] Query time: 9.61 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.04 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 8.63 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieRowById] Query time: 2.35 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [countMoviesByFirstLetter] Query time: 15.66 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieIdsByFirstLetter] Query time: 8.82 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieRows] Query time: 16.69 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.64 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 8.77 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.59 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 7.65 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.43 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 8.01 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.21 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 7.08 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.17 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 9.50 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.72 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 9.55 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.96 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 7.86 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.34 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 8.90 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.72 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 10.84 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.39 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 9.33 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.60 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 9.22 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.37 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 12.55 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.99 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 12.41 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.03 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 8.43 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.86 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 10.15 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.62 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 10.33 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 4.17 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 18.53 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.95 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 9.54 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.31 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 8.28 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.69 ms ✅ OK
+2026-05-07 20:32:01 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 9.62 ms ✅ OK
+2026-05-07 20:32:06 [INFO] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-05-07 20:32:06 [INFO] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-05-07 20:36:32 [INFO] c.s.backend.BackendApplicationTests - Starting BackendApplicationTests using Java 17.0.16 with PID 21936 (started by saraa in C:\Users\saraa\Desktop\SWE481\SWE-481-Project-SaraK\src\backend\app)
+2026-05-07 20:36:32 [INFO] c.s.backend.BackendApplicationTests - No active profile set, falling back to 1 default profile: "default"
+2026-05-07 20:36:49 [INFO] c.s.backend.BackendApplicationTests - Started BackendApplicationTests in 17.675 seconds (process running for 19.862)
+2026-05-07 20:36:50 [INFO] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.swe481.backend.ControllerIntegrationTesting.AuthControllerTest]: AuthControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-05-07 20:36:50 [INFO] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.swe481.backend.BackendApplication for test class com.swe481.backend.ControllerIntegrationTesting.AuthControllerTest
+2026-05-07 20:36:50 [INFO] o.s.b.d.r.RestartApplicationListener - Restart disabled due to context in which it is running
+2026-05-07 20:36:50 [INFO] c.s.b.C.AuthControllerTest - Starting AuthControllerTest using Java 17.0.16 with PID 21936 (started by saraa in C:\Users\saraa\Desktop\SWE481\SWE-481-Project-SaraK\src\backend\app)
+2026-05-07 20:36:50 [INFO] c.s.b.C.AuthControllerTest - No active profile set, falling back to 1 default profile: "default"
+2026-05-07 20:37:11 [INFO] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-05-07 20:37:11 [INFO] o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-05-07 20:37:11 [INFO] o.s.t.w.s.TestDispatcherServlet - Completed initialization in 5 ms
+2026-05-07 20:37:12 [INFO] c.s.b.C.AuthControllerTest - Started AuthControllerTest in 21.357 seconds (process running for 42.452)
+2026-05-07 20:37:13 [INFO] org.jooq.Constants - 
+                                      
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@  @@        @@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@        @@@@@@@@@@
+@@@@@@@@@@@@@@@@  @@  @@    @@@@@@@@@@
+@@@@@@@@@@  @@@@  @@  @@    @@@@@@@@@@
+@@@@@@@@@@        @@        @@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@        @@        @@@@@@@@@@
+@@@@@@@@@@    @@  @@  @@@@  @@@@@@@@@@
+@@@@@@@@@@    @@  @@  @@@@  @@@@@@@@@@
+@@@@@@@@@@        @@  @  @  @@@@@@@@@@
+@@@@@@@@@@        @@        @@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@  @@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  Thank you for using jOOQ 3.19.29 (Build date: 2025-12-05T09:11:16Z)
+                                      
+2026-05-07 20:37:13 [INFO] org.jooq.Constants - 
+
+jOOQ tip of the day: Client side computed columns are very useful if you have redundant behaviour in your queries and data: https://www.jooq.org/doc/latest/manual/code-generation/codegen-advanced/codegen-config-database/codegen-database-forced-types/codegen-database-forced-types-computed/
+
+2026-05-07 20:37:13 [INFO] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-07 20:37:13 [INFO] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@684001e6
+2026-05-07 20:37:13 [INFO] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-07 20:37:13 [INFO] o.j.i.D.logVersionSupport - Version                  : Database version is supported by dialect POSTGRES: 18.3
+2026-05-07 20:37:14 [WARN] c.s.backend.QueryPerformanceAspect - [CustomerRepository] [findByEmail] Query time: 1512.04 ms ⚠️ EXCEEDED 500ms TARGET
+2026-05-07 20:37:14 [INFO] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.swe481.backend.ControllerIntegrationTesting.MovieControllerIntegrationTest]: MovieControllerIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-05-07 20:37:14 [INFO] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.swe481.backend.BackendApplication for test class com.swe481.backend.ControllerIntegrationTesting.MovieControllerIntegrationTest
+2026-05-07 20:37:14 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [countMovies] Query time: 146.23 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [countMovies] Query time: 13.52 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieIds] Query time: 39.32 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieRows] Query time: 103.82 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 14.45 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 15.93 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 4.20 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 10.36 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.23 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 11.71 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.75 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 40.21 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 4.49 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 11.51 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [countMovies] Query time: 7.63 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieIds] Query time: 5.82 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieRows] Query time: 5.78 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.61 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 12.52 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.97 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 12.51 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.41 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 10.42 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.29 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 10.37 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.47 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 9.41 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.58 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 10.09 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.05 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 8.93 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.61 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 9.84 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.41 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 10.37 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.88 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 12.99 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findTitleSuggestions] Query time: 9.43 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findTitleSuggestions] Query time: 9.37 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [countMoviesByGenre] Query time: 3.26 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieRowById] Query time: 4.13 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.45 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 14.87 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [countMovies] Query time: 19.23 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieIds] Query time: 17.79 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieRows] Query time: 4.40 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.97 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 14.62 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieRowById] Query time: 6.98 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [countMoviesByFirstLetter] Query time: 24.99 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieIdsByFirstLetter] Query time: 12.43 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findMovieRows] Query time: 7.59 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.30 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 9.01 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.83 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 8.49 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.32 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 8.45 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.82 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 8.65 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.41 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 9.95 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.20 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 8.47 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.68 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 10.80 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.82 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 11.83 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.09 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 9.22 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.34 ms ✅ OK
+2026-05-07 20:37:15 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 8.73 ms ✅ OK
+2026-05-07 20:37:16 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.32 ms ✅ OK
+2026-05-07 20:37:16 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 9.01 ms ✅ OK
+2026-05-07 20:37:16 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.16 ms ✅ OK
+2026-05-07 20:37:16 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 11.15 ms ✅ OK
+2026-05-07 20:37:16 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.28 ms ✅ OK
+2026-05-07 20:37:16 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 9.56 ms ✅ OK
+2026-05-07 20:37:16 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.45 ms ✅ OK
+2026-05-07 20:37:16 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 8.92 ms ✅ OK
+2026-05-07 20:37:16 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.10 ms ✅ OK
+2026-05-07 20:37:16 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 11.70 ms ✅ OK
+2026-05-07 20:37:16 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.88 ms ✅ OK
+2026-05-07 20:37:16 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 10.21 ms ✅ OK
+2026-05-07 20:37:16 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 4.15 ms ✅ OK
+2026-05-07 20:37:16 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 8.70 ms ✅ OK
+2026-05-07 20:37:16 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 2.34 ms ✅ OK
+2026-05-07 20:37:16 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 8.85 ms ✅ OK
+2026-05-07 20:37:16 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 1.77 ms ✅ OK
+2026-05-07 20:37:16 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 10.60 ms ✅ OK
+2026-05-07 20:37:16 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findGenresByMovieId] Query time: 3.30 ms ✅ OK
+2026-05-07 20:37:16 [INFO] c.s.backend.QueryPerformanceAspect - [MovieRepository] [findStarsByMovieId] Query time: 10.19 ms ✅ OK
+2026-05-07 20:37:24 [INFO] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-05-07 20:37:24 [INFO] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
