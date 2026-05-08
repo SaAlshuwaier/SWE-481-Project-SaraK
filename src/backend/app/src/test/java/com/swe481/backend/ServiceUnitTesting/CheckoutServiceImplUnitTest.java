@@ -109,10 +109,7 @@ public class CheckoutServiceImplUnitTest {
     void processCheckoutShouldReturnEmptyCartWhenCartSessionIsMissing() {
         when(checkoutRepository.isValidCreditCard(any(), any(), any(), any())).thenReturn(true);
         when(checkoutRepository.findCustomerId("Janet", "Trink", "1354895485215896548")).thenReturn(1);
-        // when(httpSession.getAttribute("customerId")).thenReturn(1); // Simulate
-        // logged-in user with ID 1 -- Removed since Dr. bushra said all cards in the
-        // database are valid and we don't need to check if the card belongs to the
-        // logged-in user
+      
         when(httpSession.getAttribute("cart")).thenReturn(null);
         when(httpSession.getAttribute("customerId")).thenReturn(1);
 
@@ -156,4 +153,25 @@ public class CheckoutServiceImplUnitTest {
 
         verify(httpSession).removeAttribute("cart");
     }
+
+@Test
+void processCheckout_emptyItemsList_returnsEmptyCart() {
+    Cart cart = new Cart(new ArrayList<>(), 0);
+
+    when(checkoutRepository.isValidCreditCard(any(), any(), any(), any())).thenReturn(true);
+    when(checkoutRepository.findCustomerId(any(), any(), any())).thenReturn(1);
+    when(httpSession.getAttribute("customerId")).thenReturn(1);
+    when(httpSession.getAttribute("cart")).thenReturn(cart);
+
+    CheckoutResult result = checkoutService.processCheckout(
+            "Janet",
+            "Trink",
+            "1354895485215896548",
+            "2004-03-25");
+
+    assertFalse(result.isSuccess());
+    assertEquals("EMPTY_CART", result.getCode());
+    assertEquals("Your cart is empty.", result.getMessage());
+}
+
 }
